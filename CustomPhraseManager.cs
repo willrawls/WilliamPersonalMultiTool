@@ -24,19 +24,21 @@ namespace WilliamPersonalMultiTool
             Keyboard.AddOrReplace(customKeySequence);
         }
 
+        public void AddFromText(string text)
+        {
+            var result = text.LineList(StringSplitOptions.RemoveEmptyEntries)
+                .SelectMany(ReduceAndExpand)
+                .ToList();
+
+        }
+
         public void AddFromFile(string path)
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException();
 
             InsideQuotedEntry = false;
-            var lines = File.ReadAllLines(path).Where(l => l
-                    .IsNotEmpty() && l
-                    .Trim() != "*/" && l
-                    .Trim().ToLower().StartsWith("/*"))
-                .SelectMany(ReduceAndExpand)
-                .ToList();
-
+            AddFromText(File.ReadAllText(path));
         }
 
         public bool InsideQuotedEntry { get; set; }

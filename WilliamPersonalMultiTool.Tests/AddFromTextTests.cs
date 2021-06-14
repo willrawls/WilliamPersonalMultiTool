@@ -5,7 +5,7 @@ using NHotPhrase.Keyboard;
 namespace WilliamPersonalMultiTool.Tests
 {
     [TestClass]
-    public class AddFromFileTests
+    public class AddFromTextTests
     {
         readonly List<PKey> pKeys_Caps123 = new() {PKey.CapsLock, PKey.D1, PKey.D2, PKey.D3};
         readonly List<PKey> pKeys_Caps1A3 = new() {PKey.CapsLock, PKey.D1, PKey.A, PKey.D3};
@@ -14,6 +14,17 @@ namespace WilliamPersonalMultiTool.Tests
         public void ToPKeyList_Caps123()
         {
             var actual = CustomPhraseManager.ToPKeyList(null, "CapsLock 1 2 3");
+            AssertAllAreEqual(pKeys_Caps123, actual);
+        }
+
+        [TestMethod]
+        public void ToPKeyList_Caps123_Multiline()
+        {
+            <<< Start here
+            var actual = CustomPhraseManager.ToPKeyList(null, @"
+CapsLock 
+    1 
+        2 3");
             AssertAllAreEqual(pKeys_Caps123, actual);
         }
 

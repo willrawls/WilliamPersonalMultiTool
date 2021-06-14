@@ -18,10 +18,8 @@ namespace WilliamPersonalMultiTool
 
         public void SetupHotPhrases()
         {
-            Manager.AddOrReplace("william.rawls@gmail.com", 3, PKey.CapsLock, PKey.W, PKey.R, PKey.G);
-            Manager.AddOrReplace("willrawls@hotmail.com", 1, PKey.CapsLock, PKey.CapsLock, PKey.H);
-            Manager.AddOrReplace("2279 Perez Street Apt 290", 3, PKey.CapsLock, PKey.W, PKey.R, PKey.A);
-            Manager.AddFromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "WR1.wpmt"));
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WR1.wpmt");
+            Manager.AddFromFile(path);
         }
     }
 }

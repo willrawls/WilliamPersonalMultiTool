@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="WR1.wpmt" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="NHotPhrase.WindowsForms" Version="1.0.0" />
   </ItemGroup>
 

@@ -7,13 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="WR1.wpmt" />
+    <Compile Remove="Tests\**" />
+    <Compile Remove="WilliamPersonalMultiTool.Tests\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <EmbeddedResource Remove="WilliamPersonalMultiTool.Tests\**" />
+    <None Remove="Tests\**" />
+    <None Remove="WilliamPersonalMultiTool.Tests\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="WR1.wpmt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
+    <None Remove="WR1.wpmt" />
   </ItemGroup>
 
   <ItemGroup>

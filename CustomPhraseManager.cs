@@ -146,6 +146,7 @@ namespace WilliamPersonalMultiTool
                     result.Add(keySequence);
                 }
             }   
+            Keyboard.KeySequences.AddRange(result);
             return result;
         }
 
@@ -172,7 +173,7 @@ namespace WilliamPersonalMultiTool
             var keyParts = keys.AllTokens();
             foreach (var keyPart in keyParts)
             {
-                var pKey = FromString(keyPart, out WildcardMatchType wildcardMatchTypeInner, out int wildcardCountInner);
+                var pKey = FromString(keyPart, out var wildcardMatchTypeInner, out var wildcardCountInner);
                 
                 if(wildcardCountInner < 1)
                 {

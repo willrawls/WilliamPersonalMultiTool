@@ -15,6 +15,19 @@ namespace WilliamPersonalMultiTool.Tests
         readonly List<PKey> ShiftX2 = new() {PKey.Shift, PKey.X};
 
         [TestMethod]
+        public void WhenKeySequenceAlreadyExists_Replace()
+        {
+            var data = new CustomPhraseManager();
+            var actual = data.AddSet(@"
+When CapsLock 1 2 3 type someone.at@gmail.com
+When CapsLock 1 2 3 type someone.at@hotmail.com
+");
+            Assert.AreEqual(1, actual.Count);
+            Assert.AreEqual("someone.at@hotmail.com", actual[0].Name);
+            AssertAllAreEqual(pKeys_Caps123, actual[0].Sequence);
+        }
+
+        [TestMethod]
         public void ToPKeyList_Caps123()
         {
             var actual = CustomPhraseManager.ToPKeyList("CapsLock 1 2 3", null, out var wildcardMatchType, out var wildcardCount);

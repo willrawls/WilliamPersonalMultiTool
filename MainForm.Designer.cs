@@ -29,65 +29,81 @@ namespace WilliamPersonalMultiTool
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.KeySequenceList = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.EditButton = new System.Windows.Forms.Button();
+            this.ReloadButton = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panel1
-            // 
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(716, 57);
-            this.panel1.TabIndex = 0;
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Controls.Add(this.KeySequenceList);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 57);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(716, 336);
-            this.flowLayoutPanel1.TabIndex = 1;
             // 
             // KeySequenceList
             // 
             this.KeySequenceList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
+            this.KeySequenceList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.KeySequenceList.HideSelection = false;
-            this.KeySequenceList.Location = new System.Drawing.Point(3, 3);
+            this.KeySequenceList.Location = new System.Drawing.Point(0, 46);
             this.KeySequenceList.Name = "KeySequenceList";
-            this.KeySequenceList.Size = new System.Drawing.Size(701, 321);
-            this.KeySequenceList.TabIndex = 0;
+            this.KeySequenceList.Size = new System.Drawing.Size(614, 309);
+            this.KeySequenceList.TabIndex = 2;
             this.KeySequenceList.UseCompatibleStateImageBehavior = false;
             this.KeySequenceList.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader1
             // 
             this.columnHeader1.Text = "Key Sequence";
-            this.columnHeader1.Width = 300;
+            this.columnHeader1.Width = 200;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Expansion";
-            this.columnHeader2.Width = 350;
+            this.columnHeader2.Width = 200;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.EditButton);
+            this.flowLayoutPanel1.Controls.Add(this.ReloadButton);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(614, 46);
+            this.flowLayoutPanel1.TabIndex = 2;
+            // 
+            // EditButton
+            // 
+            this.EditButton.Location = new System.Drawing.Point(3, 3);
+            this.EditButton.Name = "EditButton";
+            this.EditButton.Size = new System.Drawing.Size(80, 38);
+            this.EditButton.TabIndex = 0;
+            this.EditButton.Text = "&Edit";
+            this.EditButton.UseVisualStyleBackColor = true;
+            this.EditButton.Click += new System.EventHandler(this.EditButton_Click);
+            // 
+            // ReloadButton
+            // 
+            this.ReloadButton.Location = new System.Drawing.Point(89, 3);
+            this.ReloadButton.Name = "ReloadButton";
+            this.ReloadButton.Size = new System.Drawing.Size(80, 38);
+            this.ReloadButton.TabIndex = 1;
+            this.ReloadButton.Text = "&Reload";
+            this.ReloadButton.UseVisualStyleBackColor = true;
+            this.ReloadButton.Click += new System.EventHandler(this.ReloadButton_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(716, 393);
+            this.ClientSize = new System.Drawing.Size(614, 355);
+            this.Controls.Add(this.KeySequenceList);
             this.Controls.Add(this.flowLayoutPanel1);
-            this.Controls.Add(this.panel1);
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Text = "MainForm";
+            this.Text = "William\'s Personal Multitool";
+            this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -96,11 +112,12 @@ namespace WilliamPersonalMultiTool
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.ListView KeySequenceList;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Button EditButton;
+        private System.Windows.Forms.Button ReloadButton;
     }
 }
 

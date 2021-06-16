@@ -22,6 +22,16 @@ namespace WilliamPersonalMultiTool
                 var templateToFind = WildcardTemplate(e.State.KeySequence);
                 textToSend = textToSend.Replace(templateToFind, e.State.MatchResult.Value);
             }
+
+            textToSend = textToSend
+                    .Replace(@"\r", "\r")
+                    .Replace(@"\n", "\n")
+                    .Replace(@"\t", "\t")
+                    .Replace(@"\*", @"*")
+                    .Replace(@"\\", @"\")
+                ;
+
+            var debug = MakeReadyForSending(textToSend);
             SendString(textToSend);
         }
 
@@ -88,6 +98,9 @@ namespace WilliamPersonalMultiTool
 
         public List<CustomKeySequence> AddSet(string text)
         {
+            while (text.Replace("\r", "").EndsWith("\n"))
+                text = text.Substring(0, text.Length - 1);
+
             var result = new List<CustomKeySequence>();
             var whens = text
                 .Replace("\r", "")
@@ -121,11 +134,12 @@ namespace WilliamPersonalMultiTool
                 var whenExpansion = ors[0].TokensAfterFirst(" type ");
                 if (whenExpansion.IsNotEmpty())
                 {
-                    var backspaceCount = ToBackspaceCount(whenKeys);
-                    var keySequence = new CustomKeySequence(whenExpansion, whenKeys, OnExpandToNameOfTrigger, backspaceCount);
-                    keySequence.WildcardMatchType = wildcardMatchType;
-                    keySequence.WildcardCount = wildcardCount;
-                    result.Add(keySequence);
+                    var backspaceCount = ToBackspaceCount(whenKeys) + wildcardCount;
+                    var whenSequence = new CustomKeySequence(whenExpansion, whenKeys, OnExpandToNameOfTrigger, backspaceCount);
+                    whenSequence.WildcardMatchType = wildcardMatchType;
+                    whenSequence.WildcardCount = wildcardCount;
+
+                    InternalAddOrReplace(whenSequence, result);
                 }
 
                 var prepend = new List<PKey>(whenKeys.GetRange(0, whenKeys.Count - 1));
@@ -139,15 +153,38 @@ namespace WilliamPersonalMultiTool
                     var expansion = @or.TokensAfterFirst(" type ");
                     if (expansion.IsEmpty()) continue;
 
-                    var backspaceCount = ToBackspaceCount(keys);
-                    var keySequence = new CustomKeySequence(expansion, keys, OnExpandToNameOfTrigger, backspaceCount);
-                    keySequence.WildcardMatchType = wildcardMatchType;
-                    keySequence.WildcardCount = wildcardCount;
-                    result.Add(keySequence);
+                    var backspaceCount = ToBackspaceCount(keys) + wildcardCount;
+                    var orSequence = new CustomKeySequence(expansion, keys, OnExpandToNameOfTrigger, backspaceCount);
+                    orSequence.WildcardMatchType = wildcardMatchType;
+                    orSequence.WildcardCount = wildcardCount;
+                    InternalAddOrReplace(orSequence, result);
                 }
             }   
             Keyboard.KeySequences.AddRange(result);
             return result;
+        }
+
+        private void InternalAddOrReplace(CustomKeySequence whenSequence, List<CustomKeySequence> result)
+        {
+            for (var index = 0; index < Keyboard.KeySequences.Count; index++)
+            {
+                var ks1 = Keyboard.KeySequences[index];
+                if (!AreEqual(ks1.Sequence, whenSequence.Sequence)) 
+                    continue;
+
+                Keyboard.KeySequences.RemoveAt(index);
+            }
+
+            for (var index = 0; index < result.Count; index++)
+            {
+                var ks1 = result[index];
+                if (!AreEqual(ks1.Sequence, whenSequence.Sequence)) 
+                    continue;
+
+                result.RemoveAt(index);
+            }
+
+            result.Add(whenSequence);
         }
 
         private int ToBackspaceCount(List<PKey> pKeyList)
@@ -189,6 +226,24 @@ namespace WilliamPersonalMultiTool
 
             return pKeyList;
         }
+
+        public static bool AreEqual(List<PKey> expected, List<PKey> actual)
+        {
+            if (expected == null || actual == null)
+                return false;
+
+            if(expected.Count != actual.Count)
+                return false;
+
+            for (var i = 0; i < expected.Count; i++)
+            {
+                if (actual[i] != expected[i])
+                    return false;
+            }
+
+            return true;
+        }
+
 
         public static PKey FromString(string singlePKeyText, out WildcardMatchType wildcardMatchType, out int wildcardCount)
         {

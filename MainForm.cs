@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
+using WilliamPersonalMultiTool.Properties;
 
 namespace WilliamPersonalMultiTool
 {
@@ -33,22 +34,31 @@ namespace WilliamPersonalMultiTool
             var form = this;
             StaticSequences = new List<CustomKeySequence>()
             {
-                new CustomKeySequence("Reload key sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.RShiftKey, PKey.RShiftKey}, OnReloadKeySequences, 0),
-                new CustomKeySequence("Edit key sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.Alt, PKey.Alt}, OnEditKeySequences, 0),
-                new CustomKeySequence("Generate GUID style N", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.G, PKey.N}, OnGenerateGuid_N, 2),
-                new CustomKeySequence("Generate GUID style P", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.G, PKey.P}, OnGenerateGuid_P, 2),
+                new("Reload key sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.RShiftKey, PKey.RShiftKey}, OnReloadKeySequences, 0),
+                new("Edit key sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.Alt, PKey.Alt}, OnEditKeySequences, 0),
+                new("Toggle all key sequences off", new List<PKey> {PKey.RControlKey, PKey.Shift, PKey.Alt, PKey.RControlKey}, OnToggleOnOff, 0),
+                new("Generate GUID style N", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.G, PKey.N}, OnGenerateGuid_N, 2),
+                new("Generate GUID style P", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.G, PKey.P}, OnGenerateGuid_P, 2),
             };
         }
+
+        private void OnToggleOnOff(object sender, PhraseEventArguments e)
+        {
+            ToggleOnOffButton_Click(null, null);
+        }
+
         private void OnGenerateGuid_N(object sender, PhraseEventArguments e)
         {
             var text = Guid.NewGuid().ToString("N");
-            Manager.SendString(text);
+            Manager.SendBackspaces(2, 2);
+            Manager.SendString(text, 2, true);
         }
 
         private void OnGenerateGuid_P(object sender, PhraseEventArguments e)
         {
             var text = Guid.NewGuid().ToString("P");
-            Manager.SendString(text);
+            Manager.SendBackspaces(2, 2);
+            Manager.SendString(text, 2, true);
         }
 
         private void OnEditKeySequences(object sender, PhraseEventArguments e)
@@ -139,6 +149,59 @@ namespace WilliamPersonalMultiTool
         {
             SetupHotPhrases();
             UpdateListView();
+        }
+
+        private void ToggleOnOffButton_Click(object sender, EventArgs e)
+        {
+            if(ToggleOnOffButton.Text == "Turn &Off")
+            {
+                Manager.Keyboard.KeySequences.Clear();
+                KeySequenceList.Items.Clear();
+            }
+            else
+            {
+                ReloadButton_Click(null, null);
+            }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveWindowPosition();
+        }
+
+        private void RestoreWindowPosition()
+        {
+            if (Settings.Default.HasSetDefaults)
+            {
+                WindowState = Settings.Default.WindowState;
+                Location = Settings.Default.Location;
+                Size = Settings.Default.Size;
+            }
+        }
+
+        private void SaveWindowPosition()
+        {
+            Settings.Default.WindowState = WindowState;
+
+            if (WindowState == FormWindowState.Normal)
+            {
+                Settings.Default.Location = Location;
+                Settings.Default.Size = Size;
+            }
+            else
+            {
+                Settings.Default.Location = RestoreBounds.Location;
+                Settings.Default.Size = RestoreBounds.Size;
+            }
+
+            Settings.Default.HasSetDefaults = true;
+
+            Settings.Default.Save();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            RestoreWindowPosition();
         }
     }
 }

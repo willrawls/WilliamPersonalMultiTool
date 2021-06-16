@@ -16,9 +16,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="MetX.Standard">
-      <HintPath>..\..\..\Data\code\xlgGallery\xlg\MetX\MetX.QuickScripts\bin\Debug\net5.0-windows\MetX.Standard.dll</HintPath>
-    </Reference>
+    <None Remove=".gitattributes" />
+    <None Remove=".gitignore" />
+    <None Remove="WilliamPersonalMultiTool.DotSettings" />
+    <None Remove="WilliamPersonalMultiTool.sln.DotSettings" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NHotPhrase\src\NHotPhrase.WindowsForms\NHotPhrase.WindowsForms.csproj" />
+    <ProjectReference Include="..\xlg\MetX\MetX.Standard\MetX.Standard.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

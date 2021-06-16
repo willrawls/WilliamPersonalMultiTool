@@ -35,6 +35,7 @@ namespace WilliamPersonalMultiTool
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.EditButton = new System.Windows.Forms.Button();
             this.ReloadButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,6 +67,7 @@ namespace WilliamPersonalMultiTool
             // 
             this.flowLayoutPanel1.Controls.Add(this.EditButton);
             this.flowLayoutPanel1.Controls.Add(this.ReloadButton);
+            this.flowLayoutPanel1.Controls.Add(this.button1);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -91,6 +93,15 @@ namespace WilliamPersonalMultiTool
             this.ReloadButton.Text = "&Reload";
             this.ReloadButton.UseVisualStyleBackColor = true;
             this.ReloadButton.Click += new System.EventHandler(this.ReloadButton_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(175, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(80, 38);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -118,6 +129,7 @@ namespace WilliamPersonalMultiTool
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button EditButton;
         private System.Windows.Forms.Button ReloadButton;
+        private System.Windows.Forms.Button button1;
     }
 }
 

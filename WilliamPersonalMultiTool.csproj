@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NHotPhrase.WindowsForms" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="MetX.Standard">
       <HintPath>..\..\..\Data\code\xlgGallery\xlg\MetX\MetX.QuickScripts\bin\Debug\net5.0-windows\MetX.Standard.dll</HintPath>
     </Reference>

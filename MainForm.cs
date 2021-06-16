@@ -12,20 +12,13 @@ namespace WilliamPersonalMultiTool
     {
         public CustomPhraseManager Manager { get; set; } = new();
 
-        public CustomKeySequence ReloadKeySequences { get; set; }
-        public CustomKeySequence EditKeySequences { get; set; }
+        public List<CustomKeySequence> StaticSequences { get; set; }
 
         public MainForm()
         {
             InitializeComponent();
 
-            ReloadKeySequences = new CustomKeySequence("Reload key sequences",
-                new List<PKey> { PKey.RControlKey, PKey.RControlKey, PKey.RShiftKey, PKey.RShiftKey },
-                (sender, arguments) => { ReloadButton_Click(null, null); }, 0);
-
-            EditKeySequences = new CustomKeySequence("Edit key sequences",
-                new List<PKey> { PKey.RControlKey, PKey.RControlKey, PKey.Alt, PKey.Alt },
-                (sender, arguments) => { EditButton_Click(null, null); }, 0);
+            BuildStaticSequences();
 
             SetupHotPhrases();
             UpdateListView();
@@ -35,12 +28,48 @@ namespace WilliamPersonalMultiTool
                 : FormWindowState.Minimized;
         }
 
+        private void BuildStaticSequences()
+        {
+            var form = this;
+            StaticSequences = new List<CustomKeySequence>()
+            {
+                new CustomKeySequence("Reload key sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.RShiftKey, PKey.RShiftKey}, OnReloadKeySequences, 0),
+                new CustomKeySequence("Edit key sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.Alt, PKey.Alt}, OnEditKeySequences, 0),
+                new CustomKeySequence("Generate GUID style N", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.G, PKey.N}, OnGenerateGuid_N, 2),
+                new CustomKeySequence("Generate GUID style P", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.G, PKey.P}, OnGenerateGuid_P, 2),
+            };
+        }
+        private void OnGenerateGuid_N(object sender, PhraseEventArguments e)
+        {
+            var text = Guid.NewGuid().ToString("N");
+            Manager.SendString(text);
+        }
+
+        private void OnGenerateGuid_P(object sender, PhraseEventArguments e)
+        {
+            var text = Guid.NewGuid().ToString("P");
+            Manager.SendString(text);
+        }
+
+        private void OnEditKeySequences(object sender, PhraseEventArguments e)
+        {
+            EditButton_Click(null, null);
+        }
+
+        private void OnReloadKeySequences(object sender, PhraseEventArguments e)
+        {
+            ReloadButton_Click(null, null);
+        }
+
         public void SetupHotPhrases()
         {
             var path = WpmtPath();
+            
             Manager.Keyboard.KeySequences.Clear();
-            Manager.Keyboard.AddOrReplace(ReloadKeySequences);
-            Manager.Keyboard.AddOrReplace(EditKeySequences);
+            
+            foreach(var staticSequence in StaticSequences)
+                Manager.Keyboard.AddOrReplace(staticSequence);
+
             Manager.AddFromFile(path);
         }
 
@@ -100,13 +129,13 @@ namespace WilliamPersonalMultiTool
             KeySequenceList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
 
-        private void EditButton_Click(object sender, EventArgs e)
+        public void EditButton_Click(object sender, EventArgs e)
         {
             var startInfo = new ProcessStartInfo("notepad.exe", $"\"{WpmtPath()}\"");
             var notepad = Process.Start(startInfo);
         }
 
-        private void ReloadButton_Click(object sender, EventArgs e)
+        public void ReloadButton_Click(object sender, EventArgs e)
         {
             SetupHotPhrases();
             UpdateListView();

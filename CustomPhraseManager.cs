@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MetX.Standard.Library;
@@ -58,30 +59,10 @@ namespace WilliamPersonalMultiTool
         public bool InsideQuotedEntry { get; set; }
         public string CurrentEntry { get; set; }
 
-        private IEnumerable<string> ReduceAndExpand(string arg)
+        public CustomKeySequence Add(CustomKeySequence keySequence)
         {
-            var list = new List<string>();
-            arg = ReduceIndentation(arg);
-
-            if(arg.Contains(" = \""))
-            {
-                InsideQuotedEntry = true;
-                CurrentEntry = arg.TokensAfterFirst(" = \"");
-            }
-            if(arg.Contains(" = "))
-            {
-
-            }
-            return list;
-        }
-        
-        public string ReduceIndentation(string line)
-        {
-            while(line.StartsWith(" "))
-            {
-                line = line.Substring(1);
-            }
-            return line;
+            Keyboard.KeySequences.Add(keySequence);
+            return keySequence;
         }
 
         public CustomKeySequence AddOrReplace(string keys)
@@ -89,6 +70,7 @@ namespace WilliamPersonalMultiTool
             var pKeyList = ToPKeyList(keys, null, out var wildcardMatchType, out var wildcardCount);
             var keySequence =
                 new CustomKeySequence(keys, pKeyList, OnExpandToNameOfTrigger, ToBackspaceCount(pKeyList));
+            Keyboard.KeySequences.Add(keySequence);
             if (wildcardCount <= 0) return keySequence;
 
             keySequence.WildcardMatchType = wildcardMatchType;
@@ -126,50 +108,110 @@ namespace WilliamPersonalMultiTool
                     }
                 }
 
-                var whenKeysText = ors[0].FirstToken(" type ");
+                var actionSeparator = ors[0].ToLower().Contains(" type ")
+                    ? " type "
+                    : " run ";
+
+                var whenKeysText = ors[0].FirstToken(actionSeparator);
                 var whenKeys = ToPKeyList(whenKeysText, null, out var wildcardMatchType, out var wildcardCount);
 
                 if (whenKeys.IsEmpty()) continue;
 
-                var whenExpansion = ors[0].TokensAfterFirst(" type ");
+                var whenExpansion = ors[0].TokensAfterFirst(actionSeparator);
                 if (whenExpansion.IsNotEmpty())
                 {
-                    var backspaceCount = ToBackspaceCount(whenKeys) + wildcardCount;
-                    var whenSequence = new CustomKeySequence(whenExpansion, whenKeys, OnExpandToNameOfTrigger, backspaceCount);
-                    whenSequence.WildcardMatchType = wildcardMatchType;
-                    whenSequence.WildcardCount = wildcardCount;
-
-                    InternalAddOrReplace(whenSequence, result);
+                    if (actionSeparator.ToLower() == " run ")
+                        InternalAddRunTrigger(whenExpansion, whenKeys, result);
+                    else
+                        InternalAddOrReplace(whenKeys, wildcardCount, whenExpansion, wildcardMatchType, result);
                 }
 
                 var prepend = new List<PKey>(whenKeys.GetRange(0, whenKeys.Count - 1));
                 for (var index = 1; index < ors.Count; index++)
                 {
                     var @or = ors[index];
-                    var name = @or.FirstToken(" type ");
+                    actionSeparator = @or.ToLower().Contains(" type ")
+                        ? " type "
+                        : " run ";
+                    var name = @or.FirstToken(actionSeparator);
                     var keys = ToPKeyList(name, prepend, out wildcardMatchType, out wildcardCount);
                     if (keys.IsEmpty()) continue;
 
-                    var expansion = @or.TokensAfterFirst(" type ");
+                    var expansion = @or.TokensAfterFirst(actionSeparator);
                     if (expansion.IsEmpty()) continue;
-
-                    var backspaceCount = ToBackspaceCount(keys) + wildcardCount;
-                    var orSequence = new CustomKeySequence(expansion, keys, OnExpandToNameOfTrigger, backspaceCount);
-                    orSequence.WildcardMatchType = wildcardMatchType;
-                    orSequence.WildcardCount = wildcardCount;
-                    InternalAddOrReplace(orSequence, result);
+                    if (actionSeparator.ToLower() == " run ")
+                    {
+                        InternalAddRunTrigger(expansion, keys, result);
+                    }
+                    else
+                    {
+                        InternalAddOrReplace(keys, wildcardCount, expansion, wildcardMatchType, result);
+                    }
                 }
             }   
             Keyboard.KeySequences.AddRange(result);
             return result;
         }
 
-        private void InternalAddOrReplace(CustomKeySequence whenSequence, List<CustomKeySequence> result)
+        private void InternalAddOrReplace(List<PKey> keys, int wildcardCount, string expansion, WildcardMatchType wildcardMatchType,
+            List<CustomKeySequence> result)
+        {
+            var backspaceCount = ToBackspaceCount(keys) + wildcardCount;
+            var orSequence =
+                new CustomKeySequence(expansion, keys, OnExpandToNameOfTrigger, backspaceCount);
+            orSequence.WildcardMatchType = wildcardMatchType;
+            orSequence.WildcardCount = wildcardCount;
+            InternalAddOrReplace(orSequence, result);
+        }
+
+        private void InternalAddRunTrigger(string expansion, List<PKey> keys, List<CustomKeySequence> result)
+        {
+            var executablePath = "";
+            var arguments = "";
+            var runName = "";
+
+            if (expansion.Contains("\""))
+            {
+                executablePath = expansion.TokenAt(2, "\"");
+                arguments = expansion.TokensAfter(2, "\"").Trim();
+
+                if (arguments.StartsWith("\"") && arguments.EndsWith("\""))
+                {
+                    arguments = arguments.Substring(1, arguments.Length - 2);
+                }
+
+                runName = "Run " + $"\"{executablePath}\" " + arguments;
+            }
+            else
+            {
+                executablePath = expansion;
+                runName = "Run " + expansion;
+            }
+
+            var backspaceCount = ToBackspaceCount(keys);
+            var orSequence = new CustomKeySequence(runName, keys, OnRunTriggerHandler, backspaceCount)
+            {
+                ExecutablePath = executablePath,
+                Arguments = arguments
+            };
+            result.Add(orSequence);
+        }
+
+        private void OnRunTriggerHandler(object sender, PhraseEventArguments e)
+        {
+            var customKeySequence = ((CustomKeySequence) e.State.KeySequence);
+            if(customKeySequence.BackspaceCount > 0)
+                SendBackspaces(customKeySequence.BackspaceCount);
+
+            Process.Start(customKeySequence.ExecutablePath, customKeySequence.Arguments);
+        }
+
+        private void InternalAddOrReplace(CustomKeySequence sequence, List<CustomKeySequence> result)
         {
             for (var index = 0; index < Keyboard.KeySequences.Count; index++)
             {
                 var ks1 = Keyboard.KeySequences[index];
-                if (!AreEqual(ks1.Sequence, whenSequence.Sequence)) 
+                if (!AreEqual(ks1.Sequence, sequence.Sequence)) 
                     continue;
 
                 Keyboard.KeySequences.RemoveAt(index);
@@ -178,13 +220,13 @@ namespace WilliamPersonalMultiTool
             for (var index = 0; index < result.Count; index++)
             {
                 var ks1 = result[index];
-                if (!AreEqual(ks1.Sequence, whenSequence.Sequence)) 
+                if (!AreEqual(ks1.Sequence, sequence.Sequence)) 
                     continue;
 
                 result.RemoveAt(index);
             }
 
-            result.Add(whenSequence);
+            result.Add(sequence);
         }
 
         private int ToBackspaceCount(List<PKey> pKeyList)

@@ -14,7 +14,7 @@ namespace WilliamPersonalMultiTool
         public void OnExpandToNameOfTrigger(object sender, PhraseEventArguments e)
         {
             var customKeySequence = (CustomKeySequence) e.State.KeySequence;
-            SendBackspaces(customKeySequence.BackspaceCount);
+            SendBackspaces(customKeySequence.BackspaceCount, 2);
             var textToSend = e.Name;
             if (e.State.KeySequence.WildcardMatchType != WildcardMatchType.None
                 && e.State.MatchResult.Value.IsNotEmpty())
@@ -31,8 +31,8 @@ namespace WilliamPersonalMultiTool
                     .Replace(@"\\", @"\")
                 ;
 
-            var debug = MakeReadyForSending(textToSend);
-            SendString(textToSend);
+            var debug = MakeReadyForSending(textToSend, SplitLength, true);
+            SendString(textToSend, 2, true);
         }
 
         private string WildcardTemplate(KeySequence stateKeySequence)

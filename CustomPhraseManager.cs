@@ -49,10 +49,10 @@ namespace WilliamPersonalMultiTool
 
         public void AddFromFile(string path)
         {
-            if (!File.Exists(path))
-                throw new FileNotFoundException();
-
             InsideQuotedEntry = false;
+            if (!File.Exists(path))
+                return;
+
             AddSet(File.ReadAllText(path));
         }
 

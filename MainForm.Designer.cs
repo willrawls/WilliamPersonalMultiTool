@@ -29,6 +29,7 @@ namespace WilliamPersonalMultiTool
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.KeySequenceList = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
@@ -46,9 +47,10 @@ namespace WilliamPersonalMultiTool
             this.columnHeader2});
             this.KeySequenceList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.KeySequenceList.HideSelection = false;
-            this.KeySequenceList.Location = new System.Drawing.Point(0, 46);
+            this.KeySequenceList.Location = new System.Drawing.Point(0, 34);
+            this.KeySequenceList.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.KeySequenceList.Name = "KeySequenceList";
-            this.KeySequenceList.Size = new System.Drawing.Size(614, 309);
+            this.KeySequenceList.Size = new System.Drawing.Size(537, 232);
             this.KeySequenceList.TabIndex = 3;
             this.KeySequenceList.UseCompatibleStateImageBehavior = false;
             this.KeySequenceList.View = System.Windows.Forms.View.Details;
@@ -70,15 +72,17 @@ namespace WilliamPersonalMultiTool
             this.flowLayoutPanel1.Controls.Add(this.ToggleOnOffButton);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(614, 46);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(537, 34);
             this.flowLayoutPanel1.TabIndex = 2;
             // 
             // EditButton
             // 
-            this.EditButton.Location = new System.Drawing.Point(3, 3);
+            this.EditButton.Location = new System.Drawing.Point(3, 2);
+            this.EditButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.EditButton.Name = "EditButton";
-            this.EditButton.Size = new System.Drawing.Size(80, 38);
+            this.EditButton.Size = new System.Drawing.Size(70, 28);
             this.EditButton.TabIndex = 0;
             this.EditButton.Text = "&Edit";
             this.EditButton.UseVisualStyleBackColor = true;
@@ -86,9 +90,10 @@ namespace WilliamPersonalMultiTool
             // 
             // ReloadButton
             // 
-            this.ReloadButton.Location = new System.Drawing.Point(89, 3);
+            this.ReloadButton.Location = new System.Drawing.Point(79, 2);
+            this.ReloadButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ReloadButton.Name = "ReloadButton";
-            this.ReloadButton.Size = new System.Drawing.Size(80, 38);
+            this.ReloadButton.Size = new System.Drawing.Size(70, 28);
             this.ReloadButton.TabIndex = 1;
             this.ReloadButton.Text = "&Reload";
             this.ReloadButton.UseVisualStyleBackColor = true;
@@ -96,9 +101,10 @@ namespace WilliamPersonalMultiTool
             // 
             // ToggleOnOffButton
             // 
-            this.ToggleOnOffButton.Location = new System.Drawing.Point(175, 3);
+            this.ToggleOnOffButton.Location = new System.Drawing.Point(155, 2);
+            this.ToggleOnOffButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ToggleOnOffButton.Name = "ToggleOnOffButton";
-            this.ToggleOnOffButton.Size = new System.Drawing.Size(80, 38);
+            this.ToggleOnOffButton.Size = new System.Drawing.Size(70, 28);
             this.ToggleOnOffButton.TabIndex = 2;
             this.ToggleOnOffButton.Text = "Turn &Off";
             this.ToggleOnOffButton.UseVisualStyleBackColor = true;
@@ -106,11 +112,13 @@ namespace WilliamPersonalMultiTool
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(614, 355);
+            this.ClientSize = new System.Drawing.Size(537, 266);
             this.Controls.Add(this.KeySequenceList);
             this.Controls.Add(this.flowLayoutPanel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;

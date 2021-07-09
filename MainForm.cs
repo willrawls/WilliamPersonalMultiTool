@@ -15,6 +15,7 @@ namespace WilliamPersonalMultiTool
     {
         public CustomPhraseManager Manager { get; set; } = new();
         public List<CustomKeySequence> StaticSequences { get; set; }
+        public WindowWorker WindowWorker { get; set; }
 
         public MainForm()
         {
@@ -44,6 +45,8 @@ namespace WilliamPersonalMultiTool
                 new("Base64 Encode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.B, PKey.E}, OnEncodeClipboard, 2),
                 new("Base64 Decode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.B, PKey.D}, OnDecodeClipboard, 2),
             };
+            WindowWorker = new WindowWorker(Manager, Handle);
+            StaticSequences.AddRange(WindowWorker.Sequences);
         }
 
         public string Encode(string plainText) 

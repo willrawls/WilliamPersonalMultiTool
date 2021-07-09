@@ -11,7 +11,7 @@ namespace WilliamPersonalMultiTool
         public string Arguments { get; set; }
         public string ExecutablePath { get; set; }
 
-        public CustomKeySequence(string name, List<PKey> keys, EventHandler<PhraseEventArguments> hotPhraseEventArgs, int backspaceCount) : base(name, keys, hotPhraseEventArgs)
+        public CustomKeySequence(string name, List<PKey> keys, EventHandler<PhraseEventArguments> hotPhraseEventArgs, int backspaceCount = 0) : base(name, keys, hotPhraseEventArgs)
         {
             if (backspaceCount < 0)
                 backspaceCount = 0;

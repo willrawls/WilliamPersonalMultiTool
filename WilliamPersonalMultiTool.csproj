@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>applicationWMT.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +21,10 @@
     <None Remove=".gitignore" />
     <None Remove="WilliamPersonalMultiTool.DotSettings" />
     <None Remove="WilliamPersonalMultiTool.sln.DotSettings" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Win32Interop.User32" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>

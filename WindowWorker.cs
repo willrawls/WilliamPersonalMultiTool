@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using MetX.Standard.Library;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
@@ -53,14 +55,23 @@ namespace WilliamPersonalMultiTool
                 new("Get window position", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.G, PKey.W}, OnGetWindowPosition),
 
                 new("Move window to 0,0", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.Shift, PKey.D0}, OnMoveTo00),
+                new("Show text from focused control", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.Shift, PKey.T}, OnShowFocusedText),
             };
+        }
+
+        public void OnShowFocusedText(object sender, PhraseEventArguments e)
+        {
+            var proxy = new FocusedTextLifter();
+            var text = proxy.GetTextFromFocusedControl();
+            if(text.IsNotEmpty())
+                MessageBox.Show(text);
         }
 
         public void OnGetWindowPosition(object sender, PhraseEventArguments e)
         {
             Manager.SendBackspaces(2);
 
-            IntPtr handle = User32.GetForegroundWindow();
+            var handle = User32.GetForegroundWindow();
             if (handle != IntPtr.Zero)
             {
                 WINDOWINFO info = new();
@@ -73,14 +84,14 @@ namespace WilliamPersonalMultiTool
         }
 
         public void OnMoveCurrentWindowToPosition(object sender, PhraseEventArguments e){
-            int entry = e.State.KeySequence.Sequence[^1] - PKey.D0;
+            var entry = e.State.KeySequence.Sequence[^1] - PKey.D0;
             Manager.SendBackspaces(2);
 
             if(entry is >= 1 and <= 9)
             {
                 CurrentPosition = entry;
 
-                RECT p = WindowPositions[entry - 1];
+                var p = WindowPositions[entry - 1];
                 MoveTo(p);
             }
 
@@ -93,11 +104,11 @@ namespace WilliamPersonalMultiTool
             {
                 CurrentPosition = 0;
             }
-            int entry = CurrentPosition;
+            var entry = CurrentPosition;
 
             if(entry is >= 1 and <= 9)
             {
-                RECT p = WindowPositions[entry - 1];
+                var p = WindowPositions[entry - 1];
                 MoveTo(p);
             }
         }
@@ -110,7 +121,7 @@ namespace WilliamPersonalMultiTool
 
         private void MoveTo(RECT? p)
         {
-            IntPtr handle = User32.GetForegroundWindow();
+            var handle = User32.GetForegroundWindow();
 
             if (handle == ParentHandle)
                 return;

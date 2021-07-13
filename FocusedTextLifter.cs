@@ -20,14 +20,12 @@ namespace WilliamPersonalMultiTool
             {
                 var activeWinPtr = User32.GetForegroundWindow();
                 var activeThreadId = User32.GetWindowThreadProcessId(activeWinPtr, IntPtr.Zero);
-
                 var currentThreadId = GetCurrentThreadId();
 
-                if (activeThreadId != currentThreadId)
-                {
-                    User32.AttachThreadInput(activeThreadId, currentThreadId, true);
-                }
-
+                if (activeThreadId == currentThreadId)
+                    return "";
+                
+                User32.AttachThreadInput(activeThreadId, currentThreadId, true);
                 var activeControlId = User32.GetFocus();
                 return GetText(activeControlId);
             }
@@ -54,13 +52,28 @@ namespace WilliamPersonalMultiTool
         }
 
         //Get the text of a control with its handle
-        private string GetText(IntPtr handle)
+        public string GetText(IntPtr handle)
         {
             var maxLength = 2048;
-            var buffer = Marshal.AllocHGlobal((maxLength + 1) * 2);
-            SendMessageW(handle, (int) WM.WM_GETTEXT, maxLength, buffer);
-            var w = Marshal.PtrToStringUni(buffer);
-            Marshal.FreeHGlobal(buffer);
+            IntPtr buffer = IntPtr.Zero;
+            string w = "";
+
+            try
+            {
+                buffer = Marshal.AllocHGlobal((maxLength + 1) * 2);
+                SendMessageW(handle, (int) WM.WM_GETTEXT, maxLength, buffer);
+                w = Marshal.PtrToStringUni(buffer);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                w = "";
+            }
+            finally
+            {
+                if(buffer != IntPtr.Zero)
+                    Marshal.FreeHGlobal(buffer);
+            }
             return w;
         }
     }

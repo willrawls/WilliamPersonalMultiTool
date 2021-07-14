@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using MetX.Standard.Library;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -55,8 +56,40 @@ namespace WilliamPersonalMultiTool
                 new("Get window position", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.G, PKey.W}, OnGetWindowPosition),
 
                 new("Move window to 0,0", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.Shift, PKey.D0}, OnMoveTo00),
-                new("Show text from focused control", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.Shift, PKey.T}, OnShowFocusedText),
+
+                // Copy text from foreground control Scrapped. Just didn't work
+                //new("Show text from focused control", new List<PKey> {PKey.Shift, PKey.Shift, PKey.Shift, PKey.Shift}, OnShowFocusedText),
+                //new("Show text from control under mouse pointer", new List<PKey> {PKey.Shift, PKey.Shift, PKey.Shift, PKey.ControlKey}, OnShowPointedAtText),
             };
+        }
+
+        /* Copy text from foreground control Scrapped. Just didn't work
+        public void OnShowPointedAtText(object sender, PhraseEventArguments e)
+        {
+            if(Clipboard.ContainsText())
+            {
+                Thread.Sleep(100);
+                var oldClipboardText = Clipboard.GetText();
+
+                SendKeys.SendWait("^C");
+                Thread.Sleep(100);
+                var text = Clipboard.GetText();
+
+                Clipboard.SetText(oldClipboardText);
+
+                if(text.IsNotEmpty())
+                    MessageBox.Show(text);
+
+                MessageBox.Show("Before: " + oldClipboardText);
+                MessageBox.Show("After: " + Clipboard.GetText());
+            }
+
+            /*
+            var proxy = new FocusedTextLifter();
+            var text = proxy.GetTextFromControlAtMousePosition();
+            if(text.IsNotEmpty())
+                MessageBox.Show(text);
+        #1#
         }
 
         public void OnShowFocusedText(object sender, PhraseEventArguments e)
@@ -66,6 +99,7 @@ namespace WilliamPersonalMultiTool
             if(text.IsNotEmpty())
                 MessageBox.Show(text);
         }
+        */
 
         public void OnGetWindowPosition(object sender, PhraseEventArguments e)
         {

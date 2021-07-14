@@ -10,8 +10,8 @@ namespace WilliamPersonalMultiTool
         [DllImport("kernel32.dll")]
         public static extern uint GetCurrentThreadId();
 
-        [DllImport("user32.dll", EntryPoint = "SendMessageW")]
-        public static extern int SendMessageW([In] System.IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
+        //[DllImport("user32.dll", EntryPoint = "SendMessageW")]
+        //public static extern int SendMessageW([In] IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
 
         //Get the text of the focused control
         public string GetTextFromFocusedControl()
@@ -22,10 +22,9 @@ namespace WilliamPersonalMultiTool
                 var activeThreadId = User32.GetWindowThreadProcessId(activeWinPtr, IntPtr.Zero);
                 var currentThreadId = GetCurrentThreadId();
 
-                if (activeThreadId == currentThreadId)
-                    return "";
-                
-                User32.AttachThreadInput(activeThreadId, currentThreadId, true);
+                if (activeThreadId != currentThreadId)
+                    User32.AttachThreadInput(activeThreadId, currentThreadId, true);
+
                 var activeControlId = User32.GetFocus();
                 return GetText(activeControlId);
             }
@@ -36,7 +35,7 @@ namespace WilliamPersonalMultiTool
         }
 
         //Get the text of the control at the mouse position
-        private string GetTextFromControlAtMousePosition()
+        public string GetTextFromControlAtMousePosition()
         {
             try
             {
@@ -61,7 +60,8 @@ namespace WilliamPersonalMultiTool
             try
             {
                 buffer = Marshal.AllocHGlobal((maxLength + 1) * 2);
-                SendMessageW(handle, (int) WM.WM_GETTEXT, maxLength, buffer);
+                //SendMessageW(handle, (int) WM.WM_GETTEXT, maxLength, buffer);
+                User32.SendMessage(handle, WM.WM_GETTEXT, (IntPtr) maxLength, buffer);
                 w = Marshal.PtrToStringUni(buffer);
             }
             catch (Exception e)

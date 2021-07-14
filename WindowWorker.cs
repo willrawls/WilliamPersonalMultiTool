@@ -18,16 +18,15 @@ namespace WilliamPersonalMultiTool
     {
         private List<RECT> WindowPositions { get; set; } = new()
         {
-            new RECT {left = 143, top = 63, right = 1779, bottom = 1016},   // D1
-            new RECT {left = 2000, top = 348, right = 3225, bottom = 1056},
-            new RECT {left = 586, top = 388, right = 1325, bottom = 818},
-            new RECT {left = 1923, top = 333, right = 3180, bottom = 967},
-            new RECT {left = 1373, top = 730, right = 1916, bottom = 1070},
-            new RECT {left = 1383, top = 9, right = 1926, bottom = 731},
-            new RECT {left = 364, top = 99, right = 1465, bottom = 989},
-            new RECT {left = 108, top = 29, right = 1913, bottom = 1070},
-            new RECT {left = 1935, top = 337, right = 3281, bottom = 1077}, // D9
-
+            new RECT {left = 108, top = 29, right = 1913, bottom = 1070},   // D1
+            new RECT {left = 1373, top = 730, right = 1916, bottom = 1070}, // D8
+            new RECT {left = 1935, top = 337, right = 3281, bottom = 1077}, // D2
+            new RECT {left = 1383, top = 9, right = 1926, bottom = 731},    // D3
+            new RECT {left = 2000, top = 348, right = 3225, bottom = 1056}, // D4
+            new RECT {left = 143, top = 63, right = 1779, bottom = 1016},   // D5
+            new RECT {left = 1923, top = 333, right = 3180, bottom = 967},  // D6
+            new RECT {left = 364, top = 99, right = 1465, bottom = 989},    // D7
+            new RECT {left = 586, top = 388, right = 1325, bottom = 818},   // D9 
         };
 
         public int CurrentPosition = 0;
@@ -118,8 +117,11 @@ namespace WilliamPersonalMultiTool
         }
 
         public void OnMoveCurrentWindowToPosition(object sender, PhraseEventArguments e){
-            var entry = e.State.KeySequence.Sequence[^1] - PKey.D0;
-            Manager.SendBackspaces(2);
+            var triggered = e.State.KeySequence;
+            var entry = triggered.Sequence[^1] - PKey.D0;
+
+            var backspaceCount = triggered.BackspacesToSend();
+            Manager.SendBackspaces(backspaceCount);
 
             if(entry is >= 1 and <= 9)
             {
@@ -171,15 +173,33 @@ namespace WilliamPersonalMultiTool
                 }
                 else
                 {
+                    RECT rect = ShiftABit(p.Value);
                     flags = SWP.SWP_SHOWWINDOW;
                     User32.SetWindowPos(handle, IntPtr.Zero, 
-                        p.Value.left, 
-                        p.Value.top, 
-                        p.Value.right - p.Value.left, 
-                        p.Value.bottom - p.Value.top,
+                        rect.left, 
+                        rect.top, 
+                        rect.right - rect.left, 
+                        rect.bottom - rect.top,
                         flags);
                 }
             }
+        }
+
+        public int AmountOfShift = -10;
+        private RECT ShiftABit(RECT rect)
+        {
+            AmountOfShift += 10;
+            if (AmountOfShift >= 50)
+                AmountOfShift = -20;
+
+            var shifted = new RECT
+            {
+                left = rect.left + AmountOfShift,
+                top = rect.top + AmountOfShift,
+                right = rect.right, // + amount,
+                bottom = rect.bottom, // + amount,
+            };
+            return shifted;
         }
     }
 }

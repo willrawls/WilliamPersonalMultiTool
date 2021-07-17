@@ -24,11 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="NHotPhrase" Version="1.0.2" />
     <PackageReference Include="Win32Interop.User32" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NHotPhrase\src\NHotPhrase.WindowsForms\NHotPhrase.WindowsForms.csproj" />
     <ProjectReference Include="..\xlg\MetX\MetX.Standard\MetX.Standard.csproj" />
   </ItemGroup>
 

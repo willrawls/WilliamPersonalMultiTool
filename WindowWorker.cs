@@ -130,33 +130,34 @@ namespace WilliamPersonalMultiTool
             switch (corner)
             {
                 // 0: upper left corner is 0, 0 offset from screenBounds, width and height the same
-                case 0:
+                case 1:
                     newWindowPosition = new Rectangle(0, 0, originalWindowPosition.Width, originalWindowPosition.Height);
                     break;
 
                 // 1: upper right corner is screen.right-window.width, 0
-                case 1:
+                case 2:
                     newWindowPosition = new Rectangle(screenBounds.Right-originalWindowPosition.Width, 0, originalWindowPosition.Width, originalWindowPosition.Height);
                     break;
 
                 // 2: lower left corner is 0, screen.bottom-window.height offset from screenBounds
-                case 2:
+                case 3:
                     newWindowPosition = new Rectangle(0, screenBounds.Bottom - originalWindowPosition.Height, originalWindowPosition.Width, originalWindowPosition.Height);
                     break;
 
                 // 3: lower right corner is screen.right-window.width, screen.bottom-window.height
-                case 3:
+                case 0:
                     newWindowPosition = new Rectangle(screenBounds.Right-originalWindowPosition.Width, screenBounds.Bottom-originalWindowPosition.Height, originalWindowPosition.Width, originalWindowPosition.Height);
                     break;
             }
 
-            return new RECT
+            var cornerRECT = new RECT
             {
                 left = newWindowPosition.Left,
                 top = newWindowPosition.Top,
                 right = newWindowPosition.Right,
                 bottom = newWindowPosition.Bottom,
             };
+            return cornerRECT;
         }
 
         public void OnGetWindowPosition(object sender, PhraseEventArguments e)

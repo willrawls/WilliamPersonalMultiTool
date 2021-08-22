@@ -80,32 +80,33 @@ namespace WilliamPersonalMultiTool
             Sequences = new List<CustomKeySequence>
             {
                 new("Move window to position 1", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D1}, OnMoveCurrentWindowToPosition),
-                new("Move window to position 2", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D2}, OnMoveCurrentWindowToPosition),
-                new("Move window to position 3", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D3}, OnMoveCurrentWindowToPosition),
-                new("Move window to position 4", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D4}, OnMoveCurrentWindowToPosition),
-                new("Move window to position 5", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D5}, OnMoveCurrentWindowToPosition),
-                new("Move window to position 6", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D6}, OnMoveCurrentWindowToPosition),
-                new("Move window to position 7", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D7}, OnMoveCurrentWindowToPosition),
-                new("Move window to position 8", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D8}, OnMoveCurrentWindowToPosition),
-                new("Move window to position 9", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D9}, OnMoveCurrentWindowToPosition),
+                new("Window to position 2", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D2}, OnMoveCurrentWindowToPosition),
+                new("Window to position 3", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D3}, OnMoveCurrentWindowToPosition),
+                new("Window to position 4", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D4}, OnMoveCurrentWindowToPosition),
+                new("Window to position 5", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D5}, OnMoveCurrentWindowToPosition),
+                new("Window to position 6", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D6}, OnMoveCurrentWindowToPosition),
+                new("Window to position 7", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D7}, OnMoveCurrentWindowToPosition),
+                new("Window to position 8", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D8}, OnMoveCurrentWindowToPosition),
+                new("Window to position 9", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D9}, OnMoveCurrentWindowToPosition),
 
-                new("Move window to upper left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D1}, OnMoveCurrentWindowToCorner),
-                new("Move window to upper right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D2}, OnMoveCurrentWindowToCorner),
-                new("Move window to lower right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D3}, OnMoveCurrentWindowToCorner),
-                new("Move window to lower left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D4}, OnMoveCurrentWindowToCorner),
+                new("Window to upper left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D1}, OnMoveCurrentWindowToCorner),
+                new("Window to upper right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D2}, OnMoveCurrentWindowToCorner),
+                new("Window to lower right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D3}, OnMoveCurrentWindowToCorner),
+                new("Window to lower left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D4}, OnMoveCurrentWindowToCorner),
 
-                new("Move window to screen 2 upper left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D7}, OnMoveCurrentWindowToCorner),
-                new("Move window to screen 2 upper right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D8}, OnMoveCurrentWindowToCorner),
-                new("Move window to screen 2 lower right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D9}, OnMoveCurrentWindowToCorner),
-                new("Move window to screen 2 lower left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D9}, OnMoveCurrentWindowToCorner),
+                new("Window to screen 2 upper left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D7}, OnMoveCurrentWindowToCorner),
+                new("Window to screen 2 upper right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D8}, OnMoveCurrentWindowToCorner),
+                new("Window to screen 2 lower right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D9}, OnMoveCurrentWindowToCorner),
+                new("Window to screen 2 lower left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D9}, OnMoveCurrentWindowToCorner),
 
-                new("Move window to next position", new List<PKey> {PKey.CapsLock, PKey.RShiftKey, PKey.RShiftKey}, OnMoveCurrentWindowToNextPosition),
-                new("Move window to previous position", new List<PKey> {PKey.CapsLock, PKey.LShiftKey, PKey.LShiftKey}, OnMoveCurrentWindowToPreviousPosition),
+                new("Window to next position", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.RShiftKey}, OnMoveCurrentWindowToNextPosition),
+                new("Window to previous position", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.LShiftKey}, OnMoveCurrentWindowToPreviousPosition),
 
                 new("Get window position", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.G, PKey.W}, OnGetWindowPosition),
 
-                new("Move window to 0,0", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.Shift, PKey.D0}, OnMoveTo00),
+                // new("Window to 0,0", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.Shift, PKey.D0}, OnMoveTo00),
             };
+            Sequences.ForEach(s => s.BackColor = Color.Aqua);
         }
 
         public RECT CalculateCornerForRECT(RECT rect, int screen, int corner)

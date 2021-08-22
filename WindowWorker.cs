@@ -99,8 +99,8 @@ namespace WilliamPersonalMultiTool
                 new("Move window to screen 2 lower right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D9}, OnMoveCurrentWindowToCorner),
                 new("Move window to screen 2 lower left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D9}, OnMoveCurrentWindowToCorner),
 
-                new("Move window to next position", new List<PKey> {PKey.RShiftKey, PKey.RShiftKey, PKey.RShiftKey}, OnMoveCurrentWindowToNextPosition),
-                new("Move window to previous position", new List<PKey> {PKey.LShiftKey, PKey.LShiftKey, PKey.LShiftKey}, OnMoveCurrentWindowToPreviousPosition),
+                new("Move window to next position", new List<PKey> {PKey.CapsLock, PKey.RShiftKey, PKey.RShiftKey}, OnMoveCurrentWindowToNextPosition),
+                new("Move window to previous position", new List<PKey> {PKey.CapsLock, PKey.LShiftKey, PKey.LShiftKey}, OnMoveCurrentWindowToPreviousPosition),
 
                 new("Get window position", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.G, PKey.W}, OnGetWindowPosition),
 

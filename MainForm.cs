@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MetX.Standard.Library;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 using WilliamPersonalMultiTool.Properties;
+using Win32Interop.Enums;
 
 namespace WilliamPersonalMultiTool
 {
@@ -16,6 +19,8 @@ namespace WilliamPersonalMultiTool
         public CustomPhraseManager Manager { get; set; } = new();
         public List<CustomKeySequence> StaticSequences { get; set; }
         public WindowWorker WindowWorker { get; set; }
+
+        public bool HideStaticSequences;
 
         public MainForm()
         {
@@ -45,6 +50,8 @@ namespace WilliamPersonalMultiTool
                 new("Base64 Encode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.B, PKey.E}, OnEncodeClipboard, 2),
                 new("Base64 Decode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.B, PKey.D}, OnDecodeClipboard, 2),
             };
+            StaticSequences.ForEach(s => s.BackColor = Color.CadetBlue);
+
             WindowWorker = new WindowWorker(Manager, Handle);
             StaticSequences.AddRange(WindowWorker.Sequences);
         }
@@ -159,18 +166,22 @@ namespace WilliamPersonalMultiTool
             KeySequenceList.Items.Clear();
             foreach (var keySequence in Manager.Keyboard.KeySequences)
             {
+                var customKeySequence = (CustomKeySequence) keySequence;
                 var keys = "";
-                for (var index = 0; index < keySequence.Sequence.Count; index++)
+
+                if (HideStaticSequences && customKeySequence.BackColor != Color.White) continue;
+
+                for (var index = 0; index < customKeySequence.Sequence.Count; index++)
                 {
-                    var key = keySequence.Sequence[index];
-                    var comma = index == keySequence.Sequence.Count - 1 ? "" : ", ";
+                    var key = customKeySequence.Sequence[index];
+                    var comma = index == customKeySequence.Sequence.Count - 1 ? "" : ", ";
                     keys += $"{key}{comma}";
                 }
 
-                if (keySequence.WildcardCount > 0)
+                if (customKeySequence.WildcardCount > 0)
                 {
                     char matchType;
-                    switch (keySequence.WildcardMatchType)
+                    switch (customKeySequence.WildcardMatchType)
                     {
                         case WildcardMatchType.Anything:
                         case WildcardMatchType.AlphaNumeric:
@@ -189,12 +200,17 @@ namespace WilliamPersonalMultiTool
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    keys += $", {new string(matchType, keySequence.WildcardCount)}";
+                    keys += $", {new string(matchType, customKeySequence.WildcardCount)}";
                 }
 
-                var listViewItem = new ListViewItem { Text = keys };
-                var listViewSubItem1 = new ListViewItem.ListViewSubItem(listViewItem, keySequence.Name);
-                listViewItem.SubItems.Add(listViewSubItem1);
+                var listViewItem = new ListViewItem
+                {
+                    Text = keys, 
+                    BackColor = customKeySequence.BackColor
+                };
+
+                var listViewSubItem = new ListViewItem.ListViewSubItem(listViewItem, customKeySequence.Name);
+                listViewItem.SubItems.Add(listViewSubItem);
                 KeySequenceList.Items.Add(listViewItem);
             }
 
@@ -265,5 +281,12 @@ namespace WilliamPersonalMultiTool
         {
             RestoreWindowPosition();
         }
+
+        private void HideStaticSequencesButton_Click(object sender, EventArgs e)
+        {
+            HideStaticSequences = !HideStaticSequences;
+            UpdateListView();
+        }
+
     }
 }

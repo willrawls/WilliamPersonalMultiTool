@@ -7,13 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WilliamPersonalMultiTool", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WilliamPersonalMultiTool.Tests", "WilliamPersonalMultiTool.Tests\WilliamPersonalMultiTool.Tests.csproj", "{41F9252B-585D-42D0-9C00-6C6FC05DD7AE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHotPhrase.WindowsForms", "..\NHotPhrase\src\NHotPhrase.WindowsForms\NHotPhrase.WindowsForms.csproj", "{9344ABC4-0B7B-4A5C-A4F0-E6324083678A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHotPhrase", "..\NHotPhrase\src\NHotPhrase\NHotPhrase.csproj", "{36CC1A56-6880-4B4E-B202-0467B0E8E9D1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetX.Standard", "..\xlg\MetX\MetX.Standard\MetX.Standard.csproj", "{21F2D7D2-5D39-4CF4-AFC4-2D916D09AECE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHotPhrase.WindowsForms.Tests", "..\NHotPhrase\src\NHotPhrase.WindowsForms.Tests\NHotPhrase.WindowsForms.Tests.csproj", "{FEF67175-E07D-4559-9626-784FF23A5020}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,22 +33,6 @@ Global
 		{41F9252B-585D-42D0-9C00-6C6FC05DD7AE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{41F9252B-585D-42D0-9C00-6C6FC05DD7AE}.Release|x64.ActiveCfg = Release|Any CPU
 		{41F9252B-585D-42D0-9C00-6C6FC05DD7AE}.Release|x64.Build.0 = Release|Any CPU
-		{9344ABC4-0B7B-4A5C-A4F0-E6324083678A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9344ABC4-0B7B-4A5C-A4F0-E6324083678A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9344ABC4-0B7B-4A5C-A4F0-E6324083678A}.Debug|x64.ActiveCfg = Debug|x64
-		{9344ABC4-0B7B-4A5C-A4F0-E6324083678A}.Debug|x64.Build.0 = Debug|x64
-		{9344ABC4-0B7B-4A5C-A4F0-E6324083678A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9344ABC4-0B7B-4A5C-A4F0-E6324083678A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9344ABC4-0B7B-4A5C-A4F0-E6324083678A}.Release|x64.ActiveCfg = Release|x64
-		{9344ABC4-0B7B-4A5C-A4F0-E6324083678A}.Release|x64.Build.0 = Release|x64
-		{36CC1A56-6880-4B4E-B202-0467B0E8E9D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36CC1A56-6880-4B4E-B202-0467B0E8E9D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36CC1A56-6880-4B4E-B202-0467B0E8E9D1}.Debug|x64.ActiveCfg = Debug|x64
-		{36CC1A56-6880-4B4E-B202-0467B0E8E9D1}.Debug|x64.Build.0 = Debug|x64
-		{36CC1A56-6880-4B4E-B202-0467B0E8E9D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36CC1A56-6880-4B4E-B202-0467B0E8E9D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36CC1A56-6880-4B4E-B202-0467B0E8E9D1}.Release|x64.ActiveCfg = Release|x64
-		{36CC1A56-6880-4B4E-B202-0467B0E8E9D1}.Release|x64.Build.0 = Release|x64
 		{21F2D7D2-5D39-4CF4-AFC4-2D916D09AECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{21F2D7D2-5D39-4CF4-AFC4-2D916D09AECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21F2D7D2-5D39-4CF4-AFC4-2D916D09AECE}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -63,14 +41,6 @@ Global
 		{21F2D7D2-5D39-4CF4-AFC4-2D916D09AECE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{21F2D7D2-5D39-4CF4-AFC4-2D916D09AECE}.Release|x64.ActiveCfg = Release|Any CPU
 		{21F2D7D2-5D39-4CF4-AFC4-2D916D09AECE}.Release|x64.Build.0 = Release|Any CPU
-		{FEF67175-E07D-4559-9626-784FF23A5020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FEF67175-E07D-4559-9626-784FF23A5020}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FEF67175-E07D-4559-9626-784FF23A5020}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{FEF67175-E07D-4559-9626-784FF23A5020}.Debug|x64.Build.0 = Debug|Any CPU
-		{FEF67175-E07D-4559-9626-784FF23A5020}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FEF67175-E07D-4559-9626-784FF23A5020}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FEF67175-E07D-4559-9626-784FF23A5020}.Release|x64.ActiveCfg = Release|Any CPU
-		{FEF67175-E07D-4559-9626-784FF23A5020}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

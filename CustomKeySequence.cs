@@ -13,10 +13,9 @@ namespace WilliamPersonalMultiTool
         public string Arguments { get; set; }
         public string ExecutablePath { get; set; }
         public Color BackColor { get; set; } = Color.White;
+        public List<CustomKeySequenceChoice> Choices { get; set; }
 
-        public CustomKeySequence(string name, List<PKey> keys, EventHandler<PhraseEventArguments> hotPhraseEventArgs, 
-            int backspaceCount = 0, 
-            Color? backColor = null) 
+        public CustomKeySequence(string name, List<PKey> keys, EventHandler<PhraseEventArguments> hotPhraseEventArgs, int backspaceCount = 0, Color? backColor = null) 
             : base(name, keys, hotPhraseEventArgs)
         {
             if (backspaceCount < 0)
@@ -24,5 +23,10 @@ namespace WilliamPersonalMultiTool
             BackspaceCount = backspaceCount;
             BackColor = backColor ?? Color.White;
         }
+    }
+
+    public class CustomKeySequenceChoice
+    {
+        public string Text { get; set; }
     }
 }

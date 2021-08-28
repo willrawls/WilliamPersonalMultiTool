@@ -17,7 +17,7 @@ namespace WilliamPersonalMultiTool.Tests
         [TestMethod]
         public void AddSet_WhenKeySequenceAlreadyExists_Replace()
         {
-            var data = new CustomPhraseManager();
+            var data = new CustomPhraseManager(null);
             var actual = data.AddSet(@"
 When CapsLock 1 2 3 type someone.at@gmail.com
 When CapsLock 1 2 3 type someone.at@hotmail.com
@@ -46,7 +46,7 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
         [TestMethod]
         public void AddSet_Caps123_OnOneLine()
         {
-            var data = new CustomPhraseManager();
+            var data = new CustomPhraseManager(null);
             var actual = data.AddSet("When CapsLock 1 2 3 type someone.at@gmail.com");
             Assert.AreEqual(1, actual.Count);
             Assert.AreEqual("someone.at@gmail.com", actual[0].Name);
@@ -56,7 +56,7 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
         [TestMethod]
         public void AddSet_Caps123_RunNotepad_Simple()
         {
-            var data = new CustomPhraseManager();
+            var data = new CustomPhraseManager(null);
             var actual = data.AddSet("When CapsLock 1 2 3 run notepad.exe");
             Assert.AreEqual(1, actual.Count);
             Assert.AreEqual("Run notepad.exe", actual[0].Name);
@@ -67,7 +67,7 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
         [TestMethod]
         public void AddSet_Caps123_RunNotepad_FullPathWithArguments()
         {
-            var data = new CustomPhraseManager();
+            var data = new CustomPhraseManager(null);
             var actual = data.AddSet(@"
 
 When CapsLock Shift W type William\tRawls
@@ -86,7 +86,7 @@ Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
         [TestMethod]
         public void AddSet_ShiftX2WildDigits_OnOneLine()
         {
-            var data = new CustomPhraseManager();
+            var data = new CustomPhraseManager(null);
             var actual = data.AddSet("When Shift X ## type x~~~~y");
             Assert.AreEqual("x~~~~y", actual[0].Name);
             AddSet_Choose_Tests.AssertAllAreEqual(ShiftX2, actual[0].Sequence);
@@ -97,7 +97,7 @@ Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
         [TestMethod]
         public void AddSet_ShiftX2WildAlphaNumeric_OnOneLine()
         {
-            var data = new CustomPhraseManager();
+            var data = new CustomPhraseManager(null);
             var actual = data.AddSet("When Shift X ** type x~~~~y");
             Assert.AreEqual("x~~~~y", actual[0].Name);
             AddSet_Choose_Tests.AssertAllAreEqual(ShiftX2, actual[0].Sequence);
@@ -109,7 +109,7 @@ Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
         [TestMethod]
         public void AddSet_SingleLine_Caps123()
         {
-            var data = new CustomPhraseManager();
+            var data = new CustomPhraseManager(null);
             CustomKeySequence actual = data.AddOrReplace("CapsLock 1 2 3");
             AddSet_Choose_Tests.AssertAllAreEqual(pKeys_Caps123, actual.Sequence);
             Assert.AreEqual(1, data.Keyboard.KeySequences.Count);
@@ -118,7 +118,7 @@ Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
         [TestMethod]
         public void AddSet_Caps123and4_OnTwoLines()
         {
-            var data = new CustomPhraseManager();
+            var data = new CustomPhraseManager(null);
             var actual = data.AddSet(@"
 When CapsLock 1 2 3 type someone.at@gmail.com
 Or 4 type someone.at@hotmail.com

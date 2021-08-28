@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using MetX.Standard.Library;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
@@ -13,6 +14,13 @@ namespace WilliamPersonalMultiTool
 {
     public class CustomPhraseManager : HotPhraseManagerForWinForms
     {
+        public Form Parent { get; }
+
+        public CustomPhraseManager(Form parent)
+        {
+            Parent = parent;
+        }
+
         public void OnExpandToNameOfTrigger(object sender, PhraseEventArguments e)
         {
             var customKeySequence = (CustomKeySequence) e.State.KeySequence;
@@ -33,8 +41,10 @@ namespace WilliamPersonalMultiTool
                     .Replace(@"\\", @"\")
                 ;
 
-            var debug = MakeReadyForSending(textToSend, SplitLength, true);
-            SendString(textToSend, 2, true);
+            // var debug = MakeReadyForSending(textToSend, SplitLength, true);
+            // SendString(textToSend, 2, true);
+
+            NormalSendKeysAndWait(textToSend);
         }
 
         private string WildcardTemplate(KeySequence stateKeySequence)
@@ -144,21 +154,21 @@ namespace WilliamPersonalMultiTool
 
         private void InternalAddGenericAction(string action, string parameters, List<PKey> keySequence, List<KeySequence> resultingSequences, int wildcardCount, WildcardMatchType wildcardMatchType)
         {
-            if (action == "choose" && parameters.Replace("\r", "").StartsWith("\n"))
+            if (action.StartsWith("choose") && parameters.Replace("\r", "").StartsWith("\n"))
                 parameters = parameters.Substring(1);
 
             if (parameters.IsNotEmpty())
             {
                 if (action == "run")
                     InternalAddRunTrigger(parameters, keySequence, resultingSequences);
-                else if (action == "choose")
-                    InternalAddChooseTrigger(parameters, keySequence, resultingSequences);
+                else if (action.StartsWith("choose"))
+                    InternalAddChooseTrigger(action, parameters, keySequence, resultingSequences);
                 else // type
                     InternalAddOrReplace(keySequence, wildcardCount, parameters, wildcardMatchType, resultingSequences);
             }
         }
 
-        public static string[] ActionSeparators = new[] { "type", "run", "choose" };
+        public static string[] ActionSeparators = new[] { "type", "run", "choose", "choose2" };
 
         public static string GetActionSeparator(string @or)
         {
@@ -230,7 +240,7 @@ namespace WilliamPersonalMultiTool
             Process.Start(customKeySequence.ExecutablePath, customKeySequence.Arguments);
         }
 
-        private void InternalAddChooseTrigger(string expansion, List<PKey> keys, List<KeySequence> result)
+        private void InternalAddChooseTrigger(string action, string expansion, List<PKey> keys, List<KeySequence> result)
         {
             List<string> choices = expansion.LineList(StringSplitOptions.TrimEntries).Where(l => l.Length > 0).ToList();
             List<CustomKeySequenceChoice> choiceList = new List<CustomKeySequenceChoice>();
@@ -243,12 +253,15 @@ namespace WilliamPersonalMultiTool
             }
 
             var backspaceCount = ToBackspaceCount(keys);
-            var name = keys.Aggregate("Choose ", (current, key) => current + $"{key.ToSendKeysText()} ").Trim();
+            var name = $"Choose from: {expansion}".Replace("\n", "\\n ");
 
             var chooseSequence = new CustomKeySequence(name, keys, OnChooseTriggerHandler, backspaceCount)
             {
                 Choices = new List<CustomKeySequenceChoice>(choiceList),
+                WildcardMatchType = WildcardMatchType.Digits,
+                WildcardCount = ( action == "choose2" ? 2 : 1),
             };
+            
             ReplaceMatching(result, chooseSequence);
         }
 
@@ -256,14 +269,31 @@ namespace WilliamPersonalMultiTool
         {
             var customKeySequence = ((CustomKeySequence) e.State.KeySequence);
             if(customKeySequence.BackspaceCount > 0)
-                SendBackspaces(customKeySequence.BackspaceCount);
+            {
+                var backspaces = customKeySequence.BackspaceCount + customKeySequence.WildcardCount;
+                SendBackspaces(backspaces);
+            }
 
             var choice = e.State.MatchResult?.ValueAsInt();
-            if (choice is not >= 0 || choice.Value > customKeySequence.Choices.Count) return;
+            if (choice < 1 || choice is not >= 0 || choice.Value > customKeySequence.Choices.Count) return;
 
-            var keySequenceChoice = customKeySequence.Choices[choice.Value];
-            var textToSend = MakeReadyForSending(keySequenceChoice.Text, SplitLength, true);
-            SendStrings(textToSend, 2);
+            var keySequenceChoice = customKeySequence.Choices[choice.Value - 1];
+            NormalSendKeysAndWait(keySequenceChoice.Text);
+
+            //var textToSend = MakeReadyForSending(keySequenceChoice.Text, SplitLength, true);
+            //SendStrings(textToSend, 2);
+        }
+
+        private static void NormalSendKeysAndWait(string toSend)
+        {
+            try
+            {
+                SendKeys.SendWait(toSend);
+            }
+            catch
+            {
+                // Ignored
+            }
         }
 
         private void InternalAddOrReplace(CustomKeySequence sequence, List<KeySequence> resultingSequences)

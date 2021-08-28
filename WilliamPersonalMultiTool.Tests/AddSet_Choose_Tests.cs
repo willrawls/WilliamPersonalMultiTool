@@ -30,7 +30,7 @@ When CapsLock 1 2 5 type someone.at@hotmail.com
         [TestMethod]
         public void AddSet_SetText_Basic()
         {
-            var data = new CustomPhraseManager();
+            var data = new CustomPhraseManager(null);
             var actual = data.AddSet(SetText);
             Assert.AreEqual(4, actual.Count);
         }
@@ -38,7 +38,7 @@ When CapsLock 1 2 5 type someone.at@hotmail.com
         [TestMethod]
         public void AddSet_Choose_124_3Choices()
         {
-            var data = new CustomPhraseManager();
+            var data = new CustomPhraseManager(null);
             var set = data.AddSet(SetText);
             var actual = (CustomKeySequence) set[1];
             Assert.IsNotNull(actual.Choices);
@@ -52,7 +52,7 @@ When CapsLock 1 2 5 type someone.at@hotmail.com
         [TestMethod]
         public void AddSet_Choose_12P_2Choices()
         {
-            var data = new CustomPhraseManager();
+            var data = new CustomPhraseManager(null);
             var set = data.AddSet(SetText);
             var actual = (CustomKeySequence) set[2];
             Assert.IsNotNull(actual.Choices);

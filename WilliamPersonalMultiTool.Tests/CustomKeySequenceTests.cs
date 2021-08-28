@@ -6,7 +6,7 @@ using NHotPhrase.Phrase;
 namespace WilliamPersonalMultiTool.Tests
 {
     [TestClass]
-    public class AddSet_Type_Tests
+    public class CustomKeySequenceTests
     {
         readonly List<PKey> pKeys_Caps123 = new() { PKey.CapsLock, PKey.D1, PKey.D2, PKey.D3 };
         readonly List<PKey> pKeys_Caps124 = new() { PKey.CapsLock, PKey.D1, PKey.D2, PKey.D4 };
@@ -23,8 +23,24 @@ When CapsLock 1 2 3 type someone.at@gmail.com
 When CapsLock 1 2 3 type someone.at@hotmail.com
 ");
             Assert.AreEqual(1, actual.Count);
-            Assert.AreEqual("someone.at@gmail.com", actual[0].Name);
+            Assert.AreEqual("someone.at@hotmail.com", actual[0].Name);
             AddSet_Choose_Tests.AssertAllAreEqual(pKeys_Caps123, actual[0].Sequence);
+        }
+
+        [TestMethod]
+        public void ReplaceMatching_WhenKeySequenceAlreadyExists_Replace()
+        {
+            List<KeySequence> keySequences = new List<KeySequence>()
+            {
+                new CustomKeySequence("Fred", pKeys_Caps123, null),
+            };
+            var newSequence = new CustomKeySequence("George", pKeys_Caps123, null);
+
+            // Act
+            CustomPhraseManager.ReplaceMatching(keySequences, newSequence);
+
+            Assert.AreEqual(1, keySequences.Count);
+            Assert.AreEqual("George", keySequences[0].Name);
         }
 
         [TestMethod]
@@ -32,6 +48,7 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
         {
             var data = new CustomPhraseManager();
             var actual = data.AddSet("When CapsLock 1 2 3 type someone.at@gmail.com");
+            Assert.AreEqual(1, actual.Count);
             Assert.AreEqual("someone.at@gmail.com", actual[0].Name);
             AddSet_Choose_Tests.AssertAllAreEqual(pKeys_Caps123, actual[0].Sequence);
         }

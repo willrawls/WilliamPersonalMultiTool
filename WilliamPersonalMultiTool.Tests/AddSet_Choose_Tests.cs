@@ -40,7 +40,7 @@ When CapsLock 1 2 5 type someone.at@hotmail.com
         {
             var data = new CustomPhraseManager();
             var set = data.AddSet(SetText);
-            var actual = set[1];
+            var actual = (CustomKeySequence) set[1];
             Assert.IsNotNull(actual.Choices);
             Assert.AreEqual(3, actual.Choices.Count);
             AssertAllAreEqual(pKeys_Caps124, actual.Sequence);
@@ -54,7 +54,7 @@ When CapsLock 1 2 5 type someone.at@hotmail.com
         {
             var data = new CustomPhraseManager();
             var set = data.AddSet(SetText);
-            var actual = set[2];
+            var actual = (CustomKeySequence) set[2];
             Assert.IsNotNull(actual.Choices);
             Assert.AreEqual(2, actual.Choices.Count);
             AssertAllAreEqual(pKeys_Caps12P, actual.Sequence);

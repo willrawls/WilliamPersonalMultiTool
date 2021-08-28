@@ -100,8 +100,13 @@ namespace WilliamPersonalMultiTool
             while (text.EndsWith("\n")) text = text.Substring(0, text.Length - 1);
 
             var keySequencesToAdd = new List<KeySequence>();
-            var whens = text
-                .Replace("\r", "")
+            var textWithNoComments = string.Join("\n",
+                    text.Replace("\r", "")
+                        .LineList()
+                        .Where(line => !line.Trim().StartsWith("//"))
+                        .ToList());
+
+            var whens = textWithNoComments
                 .AllTokens("When ", StringSplitOptions
                     .RemoveEmptyEntries)
                 .Where(t => t.Replace("\n","").Trim().IsNotEmpty())
@@ -230,7 +235,7 @@ namespace WilliamPersonalMultiTool
             {
                 ExecutablePath = executablePath,
                 Arguments = arguments,
-                BackColor = Color.Violet,
+                BackColor = Color.Tan,
             };
             ReplaceMatching(result, orSequence);
         }

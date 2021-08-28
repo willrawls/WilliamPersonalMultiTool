@@ -8,12 +8,6 @@ namespace WilliamPersonalMultiTool.Tests
     [TestClass]
     public class CustomKeySequenceTests
     {
-        readonly List<PKey> pKeys_Caps123 = new() { PKey.CapsLock, PKey.D1, PKey.D2, PKey.D3 };
-        readonly List<PKey> pKeys_Caps124 = new() { PKey.CapsLock, PKey.D1, PKey.D2, PKey.D4 };
-        readonly List<PKey> pKeys_Caps1A3 = new() { PKey.CapsLock, PKey.D1, PKey.A, PKey.D3 };
-
-        readonly List<PKey> ShiftX2 = new() { PKey.Shift, PKey.X };
-
         [TestMethod]
         public void AddSet_WhenKeySequenceAlreadyExists_Replace()
         {
@@ -24,7 +18,7 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
 ");
             Assert.AreEqual(1, actual.Count);
             Assert.AreEqual("someone.at@hotmail.com", actual[0].Name);
-            AddSet_Choose_Tests.AssertAllAreEqual(pKeys_Caps123, actual[0].Sequence);
+            My.AssertAllAreEqual(TestPKeys.Caps123, actual[0].Sequence);
         }
 
         [TestMethod]
@@ -32,9 +26,9 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
         {
             List<KeySequence> keySequences = new List<KeySequence>()
             {
-                new CustomKeySequence("Fred", pKeys_Caps123, null),
+                new CustomKeySequence("Fred", TestPKeys.Caps123, null),
             };
-            var newSequence = new CustomKeySequence("George", pKeys_Caps123, null);
+            var newSequence = new CustomKeySequence("George", TestPKeys.Caps123, null);
 
             // Act
             CustomPhraseManager.ReplaceMatching(keySequences, newSequence);
@@ -50,7 +44,7 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
             var actual = data.AddSet("When CapsLock 1 2 3 type someone.at@gmail.com");
             Assert.AreEqual(1, actual.Count);
             Assert.AreEqual("someone.at@gmail.com", actual[0].Name);
-            AddSet_Choose_Tests.AssertAllAreEqual(pKeys_Caps123, actual[0].Sequence);
+            My.AssertAllAreEqual(TestPKeys.Caps123, actual[0].Sequence);
         }
 
         [TestMethod]
@@ -89,7 +83,7 @@ Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
             var data = new CustomPhraseManager(null);
             var actual = data.AddSet("When Shift X ## type x~~~~y");
             Assert.AreEqual("x~~~~y", actual[0].Name);
-            AddSet_Choose_Tests.AssertAllAreEqual(ShiftX2, actual[0].Sequence);
+            My.AssertAllAreEqual(TestPKeys.ShiftX2, actual[0].Sequence);
             Assert.AreEqual(2, actual[0].WildcardCount);
             Assert.AreEqual(WildcardMatchType.Digits, actual[0].WildcardMatchType);
         }
@@ -100,7 +94,7 @@ Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
             var data = new CustomPhraseManager(null);
             var actual = data.AddSet("When Shift X ** type x~~~~y");
             Assert.AreEqual("x~~~~y", actual[0].Name);
-            AddSet_Choose_Tests.AssertAllAreEqual(ShiftX2, actual[0].Sequence);
+            My.AssertAllAreEqual(TestPKeys.ShiftX2, actual[0].Sequence);
 
             Assert.AreEqual(2, actual[0].WildcardCount);
             Assert.AreEqual(WildcardMatchType.AlphaNumeric, actual[0].WildcardMatchType);
@@ -111,7 +105,7 @@ Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
         {
             var data = new CustomPhraseManager(null);
             CustomKeySequence actual = data.AddOrReplace("CapsLock 1 2 3");
-            AddSet_Choose_Tests.AssertAllAreEqual(pKeys_Caps123, actual.Sequence);
+            My.AssertAllAreEqual(TestPKeys.Caps123, actual.Sequence);
             Assert.AreEqual(1, data.Keyboard.KeySequences.Count);
         }
 
@@ -125,16 +119,16 @@ Or 4 type someone.at@hotmail.com
 ");
             Assert.AreEqual(2, actual.Count);
             Assert.AreEqual("someone.at@gmail.com", actual[0].Name);
-            AddSet_Choose_Tests.AssertAllAreEqual(pKeys_Caps123, actual[0].Sequence);
+            My.AssertAllAreEqual(TestPKeys.Caps123, actual[0].Sequence);
             Assert.AreEqual("someone.at@hotmail.com", actual[1].Name);
-            AddSet_Choose_Tests.AssertAllAreEqual(pKeys_Caps124, actual[1].Sequence);
+            My.AssertAllAreEqual(TestPKeys.Caps124, actual[1].Sequence);
         }
 
         [TestMethod]
         public void ToPKeyList_Caps123()
         {
             var actual = CustomPhraseManager.ToPKeyList("CapsLock 1 2 3", null, out var wildcardMatchType, out var wildcardCount);
-            AddSet_Choose_Tests.AssertAllAreEqual(pKeys_Caps123, actual);
+            My.AssertAllAreEqual(TestPKeys.Caps123, actual);
             Assert.AreEqual(0, wildcardCount);
         }
 
@@ -142,21 +136,7 @@ Or 4 type someone.at@hotmail.com
         public void ToPKeyList_1A3_WithPrependCaps()
         {
             var actual = CustomPhraseManager.ToPKeyList("1 a 3", new List<PKey> { PKey.CapsLock }, out var wildcardMatchType, out var wildcardCount);
-            AddSet_Choose_Tests.AssertAllAreEqual(pKeys_Caps1A3, actual);
+            My.AssertAllAreEqual(TestPKeys.Caps1A3, actual);
         }
-
-
-        /*
-        private void AddSet_Choose_Tests.AssertAllAreEqual(List<PKey> expected, List<PKey> actual)
-        {
-            Assert.IsNotNull(actual);
-            Assert.AreEqual(expected.Count, actual.Count);
-
-            for (var i = 0; i < expected.Count; i++)
-            {
-                Assert.AreEqual(actual[i], expected[i], $"Index {i}");
-            }
-        }
-    */
     }
 }

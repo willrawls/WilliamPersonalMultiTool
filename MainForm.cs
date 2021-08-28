@@ -16,7 +16,7 @@ namespace WilliamPersonalMultiTool
 {
     public partial class MainForm : Form
     {
-        public CustomPhraseManager Manager { get; set; } = new();
+        public CustomPhraseManager Manager { get; set; }
         public List<CustomKeySequence> StaticSequences { get; set; }
         public WindowWorker WindowWorker { get; set; }
 
@@ -24,6 +24,7 @@ namespace WilliamPersonalMultiTool
 
         public MainForm()
         {
+            Manager = new CustomPhraseManager(this);
             InitializeComponent();
 
             BuildStaticSequences();
@@ -84,8 +85,6 @@ namespace WilliamPersonalMultiTool
             }
             return "";
         }
-
-
 
         private void OnToggleOnOff(object sender, PhraseEventArguments e)
         {
@@ -288,5 +287,24 @@ namespace WilliamPersonalMultiTool
             UpdateListView();
         }
 
+        private void KeySequenceList_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) 
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void KeySequenceList_DragDrop(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.None;
+            try
+            {
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                Clipboard.SetText(files.AsString("\n"));
+            }
+            catch 
+            {
+                // Ignored
+            }
+        }
     }
 }

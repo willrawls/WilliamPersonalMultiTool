@@ -43,10 +43,12 @@ namespace WilliamPersonalMultiTool
             // 
             // KeySequenceList
             // 
+            this.KeySequenceList.AllowDrop = true;
             this.KeySequenceList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
             this.KeySequenceList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.KeySequenceList.FullRowSelect = true;
             this.KeySequenceList.HideSelection = false;
             this.KeySequenceList.Location = new System.Drawing.Point(0, 39);
             this.KeySequenceList.Name = "KeySequenceList";
@@ -54,7 +56,8 @@ namespace WilliamPersonalMultiTool
             this.KeySequenceList.TabIndex = 3;
             this.KeySequenceList.UseCompatibleStateImageBehavior = false;
             this.KeySequenceList.View = System.Windows.Forms.View.Details;
-            this.KeySequenceList.FullRowSelect = true;
+            this.KeySequenceList.DragDrop += new System.Windows.Forms.DragEventHandler(this.KeySequenceList_DragDrop);
+            this.KeySequenceList.DragEnter += new System.Windows.Forms.DragEventHandler(this.KeySequenceList_DragEnter);
             // 
             // columnHeader1
             // 

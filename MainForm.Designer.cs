@@ -54,6 +54,7 @@ namespace WilliamPersonalMultiTool
             this.KeySequenceList.TabIndex = 3;
             this.KeySequenceList.UseCompatibleStateImageBehavior = false;
             this.KeySequenceList.View = System.Windows.Forms.View.Details;
+            this.KeySequenceList.FullRowSelect = true;
             // 
             // columnHeader1
             // 

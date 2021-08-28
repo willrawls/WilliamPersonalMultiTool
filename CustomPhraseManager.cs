@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -80,10 +81,11 @@ namespace WilliamPersonalMultiTool
 
         public List<CustomKeySequence> AddSet(string text)
         {
-            while (text.Replace("\r", "").EndsWith("\n"))
-                text = text.Substring(0, text.Length - 1);
+            text = text.Replace("\r", "");
+            while (text.StartsWith("\n")) text = text.Substring(1);
+            while (text.EndsWith("\n")) text = text.Substring(0, text.Length - 1);
 
-            var result = new List<CustomKeySequence>();
+            var keySequencesToAdd = new List<CustomKeySequence>();
             var whens = text
                 .Replace("\r", "")
                 .AllTokens("When ", StringSplitOptions
@@ -101,67 +103,81 @@ namespace WilliamPersonalMultiTool
 
                 for (var i = 0; i < ors.Count; i++)
                 {
-                    if (ors[i].TokenCount("\n") == 2
-                        && ors[i].EndsWith("\n"))
+                    if (ors[i].TokenCount("\n") == 2 && ors[i].EndsWith("\n"))
                     {
                         ors[i] = ors[i].FirstToken("\n");
                     }
                 }
 
-                var actionSeparator = ors[0].ToLower().Contains(" type ")
-                    ? " type "
-                    : " run ";
+                var actionSeparator = GetActionSeparator(ors[0]);
+                var paddedActionSeparator = $" {actionSeparator} ";
+                var whenKeysText = ors[0].FirstToken(paddedActionSeparator);
+                var parameters = ors[0].TokensAfterFirst(paddedActionSeparator);
+                var keysAtWhenLevel = ToPKeyList(whenKeysText, null, out var wildcardMatchType, out var wildcardCount);
 
-                var whenKeysText = ors[0].FirstToken(actionSeparator);
-                var whenKeys = ToPKeyList(whenKeysText, null, out var wildcardMatchType, out var wildcardCount);
+                if (keysAtWhenLevel.IsEmpty()) continue;
+                InternalAddGenericAction(actionSeparator, parameters, keysAtWhenLevel, keySequencesToAdd, wildcardCount, wildcardMatchType);
 
-                if (whenKeys.IsEmpty()) continue;
-
-                var whenExpansion = ors[0].TokensAfterFirst(actionSeparator);
-                if (whenExpansion.IsNotEmpty())
+                foreach(var @or in ors)
                 {
-                    if (actionSeparator.ToLower() == " run ")
-                        InternalAddRunTrigger(whenExpansion, whenKeys, result);
-                    else
-                        InternalAddOrReplace(whenKeys, wildcardCount, whenExpansion, wildcardMatchType, result);
-                }
+                    actionSeparator = GetActionSeparator(@or);
+                    paddedActionSeparator = $" {actionSeparator} ";
+                    parameters = @or.TokensAfterFirst(paddedActionSeparator);
 
-                var prepend = new List<PKey>(whenKeys.GetRange(0, whenKeys.Count - 1));
-                for (var index = 1; index < ors.Count; index++)
-                {
-                    var @or = ors[index];
-                    actionSeparator = @or.ToLower().Contains(" type ")
-                        ? " type "
-                        : " run ";
-                    var name = @or.FirstToken(actionSeparator);
-                    var keys = ToPKeyList(name, prepend, out wildcardMatchType, out wildcardCount);
-                    if (keys.IsEmpty()) continue;
+                    var keyToPrepend = new List<PKey>(keysAtWhenLevel.GetRange(0, keysAtWhenLevel.Count - 1));
+                    var keySequenceForThisOr = ToPKeyList(whenKeysText, keyToPrepend, out wildcardMatchType, out wildcardCount);
+                    if (keySequenceForThisOr.IsEmpty()) continue;
 
-                    var expansion = @or.TokensAfterFirst(actionSeparator);
+                    var expansion = @or.TokensAfterFirst(" " + actionSeparator);
                     if (expansion.IsEmpty()) continue;
-                    if (actionSeparator.ToLower() == " run ")
-                    {
-                        InternalAddRunTrigger(expansion, keys, result);
-                    }
-                    else
-                    {
-                        InternalAddOrReplace(keys, wildcardCount, expansion, wildcardMatchType, result);
-                    }
+                    InternalAddGenericAction(actionSeparator, parameters, keySequenceForThisOr, keySequencesToAdd, wildcardCount, wildcardMatchType);
                 }
             }   
-            Keyboard.KeySequences.AddRange(result);
-            return result;
+            Keyboard.KeySequences.AddRange(keySequencesToAdd);
+            return keySequencesToAdd;
         }
 
-        private void InternalAddOrReplace(List<PKey> keys, int wildcardCount, string expansion, WildcardMatchType wildcardMatchType,
-            List<CustomKeySequence> result)
+        private void InternalAddGenericAction(string action, string parameters, List<PKey> keySequence, List<CustomKeySequence> resultingSequences, int wildcardCount, WildcardMatchType wildcardMatchType)
+        {
+            if (action == "choose" && parameters.Replace("\r", "").StartsWith("\n"))
+                parameters = parameters.Substring(1);
+
+            if (parameters.IsNotEmpty())
+            {
+                if (action == "run")
+                    InternalAddRunTrigger(parameters, keySequence, resultingSequences);
+                else if (action == "choose")
+                    InternalAddChooseTrigger(parameters, keySequence, resultingSequences);
+                else // type
+                    InternalAddOrReplace(keySequence, wildcardCount, parameters, wildcardMatchType, resultingSequences);
+            }
+        }
+
+        public static string[] ActionSeparators = new[] { "type", "run", "choose" };
+
+        public static string GetActionSeparator(string @or)
+        {
+            var lower = @or.Replace("\r","\n").ToLower();
+            foreach (var separator in ActionSeparators)
+            {
+                if (lower.Contains($" {separator} ")
+                    || lower.Contains($" {separator}\n"))
+                {
+                    return separator;
+                }
+            }
+            return " unknown ";
+        }
+
+        private void InternalAddOrReplace(List<PKey> keys, int wildcardCount, string expansion, WildcardMatchType wildcardMatchType, List<CustomKeySequence> resultingSequences)
         {
             var backspaceCount = ToBackspaceCount(keys) + wildcardCount;
-            var orSequence =
-                new CustomKeySequence(expansion, keys, OnExpandToNameOfTrigger, backspaceCount);
-            orSequence.WildcardMatchType = wildcardMatchType;
-            orSequence.WildcardCount = wildcardCount;
-            InternalAddOrReplace(orSequence, result);
+            var keySequence = new CustomKeySequence(expansion, keys, OnExpandToNameOfTrigger, backspaceCount)
+                {
+                    WildcardMatchType = wildcardMatchType,
+                    WildcardCount = wildcardCount
+                };
+            InternalAddOrReplace(keySequence, resultingSequences);
         }
 
         private void InternalAddRunTrigger(string expansion, List<PKey> keys, List<CustomKeySequence> result)
@@ -206,7 +222,43 @@ namespace WilliamPersonalMultiTool
             Process.Start(customKeySequence.ExecutablePath, customKeySequence.Arguments);
         }
 
-        private void InternalAddOrReplace(CustomKeySequence sequence, List<CustomKeySequence> result)
+        private void InternalAddChooseTrigger(string expansion, List<PKey> keys, List<CustomKeySequence> result)
+        {
+            List<string> choices = expansion.LineList(StringSplitOptions.TrimEntries).Where(l => l.Length > 0).ToList();
+            List<CustomKeySequenceChoice> choiceList = new List<CustomKeySequenceChoice>();
+            foreach(var choice in choices)
+            {
+                choiceList.Add(new CustomKeySequenceChoice
+                {
+                    Text = choice.TrimStart(),
+                });
+            }
+
+            var backspaceCount = ToBackspaceCount(keys);
+            var name = keys.Aggregate("Choose ", (current, key) => current + $"{key.ToSendKeysText()} ").Trim();
+
+            var chooseSequence = new CustomKeySequence(name, keys, OnChooseTriggerHandler, backspaceCount)
+            {
+                Choices = new List<CustomKeySequenceChoice>(choiceList),
+            };
+            result.Add(chooseSequence);
+        }
+
+        private void OnChooseTriggerHandler(object sender, PhraseEventArguments e)
+        {
+            var customKeySequence = ((CustomKeySequence) e.State.KeySequence);
+            if(customKeySequence.BackspaceCount > 0)
+                SendBackspaces(customKeySequence.BackspaceCount);
+
+            var choice = e.State.MatchResult?.ValueAsInt();
+            if (choice is not >= 0 || choice.Value > customKeySequence.Choices.Count) return;
+
+            var keySequenceChoice = customKeySequence.Choices[choice.Value];
+            var textToSend = MakeReadyForSending(keySequenceChoice.Text, SplitLength, true);
+            SendStrings(textToSend, 2);
+        }
+
+        private void InternalAddOrReplace(CustomKeySequence sequence, List<CustomKeySequence> resultingSequences)
         {
             for (var index = 0; index < Keyboard.KeySequences.Count; index++)
             {
@@ -217,16 +269,16 @@ namespace WilliamPersonalMultiTool
                 Keyboard.KeySequences.RemoveAt(index);
             }
 
-            for (var index = 0; index < result.Count; index++)
+            for (var index = 0; index < resultingSequences.Count; index++)
             {
-                var ks1 = result[index];
+                var ks1 = resultingSequences[index];
                 if (!AreEqual(ks1.Sequence, sequence.Sequence)) 
                     continue;
 
-                result.RemoveAt(index);
+                resultingSequences.RemoveAt(index);
             }
 
-            result.Add(sequence);
+            resultingSequences.Add(sequence);
         }
 
         private int ToBackspaceCount(List<PKey> pKeyList)
@@ -256,7 +308,8 @@ namespace WilliamPersonalMultiTool
                 
                 if(wildcardCountInner < 1)
                 {
-                    pKeyList.Add(pKey);
+                    if(pKey != PKey.None)
+                        pKeyList.Add(pKey);
                 }
                 else
                 {

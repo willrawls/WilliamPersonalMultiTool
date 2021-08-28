@@ -1,11 +1,9 @@
-﻿1. a and b are pressed, send the string argument : “(ab)”
-2. To Send same letter multiple times : “{a 10}”
-3. To Send ALT Tab :  wshell.sendkeys ” %{TAB}”
-4. To Send ALT and space : wshell.sendkeys “%{ }”
-5. TO Send char : wshell.Sendkeys “(a)”
-6. Right Click of Mouse : Wshell.SendKeys “+{F10}”
-7. Mouse Down : wshell.sendkeys “{DOWN}”
-8. Mouse UP : wshell.sendkeys “{UP}”
+﻿1. a and b are pressed, send the string argument	: (ab)
+2. To Send same letter multiple times				: {a 10}
+3. To Send ALT Tab									: %{TAB}
+4. To Send ALT and space							: %{ }
+5. TO Send char										: (a)
+6. Right Click of Mouse								: +{F10}
 
 Key				Special Character
 SHIFT			+

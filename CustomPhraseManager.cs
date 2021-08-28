@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.Design;
 using MetX.Standard.Library;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 using NHotPhrase.WindowsForms;
+using Win32Interop.Enums;
 
 namespace WilliamPersonalMultiTool
 {
@@ -190,7 +193,7 @@ namespace WilliamPersonalMultiTool
             var keySequence = new CustomKeySequence(expansion, keys, OnExpandToNameOfTrigger, backspaceCount)
                 {
                     WildcardMatchType = wildcardMatchType,
-                    WildcardCount = wildcardCount
+                    WildcardCount = wildcardCount,
                 };
             InternalAddOrReplace(keySequence, resultingSequences);
         }
@@ -226,18 +229,63 @@ namespace WilliamPersonalMultiTool
             var orSequence = new CustomKeySequence(runName, keys, OnRunTriggerHandler, backspaceCount)
             {
                 ExecutablePath = executablePath,
-                Arguments = arguments
+                Arguments = arguments,
+                BackColor = Color.Violet,
             };
             ReplaceMatching(result, orSequence);
         }
 
+        private string _lastFilePath = "";
         private void OnRunTriggerHandler(object sender, PhraseEventArguments e)
         {
             var customKeySequence = ((CustomKeySequence) e.State.KeySequence);
             if(customKeySequence.BackspaceCount > 0)
                 SendBackspaces(customKeySequence.BackspaceCount);
 
-            Process.Start(customKeySequence.ExecutablePath, customKeySequence.Arguments);
+            string arguments = customKeySequence.Arguments;
+            if (customKeySequence.Arguments.Contains("~"))
+            {
+                if(arguments.TokenCount("~") > 2)
+                {
+                    FileDialog dialog = new OpenFileDialog();
+                    string filename = arguments.TokenAt(2, "~");
+                    dialog.FileName = filename;
+                    dialog.RestoreDirectory = true;
+                    dialog.CheckFileExists = true;
+                    dialog.CheckPathExists = true;
+                    var result = dialog.ShowDialog(Parent);
+                    if (result == DialogResult.OK)
+                    {
+                        _lastFilePath = dialog.FileName;
+                        arguments = $"{arguments.FirstToken("~")} {dialog.FileName} {arguments.TokenAt(3, "~")}".Trim();
+                    }
+                    else
+                        return;
+                }
+                else
+                {
+                    FileDialog dialog = new OpenFileDialog();
+                    dialog.RestoreDirectory = true;
+                    dialog.CheckFileExists = true;
+                    dialog.CheckPathExists = true;
+                    if (_lastFilePath.IsNotEmpty())
+                    {
+                        dialog.FileName = _lastFilePath;
+                    }
+
+                    var result = dialog.ShowDialog(Parent);
+                    if (result == DialogResult.OK)
+                    {
+                        _lastFilePath = dialog.FileName;
+                        arguments = $"{arguments.Replace("~", dialog.FileName)}";
+                    }
+                    else
+                        return;
+                }
+
+            }
+
+            Process.Start(customKeySequence.ExecutablePath, arguments);
         }
 
         private void InternalAddChooseTrigger(string action, string expansion, List<PKey> keys, List<KeySequence> result)
@@ -260,6 +308,7 @@ namespace WilliamPersonalMultiTool
                 Choices = new List<CustomKeySequenceChoice>(choiceList),
                 WildcardMatchType = WildcardMatchType.Digits,
                 WildcardCount = ( action == "choose2" ? 2 : 1),
+                BackColor = Color.PaleGoldenrod,
             };
             
             ReplaceMatching(result, chooseSequence);

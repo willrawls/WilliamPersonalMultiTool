@@ -86,8 +86,6 @@ namespace WilliamPersonalMultiTool
             return "";
         }
 
-
-
         private void OnToggleOnOff(object sender, PhraseEventArguments e)
         {
             ToggleOnOffButton_Click(null, null);
@@ -289,5 +287,24 @@ namespace WilliamPersonalMultiTool
             UpdateListView();
         }
 
+        private void KeySequenceList_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) 
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void KeySequenceList_DragDrop(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.None;
+            try
+            {
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                Clipboard.SetText(files.AsString("\n"));
+            }
+            catch 
+            {
+                // Ignored
+            }
+        }
     }
 }

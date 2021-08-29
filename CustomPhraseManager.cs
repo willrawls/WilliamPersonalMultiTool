@@ -37,9 +37,9 @@ namespace WilliamPersonalMultiTool
             }
 
             textToSend = textToSend
-                    .Replace(@"\r", "\r")
-                    .Replace(@"\n", "\n")
-                    .Replace(@"\t", "\t")
+                    .Replace(@"\r", "{RETURN}")
+                    .Replace(@"\n", "{RETURN}")
+                    .Replace(@"\t", "{TAB}")
                     .Replace(@"\*", @"*")
                     .Replace(@"\\", @"\")
                 ;
@@ -115,10 +115,12 @@ namespace WilliamPersonalMultiTool
             foreach(var when in whens)
             {
                 var ors = when
-                    .Replace("\nOr ", "Or ", StringComparison
-                        .InvariantCultureIgnoreCase)
-                    .AllTokens("Or ", StringSplitOptions
-                        .RemoveEmptyEntries);
+                    .Replace("\nOr ", "Or ", StringComparison.InvariantCultureIgnoreCase)
+                    .Replace("\n  Or ", "Or ", StringComparison.InvariantCultureIgnoreCase)
+                    .Replace("\n   Or ", "Or ", StringComparison.InvariantCultureIgnoreCase)
+                    .Replace("\n    Or ", "Or ", StringComparison.InvariantCultureIgnoreCase)
+                    .Replace("\n\tOr ", "Or ", StringComparison.InvariantCultureIgnoreCase)
+                    .AllTokens("Or ", StringSplitOptions.RemoveEmptyEntries);
 
                 for (var i = 0; i < ors.Count; i++)
                 {
@@ -339,6 +341,18 @@ namespace WilliamPersonalMultiTool
         }
 
         private static void NormalSendKeysAndWait(string toSend)
+        {
+            if (toSend.ToLower().Contains("{pause "))
+            {
+                var parts = toSend.AllTokens("{pause ");
+                if(parts.Count == 1)
+                InternalNormalSendKeysAndWait(toSend);
+            }
+            else
+                InternalNormalSendKeysAndWait(toSend);
+        }
+
+        private static void InternalNormalSendKeysAndWait(string toSend)
         {
             try
             {

@@ -9,6 +9,36 @@ namespace WilliamPersonalMultiTool.Tests
     public class CustomKeySequenceTests
     {
         [TestMethod]
+        public void AddSet_WhenFollowedByOrEndRightBeforeNewLine()
+        {
+            var data = new CustomPhraseManager(null);
+            var actual = data.AddSet(@"
+When CapsLock G G type william.rawls@gmail.com
+  Or W type william.rawls@otherplace.com
+");
+            Assert.AreEqual(2, actual.Count);
+            Assert.AreEqual("william.rawls@gmail.com", actual[0].Name);
+        }
+
+        [TestMethod]
+        public void AddSet_WhenFollowedByAnotherWhenEndsBeforeTheNextWhen()
+        {
+            var data = new CustomPhraseManager(null);
+            var actual = data.AddSet(@"
+When CapsLock G 1 type william.rawls@gmail.com
+123
+When CapsLock G 2 type
+456
+789!
+When CapsLock G 3 type william.rawls@otherplace.com
+");
+            Assert.AreEqual(2, actual.Count);
+            Assert.AreEqual("william.rawls@gmail.com\n123", actual[0].Name);
+            Assert.AreEqual("\n456\n789!", actual[1].Name);
+            Assert.AreEqual("william.rawls@otherplace.com", actual[2].Name);
+        }
+
+        [TestMethod]
         public void AddSet_WhenKeySequenceAlreadyExists_Replace()
         {
             var data = new CustomPhraseManager(null);
@@ -101,7 +131,7 @@ Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
         }
 
         [TestMethod]
-        public void AddSet_SingleLine_Caps123()
+        public void AddOrReplace_SingleLine_Caps123()
         {
             var data = new CustomPhraseManager(null);
             CustomKeySequence actual = data.AddOrReplace("CapsLock 1 2 3");

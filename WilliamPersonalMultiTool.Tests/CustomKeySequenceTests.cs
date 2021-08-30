@@ -32,7 +32,7 @@ When CapsLock G 2 type
 789!
 When CapsLock G 3 type william.rawls@otherplace.com
 ");
-            Assert.AreEqual(2, actual.Count);
+            Assert.AreEqual(3, actual.Count);
             Assert.AreEqual("william.rawls@gmail.com\n123", actual[0].Name);
             Assert.AreEqual("\n456\n789!", actual[1].Name);
             Assert.AreEqual("william.rawls@otherplace.com", actual[2].Name);

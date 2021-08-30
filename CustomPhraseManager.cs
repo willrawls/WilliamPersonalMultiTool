@@ -131,31 +131,43 @@ namespace WilliamPersonalMultiTool
                 }
 
                 var actionSeparator = GetActionSeparator(ors[0]);
-                var paddedActionSeparator = $" {actionSeparator} ";
-                var whenKeysText = ors[0].FirstToken(paddedActionSeparator);
-                var parameters = ors[0].TokensAfterFirst(actionSeparator).Substring(1);
-                var keysAtWhenLevel = ToPKeyList(whenKeysText, null, out var wildcardMatchType, out var wildcardCount);
 
-                if (keysAtWhenLevel.IsEmpty()) continue;
-                InternalAddGenericAction(actionSeparator, parameters, keysAtWhenLevel, keySequencesToAdd, wildcardCount, wildcardMatchType);
-
-                if (ors.Count < 2) continue;
-                
-                foreach(var @or in ors.Skip(1))
+                if (ActionSeparators.All(s => s != actionSeparator))
                 {
-                    actionSeparator = GetActionSeparator(@or);
-                    paddedActionSeparator = $" {actionSeparator} ";
-                    parameters = @or.TokensAfterFirst(paddedActionSeparator);
+                    MessageBox.Show(when, "ENTRY IS INVALID");
+                }
+                else
+                {
+                    var paddedActionSeparator = $" {actionSeparator} ";
+                    var whenKeysText = ors[0].FirstToken(paddedActionSeparator);
+                    var parameters = ors[0].TokensAfterFirst(actionSeparator).Substring(1);
+                    var keysAtWhenLevel =
+                        ToPKeyList(whenKeysText, null, out var wildcardMatchType, out var wildcardCount);
 
-                    var orKeyText = @or.FirstToken(paddedActionSeparator);
-                    var keysToPrepend = new List<PKey>(keysAtWhenLevel.GetRange(0, keysAtWhenLevel.Count - 1));
-                    
-                    var keySequenceForThisOr = ToPKeyList(orKeyText, keysToPrepend, out wildcardMatchType, out wildcardCount);
-                    if (keySequenceForThisOr.IsEmpty()) continue;
+                    if (keysAtWhenLevel.IsEmpty()) continue;
+                    InternalAddGenericAction(actionSeparator, parameters, keysAtWhenLevel, keySequencesToAdd,
+                        wildcardCount, wildcardMatchType);
 
-                    var expansion = @or.TokensAfterFirst(" " + actionSeparator);
-                    if (expansion.IsEmpty()) continue;
-                    InternalAddGenericAction(actionSeparator, parameters, keySequenceForThisOr, keySequencesToAdd, wildcardCount, wildcardMatchType);
+                    if (ors.Count < 2) continue;
+
+                    foreach (var @or in ors.Skip(1))
+                    {
+                        actionSeparator = GetActionSeparator(@or);
+                        paddedActionSeparator = $" {actionSeparator} ";
+                        parameters = @or.TokensAfterFirst(paddedActionSeparator);
+
+                        var orKeyText = @or.FirstToken(paddedActionSeparator);
+                        var keysToPrepend = new List<PKey>(keysAtWhenLevel.GetRange(0, keysAtWhenLevel.Count - 1));
+
+                        var keySequenceForThisOr = ToPKeyList(orKeyText, keysToPrepend, out wildcardMatchType,
+                            out wildcardCount);
+                        if (keySequenceForThisOr.IsEmpty()) continue;
+
+                        var expansion = @or.TokensAfterFirst(" " + actionSeparator);
+                        if (expansion.IsEmpty()) continue;
+                        InternalAddGenericAction(actionSeparator, parameters, keySequenceForThisOr, keySequencesToAdd,
+                            wildcardCount, wildcardMatchType);
+                    }
                 }
             }   
             Keyboard.KeySequences.AddRange(keySequencesToAdd);

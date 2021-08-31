@@ -160,6 +160,8 @@ namespace WilliamPersonalMultiTool
             return path;
         }
 
+        public Color[] NonStaticColors = new Color[] { Color.White, Color.Tan, Color.PaleGoldenrod};
+
         private void UpdateListView()
         {
             KeySequenceList.Items.Clear();
@@ -168,7 +170,8 @@ namespace WilliamPersonalMultiTool
                 var customKeySequence = (CustomKeySequence) keySequence;
                 var keys = "";
 
-                if (HideStaticSequences && customKeySequence.BackColor != Color.White) continue;
+                if (HideStaticSequences && NonStaticColors.All(b => b != customKeySequence.BackColor))
+                    continue;
 
                 for (var index = 0; index < customKeySequence.Sequence.Count; index++)
                 {

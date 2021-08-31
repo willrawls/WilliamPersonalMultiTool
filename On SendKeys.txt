@@ -1,9 +1,13 @@
-﻿1. a and b are pressed, send the string argument	: (ab)
-2. To Send same letter multiple times				: {a 10}
-3. To Send ALT Tab									: %{TAB}
-4. To Send ALT and space							: %{ }
-5. TO Send char										: (a)
-6. Right Click of Mouse								: +{F10}
+﻿Standard SendKeys
+1. a and b are pressed, send the string argument	(ab)
+2. To Send same letter multiple times				{a 10}
+3. To Send ALT Tab									%{TAB}
+4. To Send ALT and space							%{ }
+5. TO Send char										(a)
+6. Right Click of Mouse								+{F10}
+
+Custom SendKeys
+7. To pause for a number of seconds					{Pause 3 seconds}
 
 Key				Special Character
 SHIFT			+

@@ -53,14 +53,15 @@ namespace WilliamPersonalMultiTool
 
         public List<RECT> WindowPositions { get; set; } = new()
         {
+            new RECT {left = 364, top = 10, right = 1465, bottom = 600},    // D0
             new RECT {left = 108, top = 29, right = 1913, bottom = 1070},   // D1
-            new RECT {left = 1373, top = 730, right = 1916, bottom = 1070}, // D8
-            new RECT {left = 1935, top = 337, right = 3281, bottom = 1077}, // D2
-            new RECT {left = 1383, top = 9, right = 1926, bottom = 731},    // D3
-            new RECT {left = 2000, top = 348, right = 3225, bottom = 1056}, // D4
-            new RECT {left = 143, top = 63, right = 1779, bottom = 1016},   // D5
-            new RECT {left = 1923, top = 333, right = 3180, bottom = 967},  // D6
-            new RECT {left = 364, top = 99, right = 1465, bottom = 989},    // D7
+            new RECT {left = 1373, top = 730, right = 1916, bottom = 1070}, // D2
+            new RECT {left = 1935, top = 337, right = 3281, bottom = 1077}, // D3
+            new RECT {left = 1383, top = 9, right = 1926, bottom = 731},    // D4
+            new RECT {left = 2000, top = 348, right = 3225, bottom = 1056}, // D5
+            new RECT {left = 143, top = 63, right = 1779, bottom = 1016},   // D6
+            new RECT {left = 1923, top = 333, right = 3180, bottom = 967},  // D7
+            new RECT {left = 364, top = 99, right = 1465, bottom = 989},    // D8
             new RECT {left = 586, top = 388, right = 1325, bottom = 818},   // D9 
         };
 
@@ -207,11 +208,11 @@ namespace WilliamPersonalMultiTool
             var backspaceCount = triggered.BackspacesToSend();
             Manager.SendBackspaces(backspaceCount);
 
-            if(entry is >= 1 and <= 9)
+            if(entry is >= 0 and <= 9)
             {
                 CurrentPosition = entry;
 
-                var p = WindowPositions[entry - 1];
+                var p = WindowPositions[entry];
                 MoveTo(p);
             }
         }

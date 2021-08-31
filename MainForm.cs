@@ -306,5 +306,50 @@ namespace WilliamPersonalMultiTool
                 // Ignored
             }
         }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            if (ModifierKeys == Keys.ShiftKey)
+            {
+
+            }
+            else if (ModifierKeys == Keys.Alt)
+            {
+
+            }
+            else if (ModifierKeys == Keys.Control)
+            {
+
+            }
+            else
+            {
+                // Do something here
+            }
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Button4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Button5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Button6_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

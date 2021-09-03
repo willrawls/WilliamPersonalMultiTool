@@ -352,7 +352,14 @@ namespace WilliamPersonalMultiTool
 
         private void Button6_Click(object sender, EventArgs e)
         {
-
+            try
+            {
+                TopMost = !TopMost;
+            }
+            catch 
+            {
+                // Ignored
+            }
         }
     }
 }

@@ -5,14 +5,16 @@
 //
 //   ... move to top, left, width, height
 //   ... move % 10, 10, 75, 50
+//   ... adjust % -10, 0, -10, 0
 //   ... size width, height
-//   ... size %, %
+//   ... size percent %, %
 //
+//   ... type C{Pause 3}X = Type "C" then pause for 3 seconds then type "X"
 //   ... type C{Random 10}X = CtenrandomlettersX
 //   ... type C{Random number 10}X = CtenrandomdigitsX
-//   History of activations (sequence including wildcards plus final text sent) (to file with phrase to open)
-//   ... typeHidden ... = Activating this entry does not record to history (like passwords)
-//   Caps Caps R R = Repeat last type operation (last on history. do not add entry to history)
+//?  History of activations (sequence including wildcards plus final text sent) (to file with phrase to open)
+//?   ... typeHidden ... = Activating this entry does not record to history (like passwords)
+//   Caps Caps Caps Caps = Repeat last type operation (last on history. do not add entry to history)
 //   ... type ... {Paste from clipboard} or simple {PASTE}
 //   Drag/drop file/files
 //		No keys down 	= Copy full path(s) to clipboard, one per line
@@ -27,7 +29,7 @@
 //	    +?				= ?
 //	    +??				= ?
 //
-//	@1 (no keys) type
+//?	@1 (no keys) type
 //
 //
 //	Zen of SendKeys

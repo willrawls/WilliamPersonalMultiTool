@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MetX.Standard.Library;
+using MetX.Standard.Library.Extensions;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 using WilliamPersonalMultiTool.Properties;
@@ -233,15 +234,8 @@ namespace WilliamPersonalMultiTool
 
         private void ToggleOnOffButton_Click(object sender, EventArgs e)
         {
-            if(ToggleOnOffButton.Text == "Turn &Off")
-            {
-                Manager.Keyboard.KeySequences.Clear();
-                KeySequenceList.Items.Clear();
-            }
-            else
-            {
-                ReloadButton_Click(null, null);
-            }
+            Manager.Keyboard.KeySequences.Clear();
+            KeySequenceList.Items.Clear();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

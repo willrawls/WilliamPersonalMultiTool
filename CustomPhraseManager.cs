@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using MetX.Standard.Library;
+using MetX.Standard.Library.Extensions;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 using NHotPhrase.WindowsForms;
@@ -133,15 +134,16 @@ namespace WilliamPersonalMultiTool
 
                 var parameters = ors[0].TokensAfterFirst(actionTypeEntry.Key).Substring(1);
                 var actor = ActorHelper.Factory(actionTypeEntry.Value, parameters);
-                var paddedActionSeparator = $" {actionTypeEntry.Key} ";
+                var paddedActionSeparator = $" {actionTypeEntry.Key}";
                 var whenKeysText = ors[0].FirstToken(paddedActionSeparator);
                 
                 List<PKey> keysAtWhenLevel =
                     ToPKeyList(whenKeysText, null, out var wildcardMatchType, out var wildcardCount);
 
                 if (keysAtWhenLevel.IsEmpty()) continue;
-                InternalAddGenericAction(actor, parameters, keysAtWhenLevel, keySequencesToAdd,
-                    wildcardCount, wildcardMatchType);
+                ReplaceMatching(result, orSequence);
+                actor.AddAction(parameters, keysAtWhenLevel, keySequencesToAdd, wildcardCount, wildcardMatchType);
+                InternalAddGenericAction(actionTypeEntry.Key, parameters, keysAtWhenLevel, keySequencesToAdd, wildcardCount, wildcardMatchType);
 
                 if (ors.Count < 2) continue;
 
@@ -153,7 +155,7 @@ namespace WilliamPersonalMultiTool
 
                     paddedActionSeparator = $" {actionTypeEntry.Key} ";
 
-                    var parameters = ors[0].TokensAfterFirst(paddedActionSeparator).Substring(1);
+                    parameters = ors[0].TokensAfterFirst(paddedActionSeparator).Substring(1);
 
                     var orKeyText = or.FirstToken(paddedActionSeparator);
                     List<PKey> keysToPrepend = new List<PKey>(keysAtWhenLevel.GetRange(0, keysAtWhenLevel.Count - 1));
@@ -164,7 +166,7 @@ namespace WilliamPersonalMultiTool
 
                     var expansion = or.TokensAfterFirst(" " + actionTypeEntry);
                     if (expansion.IsEmpty()) continue;
-                    InternalAddGenericAction(actor, parameters, keySequenceForThisOr, keySequencesToAdd,
+                    InternalAddGenericAction(actor, actionTypeEntry.Key, parameters, keySequenceForThisOr, keySequencesToAdd,
                         wildcardCount, wildcardMatchType);
                 }
             }
@@ -173,8 +175,8 @@ namespace WilliamPersonalMultiTool
             return keySequencesToAdd;
         }
 
-        private void InternalAddGenericAction(string action, string parameters, List<PKey> keySequence,
-            List<KeySequence> resultingSequences, int wildcardCount, WildcardMatchType wildcardMatchType)
+        private void InternalAddGenericAction(string action, string parameters,
+            List<PKey> keySequence, List<KeySequence> resultingSequences, int wildcardCount, WildcardMatchType wildcardMatchType)
         {
             if (action.StartsWith("choose") && parameters.Replace("\r", "").StartsWith("\n"))
                 parameters = parameters.Substring(1);

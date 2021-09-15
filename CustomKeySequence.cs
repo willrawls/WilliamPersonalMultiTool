@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using MetX.Standard.Library;
+using MetX.Standard.Library.Extensions;
 using Microsoft.Win32;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
@@ -177,7 +178,7 @@ namespace WilliamPersonalMultiTool
         {
             var lower = or.Replace("\r", "\n").ToLower();
             foreach (KeyValuePair<string, ActionType> separator in Actionables)
-                if (lower.Contains($" {separator} ") || lower.Contains($" {separator}\n"))
+                if (lower.Contains($" {separator.Key} ") || lower.Contains($" {separator.Key}\n"))
                     return separator;
             return new KeyValuePair<string, ActionType>("unknown", ActionType.Unknown);
         }
@@ -243,7 +244,9 @@ namespace WilliamPersonalMultiTool
             }
 
             if (Verb != "expand" && Verb != "percent")
-                throw new Exception($"MoveActor: Invalid verb: {arguments}");
+            {
+                Verb = "expand";
+            }
         }
 
         public string TextToPaste()

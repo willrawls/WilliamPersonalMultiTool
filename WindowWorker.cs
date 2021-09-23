@@ -90,6 +90,7 @@ namespace WilliamPersonalMultiTool
                 new("Window to position 7", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D7}, OnMoveCurrentWindowToPosition),
                 new("Window to position 8", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D8}, OnMoveCurrentWindowToPosition),
                 new("Window to position 9", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D9}, OnMoveCurrentWindowToPosition),
+                new("Window to position 0", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D0}, OnMoveCurrentWindowToPosition),
 
                 new("Window to upper left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D1}, OnMoveCurrentWindowToCorner),
                 new("Window to upper right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D2}, OnMoveCurrentWindowToCorner),

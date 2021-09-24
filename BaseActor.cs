@@ -15,7 +15,7 @@ namespace WilliamPersonalMultiTool
             Separator = $" {Action}";
             Arguments = cleanItem.TokensAfterFirst(Separator);
             KeyText = cleanItem.FirstToken(Separator);
-            KeySequence = new KeySequence(KeyText);
+            KeySequence = KeySequence.Factory(null, KeyText);
         }
 
         public string KeyText { get; set; }

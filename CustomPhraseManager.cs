@@ -118,9 +118,11 @@ namespace WilliamPersonalMultiTool
                                 .StartsWith("//"))
                 .ToList();
 
+            Actors = new BaseActorList();
+
             foreach (var when in whens)
             {
-                var ors = when
+                var whenWithItsOrs = when
                     .Replace("\nOr ", "Or ", StringComparison.InvariantCultureIgnoreCase)
                     .Replace("\n  Or ", "Or ", StringComparison.InvariantCultureIgnoreCase)
                     .Replace("\n   Or ", "Or ", StringComparison.InvariantCultureIgnoreCase)
@@ -128,27 +130,26 @@ namespace WilliamPersonalMultiTool
                     .Replace("\n\tOr ", "Or ", StringComparison.InvariantCultureIgnoreCase)
                     .AllTokens("Or ", StringSplitOptions.RemoveEmptyEntries);
 
-                for (var i = 0; i < ors.Count; i++)
-                    if (ors[i].TokenCount("\n") == 2 && ors[i].EndsWith("\n"))
-                        ors[i] = ors[i].FirstToken("\n");
+                for (var i = 0; i < whenWithItsOrs.Count; i++)
+                    if (whenWithItsOrs[i].TokenCount("\n") == 2 && whenWithItsOrs[i].EndsWith("\n"))
+                        whenWithItsOrs[i] = whenWithItsOrs[i].FirstToken("\n");
 
-                var actionTypeEntry = ActorHelper.GetActionType(ors[0]);
-                if (actionTypeEntry.Value == ActionType.Unknown)
+                var actionType = ActorHelper.GetActionType(whenWithItsOrs[0]);
+                if (actionType.Value == ActionType.Unknown)
                     throw new Exception($"Invalid Entry: {when}");
 
-                var actors = ActorHelper.Factory(actionTypeEntry.Value, ors);
-                
-                InternalAddGenericAction(actor, parameters, keysAtWhenLevel, keySequencesToAdd, wildcardCount, wildcardMatchType);
+                Actors.AddRange(ActorHelper.Factory(actionType.Value, whenWithItsOrs));
 
+                /*
                 if (ors.Count < 2) continue;
 
                 foreach (var or in ors.Skip(1))
                 {
-                    actionTypeEntry = ActorHelper.GetActionType(or);
-                    if (actionTypeEntry.Value == ActionType.Unknown)
+                    actionType = ActorHelper.GetActionType(or);
+                    if (actionType.Value == ActionType.Unknown)
                         throw new Exception($"Invalid Entry: {when}");
 
-                    paddedActionSeparator = $" {actionTypeEntry.Key} ";
+                    paddedActionSeparator = $" {actionType.Key} ";
 
                     parameters = ors[0].TokensAfterFirst(paddedActionSeparator).Substring(1);
 
@@ -159,15 +160,19 @@ namespace WilliamPersonalMultiTool
                         out wildcardCount);
                     if (keySequenceForThisOr.IsEmpty()) continue;
 
-                    var expansion = or.TokensAfterFirst(" " + actionTypeEntry);
+                    var expansion = or.TokensAfterFirst(" " + actionType);
                     if (expansion.IsEmpty()) continue;
                     InternalAddGenericAction(actor, parameters, keySequenceForThisOr, keySequencesToAdd, wildcardCount, wildcardMatchType);
                 }
+*/
             }
 
+            keySequencesToAdd = Actors.KeySequences;
             Keyboard.KeySequences.AddRange(keySequencesToAdd);
             return keySequencesToAdd;
         }
+
+        public BaseActorList Actors { get; set; }
 
         private void InternalAddGenericAction(BaseActor actor, string parameters, List<PKey> keySequence,
             List<KeySequence> resultingSequences, int wildcardCount, WildcardMatchType wildcardMatchType)
@@ -366,5 +371,18 @@ namespace WilliamPersonalMultiTool
             var count = pKeyList.Count(key => key is >= PKey.D0 and <= PKey.Z or >= PKey.NumPad0 and <= PKey.NumPad9);
             return count;
         }
+
+        
+        public static KeySequence Factory(string name = null, string keys = null)
+        {
+            var sequence = new KeySequence()
+            {
+                Name = name ?? Guid.NewGuid().ToString(),
+            };
+            if (keys.IsNotEmpty())
+                sequence.Sequence = WilliamPersonalMultiTool.Extensions.ToPKeyList(keys);
+            return sequence;
+        }
+
     }
 }

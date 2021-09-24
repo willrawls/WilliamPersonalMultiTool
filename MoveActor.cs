@@ -32,7 +32,7 @@ namespace WilliamPersonalMultiTool
             }
 
             if (Verb != "to" && Verb != "percent")
-                throw new Exception($"MoveActor: Invalid verb: {arguments}");
+                throw new Exception($"MoveActor: Invalid verb: {Arguments}");
         }
 
         public override bool Act()

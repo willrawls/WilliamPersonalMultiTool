@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Microsoft.Win32;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 using Win32Interop.Enums;
@@ -14,6 +15,7 @@ namespace WilliamPersonalMultiTool
         public string ExecutablePath { get; set; }
         public Color BackColor { get; set; } = Color.White;
         public List<CustomKeySequenceChoice> Choices { get; set; }
+        public IAct Actor { get; set; }
 
         public CustomKeySequence(string name, List<PKey> keys, EventHandler<PhraseEventArguments> hotPhraseEventArgs, int backspaceCount = 0, Color? backColor = null) 
             : base(name, keys, hotPhraseEventArgs)
@@ -23,10 +25,5 @@ namespace WilliamPersonalMultiTool
             BackspaceCount = backspaceCount;
             BackColor = backColor ?? Color.White;
         }
-    }
-
-    public class CustomKeySequenceChoice
-    {
-        public string Text { get; set; }
     }
 }

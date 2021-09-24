@@ -61,7 +61,7 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
             var newSequence = new CustomKeySequence("George", TestPKeys.Caps123, null);
 
             // Act
-            CustomPhraseManager.ReplaceMatching(keySequences, newSequence);
+            Extensions.ReplaceMatching(keySequences, newSequence);
 
             Assert.AreEqual(1, keySequences.Count);
             Assert.AreEqual("George", keySequences[0].Name);
@@ -157,7 +157,7 @@ Or 4 type someone.at@hotmail.com
         [TestMethod]
         public void ToPKeyList_Caps123()
         {
-            var actual = CustomPhraseManager.ToPKeyList("CapsLock 1 2 3", null, out var wildcardMatchType, out var wildcardCount);
+            var actual = Extensions.ToPKeyList("CapsLock 1 2 3", null, out var wildcardMatchType, out var wildcardCount);
             My.AssertAllAreEqual(TestPKeys.Caps123, actual);
             Assert.AreEqual(0, wildcardCount);
         }
@@ -165,7 +165,7 @@ Or 4 type someone.at@hotmail.com
         [TestMethod]
         public void ToPKeyList_1A3_WithPrependCaps()
         {
-            var actual = CustomPhraseManager.ToPKeyList("1 a 3", new List<PKey> { PKey.CapsLock }, out var wildcardMatchType, out var wildcardCount);
+            var actual = Extensions.ToPKeyList("1 a 3", new List<PKey> { PKey.CapsLock }, out var wildcardMatchType, out var wildcardCount);
             My.AssertAllAreEqual(TestPKeys.Caps1A3, actual);
         }
     }

@@ -53,16 +53,17 @@ namespace WilliamPersonalMultiTool
 
         public List<RECT> WindowPositions { get; set; } = new()
         {
-            new RECT {left = 364, top = 10, right = 1465, bottom = 600},    // D0
             new RECT {left = 108, top = 29, right = 1913, bottom = 1070},   // D1
-            new RECT {left = 1373, top = 730, right = 1916, bottom = 1070}, // D2
-            new RECT {left = 1935, top = 337, right = 3281, bottom = 1077}, // D3
-            new RECT {left = 1383, top = 9, right = 1926, bottom = 731},    // D4
-            new RECT {left = 2000, top = 348, right = 3225, bottom = 1056}, // D5
-            new RECT {left = 143, top = 63, right = 1779, bottom = 1016},   // D6
-            new RECT {left = 1923, top = 333, right = 3180, bottom = 967},  // D7
-            new RECT {left = 364, top = 99, right = 1465, bottom = 989},    // D8
-            new RECT {left = 586, top = 388, right = 1325, bottom = 818},   // D9 
+            new RECT {left = 143, top = 63, right = 1779, bottom = 1016},   // D2
+            new RECT {left = 364, top = 10, right = 1465, bottom = 600},    // D3
+            new RECT {left = 364, top = 99, right = 1465, bottom = 989},    // D4
+            new RECT {left = 586, top = 388, right = 1325, bottom = 818},   // D5 
+            new RECT {left = 1373, top = 730, right = 1916, bottom = 1070}, // D6
+
+            new RECT {left = 1383, top = 9, right = 1926, bottom = 731},    // D7
+            new RECT {left = 1923, top = 333, right = 3180, bottom = 967},  // D8
+            new RECT {left = 1935, top = 337, right = 3281, bottom = 1077}, // D9
+            new RECT {left = 2000, top = 348, right = 3225, bottom = 1056}, // D0
         };
 
         public int CurrentPosition = 0;
@@ -89,6 +90,7 @@ namespace WilliamPersonalMultiTool
                 new("Window to position 7", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D7}, OnMoveCurrentWindowToPosition),
                 new("Window to position 8", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D8}, OnMoveCurrentWindowToPosition),
                 new("Window to position 9", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D9}, OnMoveCurrentWindowToPosition),
+                new("Window to position 0", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D0}, OnMoveCurrentWindowToPosition),
 
                 new("Window to upper left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D1}, OnMoveCurrentWindowToCorner),
                 new("Window to upper right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D2}, OnMoveCurrentWindowToCorner),
@@ -104,8 +106,6 @@ namespace WilliamPersonalMultiTool
                 new("Window to previous position", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.LShiftKey}, OnMoveCurrentWindowToPreviousPosition),
 
                 new("Get window position", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.G, PKey.W}, OnGetWindowPosition),
-
-                // new("Window to 0,0", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.Shift, PKey.D0}, OnMoveTo00),
             };
             Sequences.ForEach(s => s.BackColor = Color.Aqua);
         }

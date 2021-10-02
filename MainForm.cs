@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MetX.Standard.Library;
+using MetX.Standard.Library.Extensions;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 using WilliamPersonalMultiTool.Properties;
@@ -50,6 +51,8 @@ namespace WilliamPersonalMultiTool
 
                 new("Base64 Encode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.B, PKey.E}, OnEncodeClipboard, 2),
                 new("Base64 Decode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.B, PKey.D}, OnDecodeClipboard, 2),
+                new("Type what's on the keyboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.CapsLock, PKey.LShiftKey}, OnTypeWhatsOnTheKeyboard, 0),
+
             };
             StaticSequences.ForEach(s => s.BackColor = Color.CadetBlue);
 
@@ -112,6 +115,17 @@ namespace WilliamPersonalMultiTool
             var text= Decode(encodedText);
 
             Manager.SendBackspaces(2);
+            Manager.SendString(text, 2, true);
+        }
+
+        private void OnTypeWhatsOnTheKeyboard(object sender, PhraseEventArguments e)
+        {
+            var text = Clipboard.GetText();
+            if (text.IsEmpty())
+                return;
+            if (text.Length > 256)
+                return;
+
             Manager.SendString(text, 2, true);
         }
 
@@ -233,15 +247,8 @@ namespace WilliamPersonalMultiTool
 
         private void ToggleOnOffButton_Click(object sender, EventArgs e)
         {
-            if(ToggleOnOffButton.Text == "Turn &Off")
-            {
-                Manager.Keyboard.KeySequences.Clear();
-                KeySequenceList.Items.Clear();
-            }
-            else
-            {
-                ReloadButton_Click(null, null);
-            }
+            Manager.Keyboard.KeySequences.Clear();
+            KeySequenceList.Items.Clear();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

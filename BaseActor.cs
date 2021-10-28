@@ -1,5 +1,6 @@
 ﻿using System;
 using MetX.Standard.Library;
+using MetX.Standard.Metadata;
 using NHotPhrase.Phrase;
 
 namespace WilliamPersonalMultiTool
@@ -15,7 +16,7 @@ namespace WilliamPersonalMultiTool
             Separator = $" {Action}";
             Arguments = cleanItem.TokensAfterFirst(Separator);
             KeyText = cleanItem.FirstToken(Separator);
-            KeySequence = KeySequence.Factory(null, KeyText);
+            KeySequence = KeySequence.Factory(KeyText, Arguments);
         }
 
         public string KeyText { get; set; }

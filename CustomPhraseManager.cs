@@ -114,7 +114,7 @@ namespace WilliamPersonalMultiTool
                 .Where(t => t
                     .Trim()
                     .IsNotEmpty() 
-                            && t.Trim()
+                            && !t.Trim()
                                 .StartsWith("//"))
                 .ToList();
 
@@ -167,8 +167,10 @@ namespace WilliamPersonalMultiTool
 */
             }
 
-            keySequencesToAdd = Actors.KeySequences;
-            Keyboard.KeySequences.AddRange(keySequencesToAdd);
+            if(Actors.KeySequences.IsNotEmpty())
+            {
+                Keyboard.KeySequences.AddRange(keySequencesToAdd);
+            }   
             return keySequencesToAdd;
         }
 
@@ -375,13 +377,16 @@ namespace WilliamPersonalMultiTool
         
         public static KeySequence Factory(string name = null, string keys = null)
         {
-            var sequence = new KeySequence()
+            var keySequence = new KeySequence()
             {
                 Name = name ?? Guid.NewGuid().ToString(),
             };
-            if (keys.IsNotEmpty())
-                sequence.Sequence = WilliamPersonalMultiTool.Extensions.ToPKeyList(keys);
-            return sequence;
+            if (keys.IsEmpty()) return keySequence;
+
+            keySequence.Sequence = Extensions.ToPKeyList(keys, null, out var wildcardMatchType, out var wildcardCount);
+            keySequence.WildcardCount = wildcardCount;
+            keySequence.WildcardMatchType = wildcardMatchType;
+            return keySequence;
         }
 
     }

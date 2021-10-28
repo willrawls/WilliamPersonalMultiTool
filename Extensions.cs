@@ -10,7 +10,8 @@ namespace WilliamPersonalMultiTool
 {
     public static class Extensions
     {
-        public static List<PKey> ToPKeyList(string keys, List<PKey> prepend, out WildcardMatchType wildcardMatchType,
+        public static List<PKey> ToPKeyList(string keys, List<PKey> prepend, 
+            out WildcardMatchType wildcardMatchType,
             out int wildcardCount)
         {
             var pKeyList = prepend.IsEmpty()

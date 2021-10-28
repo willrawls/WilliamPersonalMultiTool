@@ -42,6 +42,7 @@ namespace WilliamPersonalMultiTool.Tests
         public void ActionsCanBeTwoWords_MovePercent()
         {
             var actual = Build("CapsLock A move % 10 10 75 50");
+            Assert.IsInstanceOfType(actual.Actor, typeof(MoveActor));
             My.AssertAllAreEqual(TestPKeys.ABD, actual.Sequence);
             Assert.AreEqual("1 2 3 4", actual.Arguments);
 

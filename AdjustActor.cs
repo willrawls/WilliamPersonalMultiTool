@@ -1,4 +1,6 @@
-﻿namespace WilliamPersonalMultiTool
+﻿using NHotPhrase.Phrase;
+
+namespace WilliamPersonalMultiTool
 {
     public class AdjustActor : BaseActor
     {
@@ -8,7 +10,7 @@
         {
         }
 
-        public override bool Act()
+        public override bool Act(PhraseEventArguments phraseEventArguments)
         {
             return true;
         }

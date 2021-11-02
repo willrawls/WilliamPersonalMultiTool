@@ -8,7 +8,7 @@ namespace WilliamPersonalMultiTool
         Func<bool> OnAct { get; set; }
         ActionType Action { get; }
         string Verb { get; set; }
-        bool Act();
+        bool Act(PhraseEventArguments phraseEventArguments);
         KeySequence KeySequence { get; set; }
 
     }

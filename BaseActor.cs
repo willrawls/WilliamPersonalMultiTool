@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MetX.Standard.Library;
 using MetX.Standard.Metadata;
+using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 
 namespace WilliamPersonalMultiTool
@@ -16,7 +19,7 @@ namespace WilliamPersonalMultiTool
             Separator = $" {Action}";
             Arguments = cleanItem.TokensAfterFirst(Separator);
             KeyText = cleanItem.FirstToken(Separator);
-            KeySequence = KeySequence.Factory(KeyText, Arguments);
+            KeySequence = new CustomKeySequence(KeyText, Arguments, this);
         }
 
         public string KeyText { get; set; }
@@ -29,9 +32,22 @@ namespace WilliamPersonalMultiTool
         public string Verb { get; set; }
         public KeySequence KeySequence { get; set; }
 
-        public virtual bool Act()
+        public virtual bool Act(PhraseEventArguments phraseEventArguments)
         {
             return OnAct == null || OnAct();
+        }
+
+        public BaseActor ContinueWith(string line)
+        {
+            BaseActor actor = null;
+            if (line.Trim().StartsWith("Or"))
+            {
+                var actionTypeEntry = ActorHelper.GetActionType(line);
+                var keysToPrepend = KeySequence.Sequence.Take(KeySequence.Sequence.Count - 1).ToList();
+                return actionTypeEntry.Value.ToActor(line.TokensAfterFirst("Or"), keysToPrepend);
+            }
+
+            return actor;
         }
     }
 }

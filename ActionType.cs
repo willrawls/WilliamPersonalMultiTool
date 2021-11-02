@@ -9,6 +9,7 @@
         Repeat,
         Adjust,
         Run,
-        Choose
+        Choose,
+        Continuation
     }
 }

@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
+using NHotPhrase.Phrase;
 
 namespace WilliamPersonalMultiTool
 {
@@ -31,7 +32,7 @@ namespace WilliamPersonalMultiTool
             return text;
         }
 
-        public override bool Act()
+        public override bool Act(PhraseEventArguments phraseEventArguments)
         {
             return true;
         }

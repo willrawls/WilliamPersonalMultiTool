@@ -1,6 +1,7 @@
 ﻿using System;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
+using NHotPhrase.Phrase;
 
 namespace WilliamPersonalMultiTool
 {
@@ -30,7 +31,7 @@ namespace WilliamPersonalMultiTool
                 throw new Exception($"MoveActor: Invalid verb: {Arguments}");
         }
 
-        public override bool Act()
+        public override bool Act(PhraseEventArguments phraseEventArguments)
         {
             return true;
         }

@@ -17,13 +17,25 @@ namespace WilliamPersonalMultiTool
         public List<CustomKeySequenceChoice> Choices { get; set; }
         public IAct Actor { get; set; }
 
-        public CustomKeySequence(string name, List<PKey> keys, EventHandler<PhraseEventArguments> hotPhraseEventArgs, int backspaceCount = 0, Color? backColor = null) 
+        public CustomKeySequence(string name, List<PKey> keys, EventHandler<PhraseEventArguments> hotPhraseEventArgs, int backspaceCount = 0, Color? backColor = null)
             : base(name, keys, hotPhraseEventArgs)
         {
             if (backspaceCount < 0)
                 backspaceCount = 0;
             BackspaceCount = backspaceCount;
             BackColor = backColor ?? Color.White;
+        }
+
+        public CustomKeySequence(string keyText, string arguments, IAct actor)
+        {
+            Actor = actor;
+            Arguments = arguments;
+            Name = keyText;
+            Sequence = keyText.ToPKeyList(null, out var wildcardMatchType, out int wildcardCount);
+            ThenCall((sender, eventArguments) =>
+            {
+                actor.Act(eventArguments);
+            });
         }
     }
 }

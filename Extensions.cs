@@ -10,7 +10,9 @@ namespace WilliamPersonalMultiTool
 {
     public static class Extensions
     {
-        public static List<PKey> ToPKeyList(string keys, List<PKey> prepend, 
+        public static List<PKey> ToPKeyList(
+            this string keys, 
+            List<PKey> prepend, 
             out WildcardMatchType wildcardMatchType,
             out int wildcardCount)
         {
@@ -23,10 +25,14 @@ namespace WilliamPersonalMultiTool
 
             if (keys.IsEmpty()) return pKeyList;
 
-            var keyParts = keys.AllTokens();
+            List<string> keyParts;
+            if (keys.StartsWith("When"))    keyParts = keys[4..].TrimStart().AllTokens();
+            else if (keys.StartsWith("Or")) keyParts = keys[2..].TrimStart().AllTokens();
+            else                            keyParts = keys.AllTokens();
+
             foreach (var keyPart in keyParts)
             {
-                var pKey = FromString(keyPart, out var wildcardMatchTypeInner, out var wildcardCountInner);
+                var pKey = ToPKey(keyPart, out var wildcardMatchTypeInner, out var wildcardCountInner);
 
                 if (wildcardCountInner < 1)
                 {
@@ -42,7 +48,7 @@ namespace WilliamPersonalMultiTool
             return pKeyList;
         }
 
-        public static void ReplaceMatching(List<KeySequence> keySequences, CustomKeySequence sequence)
+        public static void ReplaceMatching(this List<KeySequence> keySequences, CustomKeySequence sequence)
         {
             if (keySequences == null || sequence == null)
                 return;
@@ -66,8 +72,7 @@ namespace WilliamPersonalMultiTool
         }
 
 
-        public static PKey FromString(string singlePKeyText, out WildcardMatchType wildcardMatchType,
-            out int wildcardCount)
+        public static PKey ToPKey(this string singlePKeyText, out WildcardMatchType wildcardMatchType, out int wildcardCount)
         {
             wildcardMatchType = WildcardMatchType.None;
             wildcardCount = 0;
@@ -109,10 +114,21 @@ namespace WilliamPersonalMultiTool
                 if (pKey != null)
                     return (PKey) pKey;
 
+            if (singlePKeyText.Length > 0)
+            {
+                foreach (var c in singlePKeyText)
+                {
+                    var key = c.ToString();
+                    if (Enum.TryParse(typeof(PKey), key, true, out pKey))
+                        if (pKey != null)
+                            return (PKey) pKey;
+                }
+            }
+
             return PKey.None;
         }
 
-        public static bool AreEqual(List<PKey> expected, List<PKey> actual)
+        public static bool AreEqual(this List<PKey> expected, List<PKey> actual)
         {
             if (expected == null || actual == null)
                 return false;

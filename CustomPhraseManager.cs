@@ -102,75 +102,41 @@ namespace WilliamPersonalMultiTool
             while (text.EndsWith("\n")) text = text.Substring(0, text.Length - 1);
 
             var keySequencesToAdd = new List<KeySequence>();
-            var textWithNoComments = string.Join("\n",
-                text.Replace("\r", "")
-                    .LineList()
-                    .Where(line => !line.Trim().StartsWith("//"))
-                    .ToList());
-
-            var whens = textWithNoComments
-                .AllTokens("When ", StringSplitOptions
-                    .RemoveEmptyEntries)
-                .Where(t => t
-                    .Trim()
-                    .IsNotEmpty() 
-                            && !t.Trim()
-                                .StartsWith("//"))
+            var linesWithNoComments = text
+                .Replace("\r", "")
+                .LineList()
+                .Where(line => !line.Trim().StartsWith("//"))
                 .ToList();
 
             Actors = new BaseActorList();
-
-            foreach (var when in whens)
+            BaseActor actor = null;
+            foreach (var line in linesWithNoComments)
             {
-                var whenWithItsOrs = when
-                    .Replace("\nOr ", "Or ", StringComparison.InvariantCultureIgnoreCase)
-                    .Replace("\n  Or ", "Or ", StringComparison.InvariantCultureIgnoreCase)
-                    .Replace("\n   Or ", "Or ", StringComparison.InvariantCultureIgnoreCase)
-                    .Replace("\n    Or ", "Or ", StringComparison.InvariantCultureIgnoreCase)
-                    .Replace("\n\tOr ", "Or ", StringComparison.InvariantCultureIgnoreCase)
-                    .AllTokens("Or ", StringSplitOptions.RemoveEmptyEntries);
-
-                for (var i = 0; i < whenWithItsOrs.Count; i++)
-                    if (whenWithItsOrs[i].TokenCount("\n") == 2 && whenWithItsOrs[i].EndsWith("\n"))
-                        whenWithItsOrs[i] = whenWithItsOrs[i].FirstToken("\n");
-
-                var actionType = ActorHelper.GetActionType(whenWithItsOrs[0]);
-                if (actionType.Value == ActionType.Unknown)
-                    throw new Exception($"Invalid Entry: {when}");
-
-                Actors.AddRange(ActorHelper.Factory(actionType.Value, whenWithItsOrs));
-
-                /*
-                if (ors.Count < 2) continue;
-
-                foreach (var or in ors.Skip(1))
+                var actionTypeEntry = ActorHelper.GetActionType(line);
+                if (actionTypeEntry.Value == ActionType.Unknown)
                 {
-                    actionType = ActorHelper.GetActionType(or);
-                    if (actionType.Value == ActionType.Unknown)
-                        throw new Exception($"Invalid Entry: {when}");
-
-                    paddedActionSeparator = $" {actionType.Key} ";
-
-                    parameters = ors[0].TokensAfterFirst(paddedActionSeparator).Substring(1);
-
-                    var orKeyText = or.FirstToken(paddedActionSeparator);
-                    var keysToPrepend = new List<PKey>(keysAtWhenLevel.GetRange(0, keysAtWhenLevel.Count - 1));
-
-                    var keySequenceForThisOr = ToPKeyList(orKeyText, keysToPrepend, out wildcardMatchType,
-                        out wildcardCount);
-                    if (keySequenceForThisOr.IsEmpty()) continue;
-
-                    var expansion = or.TokensAfterFirst(" " + actionType);
-                    if (expansion.IsEmpty()) continue;
-                    InternalAddGenericAction(actor, parameters, keySequenceForThisOr, keySequencesToAdd, wildcardCount, wildcardMatchType);
+                    throw new Exception($"Invalid Line: {line}");
                 }
-*/
+                if (actionTypeEntry.Value == ActionType.Continuation && actor != null)
+                {
+                    var continueWith = actor.ContinueWith(line);
+                    Actors.Add(continueWith);
+                    keySequencesToAdd.Add(continueWith.KeySequence);
+                }
+                else
+                {
+                    actor = actionTypeEntry.Value.ToActor(line, null);
+                    Actors.Add(actor);
+                    keySequencesToAdd.Add(actor.KeySequence);
+                }
             }
 
-            if(Actors.KeySequences.IsNotEmpty())
-            {
-                Keyboard.KeySequences.AddRange(keySequencesToAdd);
-            }   
+            Actors.KeySequences ??= new KeySequenceList();
+            Actors.KeySequences.AddRange(keySequencesToAdd);
+
+            Keyboard.KeySequences ??= new KeySequenceList();
+            Keyboard.KeySequences.AddRange(keySequencesToAdd);
+
             return keySequencesToAdd;
         }
 

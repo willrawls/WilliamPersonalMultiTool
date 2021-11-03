@@ -13,17 +13,15 @@ namespace WilliamPersonalMultiTool
             if (item.IsEmpty()) return;
             
             var tokens = Arguments.AllTokens(" ", StringSplitOptions.RemoveEmptyEntries);
-            if (tokens.Count > 1)
-            {
-                Verb = tokens[0];
-            }
-            else 
-            {
-                Verb = "expand";
-            }
+            Verb = tokens.Count > 1 
+                ? tokens[0] 
+                : "expand";
 
             if (Verb != "expand" && Verb != "percent")
                 throw new Exception($"MoveActor: Invalid verb: {Arguments}");
+
+            KeySequence.Name = Arguments.Trim();
+            
         }
 
         public string TextToPaste()

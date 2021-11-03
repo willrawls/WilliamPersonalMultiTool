@@ -76,17 +76,17 @@ namespace WilliamPersonalMultiTool
 
         public CustomKeySequence Add(CustomKeySequence keySequence)
         {
-            Extensions.ReplaceMatching(Keyboard.KeySequences, keySequence);
+            Keyboard.KeySequences.ReplaceMatching(keySequence);
             return keySequence;
         }
 
         public CustomKeySequence AddOrReplace(string keys)
         {
-            var pKeyList = Extensions.ToPKeyList(keys, null, out var wildcardMatchType, out var wildcardCount);
+            var pKeyList = keys.ToPKeyList(null, out var wildcardMatchType, out var wildcardCount);
             var keySequence =
                 new CustomKeySequence(keys, pKeyList, OnExpandToNameOfTrigger, ToBackspaceCount(pKeyList));
 
-            Extensions.ReplaceMatching(Keyboard.KeySequences, keySequence);
+            Keyboard.KeySequences.ReplaceMatching(keySequence);
 
             if (wildcardCount <= 0) return keySequence;
 
@@ -101,15 +101,16 @@ namespace WilliamPersonalMultiTool
             while (text.StartsWith("\n")) text = text.Substring(1);
             while (text.EndsWith("\n")) text = text.Substring(0, text.Length - 1);
 
-            var keySequencesToAdd = new List<KeySequence>();
             var linesWithNoComments = text
                 .Replace("\r", "")
                 .LineList()
                 .Where(line => !line.Trim().StartsWith("//"))
                 .ToList();
 
-            Actors = new BaseActorList();
+            var keySequencesToAdd = new List<KeySequence>();
+            Actors ??= new BaseActorList();
             BaseActor actor = null;
+
             foreach (var line in linesWithNoComments)
             {
                 var actionTypeEntry = ActorHelper.GetActionType(line);
@@ -204,7 +205,7 @@ namespace WilliamPersonalMultiTool
                 Arguments = arguments,
                 BackColor = Color.Tan
             };
-            Extensions.ReplaceMatching(result, orSequence);
+            result.ReplaceMatching(orSequence);
         }
 
         private void OnRunTriggerHandler(object sender, PhraseEventArguments e)
@@ -281,7 +282,7 @@ namespace WilliamPersonalMultiTool
                 BackColor = Color.PaleGoldenrod
             };
 
-            Extensions.ReplaceMatching(result, chooseSequence);
+            result.ReplaceMatching(chooseSequence);
         }
 
         private void OnChooseTriggerHandler(object sender, PhraseEventArguments e)
@@ -331,7 +332,7 @@ namespace WilliamPersonalMultiTool
 
         private void InternalAddOrReplace(CustomKeySequence sequence, List<KeySequence> resultingSequences)
         {
-            Extensions.ReplaceMatching(resultingSequences, sequence);
+            resultingSequences.ReplaceMatching(sequence);
         }
 
         public int ToBackspaceCount(List<PKey> pKeyList)
@@ -349,7 +350,7 @@ namespace WilliamPersonalMultiTool
             };
             if (keys.IsEmpty()) return keySequence;
 
-            keySequence.Sequence = Extensions.ToPKeyList(keys, null, out var wildcardMatchType, out var wildcardCount);
+            keySequence.Sequence = keys.ToPKeyList(null, out var wildcardMatchType, out var wildcardCount);
             keySequence.WildcardCount = wildcardCount;
             keySequence.WildcardMatchType = wildcardMatchType;
             return keySequence;

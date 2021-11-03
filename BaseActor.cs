@@ -15,10 +15,20 @@ namespace WilliamPersonalMultiTool
             Action = actionType;
             var cleanItem = item
                 .Replace("\r", "")
-                .FirstToken("\n");
+                .FirstToken("\n")
+                .Trim();
             Separator = $" {Action}";
+            
             Arguments = cleanItem.TokensAfterFirst(Separator);
+            if (Arguments.StartsWith(" "))
+                Arguments = Arguments.Substring(1);
+
             KeyText = cleanItem.FirstToken(Separator);
+            if(KeyText.ToLower().StartsWith("when "))
+                KeyText = KeyText.TokensAfterFirst("when ");
+            if(KeyText.ToLower().StartsWith("or "))
+                KeyText = KeyText.TokensAfterFirst("or ");
+            
             KeySequence = new CustomKeySequence(KeyText, Arguments, this);
         }
 

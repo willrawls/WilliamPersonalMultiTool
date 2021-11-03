@@ -78,6 +78,15 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
         }
 
         [TestMethod]
+        public void AddSet_Caps123_NoSpaces_OnOneLine()
+        {
+            var data = new CustomPhraseManager(null);
+            var actual = data.AddSet("When CapsLock 123 type someone.at@gmail.com");
+            Assert.AreEqual(1, actual.Count);
+            My.AssertAllAreEqual(TestPKeys.Caps123, actual[0].Sequence);
+        }
+
+        [TestMethod]
         public void AddSet_Caps123_RunNotepad_Simple()
         {
             var data = new CustomPhraseManager(null);

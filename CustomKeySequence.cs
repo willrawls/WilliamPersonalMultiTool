@@ -30,7 +30,7 @@ namespace WilliamPersonalMultiTool
         {
             Actor = actor;
             Arguments = arguments;
-            Name = keyText;
+            Name = arguments;
             Sequence = keyText.ToPKeyList(null, out var wildcardMatchType, out int wildcardCount);
             ThenCall((sender, eventArguments) =>
             {

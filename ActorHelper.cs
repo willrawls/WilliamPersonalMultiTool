@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using MetX.Standard.Library;
 using NHotPhrase.Keyboard;
 
 namespace WilliamPersonalMultiTool
@@ -76,13 +78,13 @@ namespace WilliamPersonalMultiTool
         public static KeyValuePair<string, ActionType> GetActionType(string line)
         {
             var lower = line.Replace("\r", "\n").ToLower();
-            
-            if (lower.Trim().StartsWith("or"))
-                return new KeyValuePair<string, ActionType>("or", ActionType.Continuation);
-
-            foreach (KeyValuePair<string, ActionType> separator in Actionables)
-                if (lower.Contains($" {separator.Key} ") || lower.Contains($" {separator.Key}\n"))
-                    return separator;
+            if (lower.StartsWith("when ")) lower = lower.TokensAfterFirst("when ");
+            if (lower.StartsWith("or ")) lower = lower.TokensAfterFirst("or ");
+            <<< Start here:
+            //      Restructure dictionary into a ActionableList : List<Actionable>
+            //      When not detected, assume it is a continuation (new parameter continuedFrom ?)
+            foreach (var separator in Actionables.Where(separator => lower.Contains($" {separator.Key}")))
+                return separator;
             return new KeyValuePair<string, ActionType>("unknown", ActionType.Unknown);
         }
 

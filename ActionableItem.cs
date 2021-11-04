@@ -1,34 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using MetX.Standard.Library.Extensions;
 using NHotPhrase.Keyboard;
 
 namespace WilliamPersonalMultiTool
 {
-    public class ActionableItem
-    {
-        public string Fred = "fred";
-    }
-
-    public class ActionableItem<T> : ActionableItem where T: BaseActor, new()
+    public abstract class ActionableItem
     {
         public ActionableType ActionableType { get; set; }
-        public Type ActorType { get; set; }
+        public Type ActorType { get; set;  }
 
         public ActionableItem()
         {
         }
 
+        /*
         public ActionableItem(ActionableType actionableType, Type actorType)
         {
             ActionableType = actionableType;
             ActorType = actorType;
         }
+        */
 
-        public BaseActor ToActor(string item, List<PKey> keysToPrepend)
+        public abstract BaseActor ToActor(string item, List<PKey> keysToPrepend);
+
+        public ActionableItem InitializeActor(ActionableType actionableType, Type actorType)
         {
-            T actor = Activator.CreateInstance<T>();
-            actor?.Initialize(ActionableType, item, keysToPrepend);
-            return actor;
+            ActionableType = actionableType;
+            ActorType = actorType;
+            InitializeBase();
         }
 
         public List<BaseActor> ToActors(List<string> relatedItems, List<PKey> keysToPrepend)
@@ -44,7 +44,30 @@ namespace WilliamPersonalMultiTool
             }
             return actors;
         }
+    }
 
+    public class ActionableItem<T> : ActionableItem where T: BaseActor, new()
+    {
+        public ActionableItem()
+        {
+        }
+
+        public ActionableItem(ActionableType actionableType)
+        {
+            ActionableType = actionableType;
+            ActorType = typeof(T);
+        }
+
+        public override BaseActor ToActor(string item, List<PKey> keysToPrepend)
+        {
+            var actor = new T();
+            actor.InitializeActor(item);
+
+            if (keysToPrepend.IsNotEmpty())
+                actor.KeySequence.Sequence.InsertRange(0, keysToPrepend);
+
+            return actor;
+        }
 
     }
 }

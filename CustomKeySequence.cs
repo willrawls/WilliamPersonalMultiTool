@@ -37,7 +37,6 @@ namespace WilliamPersonalMultiTool
 
             if (keysToPrepend.IsEmpty())
                 return;
-
             Sequence.InsertRange(0, keysToPrepend);
         }
     }

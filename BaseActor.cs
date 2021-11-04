@@ -8,18 +8,20 @@ using NHotPhrase.Phrase;
 
 namespace WilliamPersonalMultiTool
 {
-    public abstract class BaseActor : IAct
+    public abstract class BaseActor : IAct, IInitializeActor
     {
-        protected BaseActor()
+        public BaseActor()
         {
         }
 
-        protected BaseActor(ActionableType actionableType, string item)
+        public BaseActor(ActionableType actionableType, string item)
         {
-            Initialize(actionableType, item, null);
+            InitializeBase(actionableType, item, null);
         }
 
-        public void Initialize(ActionableType actionableType, string item, List<PKey> keysToPrepend)
+        public abstract void InitializeActor(string item);
+
+        public void InitializeBase(ActionableType actionableType, string item, List<PKey> keysToPrepend)
         {
             Actionable = actionableType;
             var cleanItem = item
@@ -54,19 +56,6 @@ namespace WilliamPersonalMultiTool
         public virtual bool Act(PhraseEventArguments phraseEventArguments)
         {
             return OnAct == null || OnAct();
-        }
-
-        public BaseActor ContinueWith(string line)
-        {
-            BaseActor actor = null;
-            if (line.Trim().StartsWith("Or"))
-            {
-                var actionableItem = ActorHelper.GetActionType(line);
-                var keysToPrepend = KeySequence.Sequence.Take(KeySequence.Sequence.Count - 1).ToList();
-                return actionableItem.ToActor(line.TokensAfterFirst("Or"), keysToPrepend);
-            }
-
-            return actor;
         }
     }
 }

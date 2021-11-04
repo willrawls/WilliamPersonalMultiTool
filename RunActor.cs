@@ -7,7 +7,7 @@ namespace WilliamPersonalMultiTool
         public string TargetExecutable { get; set; }
         public string Arguments { get; set; }
 
-        public RunActor(string item) : base(ActionType.Run, item)
+        public RunActor(string item) : base(ActionableType.Run, item)
         {
         }
 

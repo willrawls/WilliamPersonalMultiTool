@@ -12,7 +12,7 @@ namespace WilliamPersonalMultiTool
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public MoveActor(string item) : base(ActionType.Move, item)
+        public MoveActor(string item) : base(ActionableType.Move, item)
         {
             var tokens = Arguments.AllTokens(" ", StringSplitOptions.RemoveEmptyEntries);
             if (tokens.Count == 5)

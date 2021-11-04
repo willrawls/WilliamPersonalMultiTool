@@ -10,26 +10,31 @@ namespace WilliamPersonalMultiTool
 {
     public abstract class BaseActor : IAct
     {
-        protected BaseActor(ActionType actionType, string item)
+        protected BaseActor(ActionableType actionableType, string item)
         {
-            Action = actionType;
+            Initialize(actionableType, item, null);
+        }
+
+        public void Initialize(ActionableType actionableType, string item, List<PKey> keysToPrepend)
+        {
+            Actionable = actionableType;
             var cleanItem = item
                 .Replace("\r", "")
                 .FirstToken("\n")
                 .Trim();
-            Separator = $" {Action}";
-            
+            Separator = $" {Actionable}";
+
             Arguments = cleanItem.TokensAfterFirst(Separator);
             if (Arguments.StartsWith(" "))
                 Arguments = Arguments.Substring(1);
 
             KeyText = cleanItem.FirstToken(Separator);
-            if(KeyText.ToLower().StartsWith("when "))
+            if (KeyText.ToLower().StartsWith("when "))
                 KeyText = KeyText.TokensAfterFirst("when ");
-            if(KeyText.ToLower().StartsWith("or "))
+            if (KeyText.ToLower().StartsWith("or "))
                 KeyText = KeyText.TokensAfterFirst("or ");
-            
-            KeySequence = new CustomKeySequence(KeyText, Arguments, this);
+
+            KeySequence = new CustomKeySequence(KeyText, Arguments, this, keysToPrepend);
         }
 
         public string KeyText { get; set; }
@@ -38,7 +43,7 @@ namespace WilliamPersonalMultiTool
         public string Separator { get; set; }
 
         public Func<bool> OnAct { get; set; }
-        public ActionType Action { get; set; }
+        public ActionableType Actionable { get; set; }
         public string Verb { get; set; }
         public KeySequence KeySequence { get; set; }
 
@@ -52,9 +57,9 @@ namespace WilliamPersonalMultiTool
             BaseActor actor = null;
             if (line.Trim().StartsWith("Or"))
             {
-                var actionTypeEntry = ActorHelper.GetActionType(line);
+                var actionableItem = ActorHelper.GetActionType(line);
                 var keysToPrepend = KeySequence.Sequence.Take(KeySequence.Sequence.Count - 1).ToList();
-                return actionTypeEntry.Value.ToActor(line.TokensAfterFirst("Or"), keysToPrepend);
+                return actionableItem.Value.ToActor(line.TokensAfterFirst("Or"), keysToPrepend);
             }
 
             return actor;

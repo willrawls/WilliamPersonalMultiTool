@@ -1,6 +1,6 @@
 ﻿namespace WilliamPersonalMultiTool
 {
-    public enum ActionType
+    public enum ActionableType
     {
         Unknown,
         Type,

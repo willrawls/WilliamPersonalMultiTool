@@ -6,7 +6,7 @@ namespace WilliamPersonalMultiTool
     {
         public int RepeatLastCount { get; set; }
 
-        public AdjustActor(string item) : base(ActionType.Adjust, item)
+        public AdjustActor(string item) : base(ActionableType.Adjust, item)
         {
         }
 

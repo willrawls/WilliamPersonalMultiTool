@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using MetX.Standard.Library.Extensions;
 using Microsoft.Win32;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
@@ -26,16 +27,18 @@ namespace WilliamPersonalMultiTool
             BackColor = backColor ?? Color.White;
         }
 
-        public CustomKeySequence(string keyText, string arguments, IAct actor)
+        public CustomKeySequence(string keyText, string arguments, IAct actor, List<PKey> keysToPrepend)
         {
             Actor = actor;
             Arguments = arguments;
             Name = arguments;
             Sequence = keyText.ToPKeyList(null, out var wildcardMatchType, out int wildcardCount);
-            ThenCall((sender, eventArguments) =>
-            {
-                actor.Act(eventArguments);
-            });
+            ThenCall((sender, eventArguments) => { actor.Act(eventArguments); });
+
+            if (keysToPrepend.IsEmpty())
+                return;
+
+            Sequence.InsertRange(0, keysToPrepend);
         }
     }
 }

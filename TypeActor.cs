@@ -8,7 +8,7 @@ namespace WilliamPersonalMultiTool
 {
     public class TypeActor : BaseActor
     {
-        public TypeActor(string item) : base(ActionType.Type, item)
+        public TypeActor(string item) : base(ActionableType.Type, item)
         {
             if (item.IsEmpty()) return;
             

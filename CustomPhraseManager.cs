@@ -114,11 +114,11 @@ namespace WilliamPersonalMultiTool
             foreach (var line in linesWithNoComments)
             {
                 var actionTypeEntry = ActorHelper.GetActionType(line);
-                if (actionTypeEntry.Value == ActionType.Unknown)
+                if (actionTypeEntry.Value == ActionableType.Unknown)
                 {
                     throw new Exception($"Invalid Line: {line}");
                 }
-                if (actionTypeEntry.Value == ActionType.Continuation && actor != null)
+                if (actionTypeEntry.Value == ActionableType.Continuation && actor != null)
                 {
                     var continueWith = actor.ContinueWith(line);
                     Actors.Add(continueWith);
@@ -146,7 +146,7 @@ namespace WilliamPersonalMultiTool
         private void InternalAddGenericAction(BaseActor actor, string parameters, List<PKey> keySequence,
             List<KeySequence> resultingSequences, int wildcardCount, WildcardMatchType wildcardMatchType)
         {
-            var action = actor.Action.ToString();
+            var action = actor.Actionable.ToString();
             if (action.StartsWith("choose") && parameters.Replace("\r", "").StartsWith("\n"))
                 parameters = parameters.Substring(1);
 

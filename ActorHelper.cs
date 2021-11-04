@@ -2,57 +2,58 @@
 using System.Collections.Generic;
 using System.Linq;
 using MetX.Standard.Library;
+using MetX.Standard.Library.Generics;
 using NHotPhrase.Keyboard;
 
 namespace WilliamPersonalMultiTool
 {
     public static class ActorHelper
     {
-        public static List<BaseActor> ToActors(this ActionType actionType, List<string> relatedItems, List<PKey> keysToPrepend)
+        public static List<BaseActor> ToActors(this ActionableType actionableType, List<string> relatedItems, List<PKey> keysToPrepend)
         {
             var actors = new List<BaseActor>();
 
             foreach(var item in relatedItems)
             {
-                var actor = ToActor(actionType, item, keysToPrepend);
+                var actor = ToActor(actionableType, item, keysToPrepend);
 
                 if (actor == null)
-                    throw new ArgumentOutOfRangeException(nameof(actionType), actionType, null);
+                    throw new ArgumentOutOfRangeException(nameof(actionableType), actionableType, null);
                 actors.Add(actor);
             }
             return actors;
         }
 
-        public static BaseActor ToActor(this ActionType actionType, string item, List<PKey> keysToPrepend)
+        public static BaseActor ToActor(this ActionableType actionableType, string item, List<PKey> keysToPrepend)
         {
             BaseActor actor = null;
-            switch (actionType)
+            switch (actionableType)
             {
-                case ActionType.Type:
+                case ActionableType.Type:
                     actor = new TypeActor(item);
                     break;
 
-                case ActionType.Size:
+                case ActionableType.Size:
                     actor = new SizeActor(item);
                     break;
 
-                case ActionType.Move:
+                case ActionableType.Move:
                     actor = new MoveActor(item);
                     break;
 
-                case ActionType.Repeat:
+                case ActionableType.Repeat:
                     actor = new RepeatActor(item);
                     break;
 
-                case ActionType.Adjust:
+                case ActionableType.Adjust:
                     actor = new AdjustActor(item);
                     break;
 
-                case ActionType.Run:
+                case ActionableType.Run:
                     actor = new RunActor(item);
                     break;
 
-                case ActionType.Choose:
+                case ActionableType.Choose:
                     actor = new TypeActor(item);
                     break;
             }
@@ -63,31 +64,47 @@ namespace WilliamPersonalMultiTool
             return actor;
         }
 
-        public static Dictionary<string, ActionType> Actionables = new Dictionary<string, ActionType>
+        /*public static Dictionary<string, ActionableType> oldActionables = new Dictionary<string, ActionableType>
         {
-            {"type", ActionType.Type},
-            {"run", ActionType.Run},
-            {"choose", ActionType.Choose},
-            {"move", ActionType.Move},
-            {"size", ActionType.Size},
-            {"adjust", ActionType.Adjust},
+            {"type", ActionableType.Type},
+            {"run", ActionableType.Run},
+            {"choose", ActionableType.Choose},
+            {"move", ActionableType.Move},
+            {"size", ActionableType.Size},
+            {"adjust", ActionableType.Adjust},
             
-            {"unknown", ActionType.Unknown}
-        };
+            {"unknown", ActionableType.Unknown}
+        };*/
 
-        public static KeyValuePair<string, ActionType> GetActionType(string line)
+        public static Actionable Actionables;
+
+        static ActorHelper()
+        {
+            Actionables = new Actionable
+            {
+                ["type"] = {Item = new ActionableItem(ActionableType.Type, typeof(TypeActor))},
+                ["run"] = {Item = new ActionableItem(ActionableType.Run, typeof(RunActor))},
+                ["choose"] = {Item = new ActionableItem(ActionableType.Choose, typeof(ChooseActor))},
+                ["move"] = {Item = new ActionableItem(ActionableType.Move, typeof(MoveActor))},
+                ["Size"] = {Item = new ActionableItem(ActionableType.Size, typeof(SizeActor))},
+                ["adjust"] = {Item = new ActionableItem(ActionableType.Adjust, typeof(AdjustActor))},
+
+                ["continuation"] = {Item = new ActionableItem(ActionableType.Adjust, typeof(ContinuationActor))},
+            };
+
+            Actionables["unknown"].Item.ActionableType = ActionableType.Type;
+        }
+
+        public static ActionableItem GetActionType(string line)
         {
             var lower = line.Replace("\r", "\n").ToLower();
             if (lower.StartsWith("when ")) lower = lower.TokensAfterFirst("when ");
             if (lower.StartsWith("or ")) lower = lower.TokensAfterFirst("or ");
-            <<< Start here:
-            //      Restructure dictionary into a ActionableList : List<Actionable>
-            //      When not detected, assume it is a continuation (new parameter continuedFrom ?)
-            foreach (var separator in Actionables.Where(separator => lower.Contains($" {separator.Key}")))
-                return separator;
-            return new KeyValuePair<string, ActionType>("unknown", ActionType.Unknown);
-        }
 
+            if (Actionables.ContainsKey(lower))
+                return Actionables[lower].Item;
+            return Actionables["continuation"].Item;
+        }
 
     }
 }

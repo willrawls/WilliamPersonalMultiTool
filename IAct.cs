@@ -6,7 +6,7 @@ namespace WilliamPersonalMultiTool
     public interface IAct
     {
         Func<bool> OnAct { get; set; }
-        ActionType Action { get; }
+        ActionableType Actionable { get; }
         string Verb { get; set; }
         bool Act(PhraseEventArguments phraseEventArguments);
         KeySequence KeySequence { get; set; }

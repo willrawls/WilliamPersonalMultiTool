@@ -10,7 +10,7 @@ namespace WilliamPersonalMultiTool
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public SizeActor(string item) : base(ActionType.Size, item)
+        public SizeActor(string item) : base(ActionableType.Size, item)
         {
             
             var tokens = Arguments.AllTokens(" ", StringSplitOptions.RemoveEmptyEntries);

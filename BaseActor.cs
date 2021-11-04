@@ -10,6 +10,10 @@ namespace WilliamPersonalMultiTool
 {
     public abstract class BaseActor : IAct
     {
+        protected BaseActor()
+        {
+        }
+
         protected BaseActor(ActionableType actionableType, string item)
         {
             Initialize(actionableType, item, null);
@@ -59,7 +63,7 @@ namespace WilliamPersonalMultiTool
             {
                 var actionableItem = ActorHelper.GetActionType(line);
                 var keysToPrepend = KeySequence.Sequence.Take(KeySequence.Sequence.Count - 1).ToList();
-                return actionableItem.Value.ToActor(line.TokensAfterFirst("Or"), keysToPrepend);
+                return actionableItem.ToActor(line.TokensAfterFirst("Or"), keysToPrepend);
             }
 
             return actor;

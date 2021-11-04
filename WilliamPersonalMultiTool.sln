@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetX.Standard.Library", "..\xlg\MetX\MetX.Standard.Library\MetX.Standard.Library.csproj", "{2130B222-A61E-40DB-9711-111553B711CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,14 @@ Global
 		{21F2D7D2-5D39-4CF4-AFC4-2D916D09AECE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{21F2D7D2-5D39-4CF4-AFC4-2D916D09AECE}.Release|x64.ActiveCfg = Release|Any CPU
 		{21F2D7D2-5D39-4CF4-AFC4-2D916D09AECE}.Release|x64.Build.0 = Release|Any CPU
+		{2130B222-A61E-40DB-9711-111553B711CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2130B222-A61E-40DB-9711-111553B711CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2130B222-A61E-40DB-9711-111553B711CC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2130B222-A61E-40DB-9711-111553B711CC}.Debug|x64.Build.0 = Debug|Any CPU
+		{2130B222-A61E-40DB-9711-111553B711CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2130B222-A61E-40DB-9711-111553B711CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2130B222-A61E-40DB-9711-111553B711CC}.Release|x64.ActiveCfg = Release|Any CPU
+		{2130B222-A61E-40DB-9711-111553B711CC}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

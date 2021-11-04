@@ -9,21 +9,7 @@ namespace WilliamPersonalMultiTool
 {
     public static class ActorHelper
     {
-        public static List<BaseActor> ToActors(this ActionableType actionableType, List<string> relatedItems, List<PKey> keysToPrepend)
-        {
-            var actors = new List<BaseActor>();
-
-            foreach(var item in relatedItems)
-            {
-                var actor = ToActor(actionableType, item, keysToPrepend);
-
-                if (actor == null)
-                    throw new ArgumentOutOfRangeException(nameof(actionableType), actionableType, null);
-                actors.Add(actor);
-            }
-            return actors;
-        }
-
+        /*
         public static BaseActor ToActor(this ActionableType actionableType, string item, List<PKey> keysToPrepend)
         {
             BaseActor actor = null;
@@ -62,7 +48,7 @@ namespace WilliamPersonalMultiTool
                 actor.KeySequence.Sequence.InsertRange(0, keysToPrepend);
 
             return actor;
-        }
+        }*/
 
         /*public static Dictionary<string, ActionableType> oldActionables = new Dictionary<string, ActionableType>
         {

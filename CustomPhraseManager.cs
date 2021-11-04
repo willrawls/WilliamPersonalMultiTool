@@ -113,12 +113,12 @@ namespace WilliamPersonalMultiTool
 
             foreach (var line in linesWithNoComments)
             {
-                var actionTypeEntry = ActorHelper.GetActionType(line);
-                if (actionTypeEntry.Value == ActionableType.Unknown)
+                var actionableItem = ActorHelper.GetActionType(line);
+                if (actionableItem.ActionableType == ActionableType.Unknown)
                 {
                     throw new Exception($"Invalid Line: {line}");
                 }
-                if (actionTypeEntry.Value == ActionableType.Continuation && actor != null)
+                if (actionableItem.ActionableType == ActionableType.Continuation && actor != null)
                 {
                     var continueWith = actor.ContinueWith(line);
                     Actors.Add(continueWith);
@@ -126,7 +126,7 @@ namespace WilliamPersonalMultiTool
                 }
                 else
                 {
-                    actor = actionTypeEntry.Value.ToActor(line, null);
+                    actor = actionableItem.ToActor(line, null);
                     Actors.Add(actor);
                     keySequencesToAdd.Add(actor.KeySequence);
                 }

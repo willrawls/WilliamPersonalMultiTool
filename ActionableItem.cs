@@ -21,11 +21,26 @@ namespace WilliamPersonalMultiTool
 
         public BaseActor ToActor(string item, List<PKey> keysToPrepend)
         {
-            var actor = Activator.CreateInstance(ActorType) as BaseActor;
+            object actorObject = Activator.CreateInstance(ActorType);
+            BaseActor actor = actorObject as BaseActor;
             actor?.Initialize(ActionableType, item, keysToPrepend);
-
             return actor;
         }
+
+        public List<BaseActor> ToActors(List<string> relatedItems, List<PKey> keysToPrepend)
+        {
+            var actors = new List<BaseActor>();
+
+            foreach(var item in relatedItems)
+            {
+                var actor = ToActor(item, keysToPrepend);
+                if (actor == null)
+                    throw new ArgumentOutOfRangeException(nameof(ActionableType), ActionableType, null);
+                actors.Add(actor);
+            }
+            return actors;
+        }
+
 
     }
 }

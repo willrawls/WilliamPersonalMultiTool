@@ -4,7 +4,12 @@ using NHotPhrase.Keyboard;
 
 namespace WilliamPersonalMultiTool
 {
-    public class ActionableItem 
+    public class ActionableItem
+    {
+        public string Fred = "fred";
+    }
+
+    public class ActionableItem<T> : ActionableItem where T: BaseActor, new()
     {
         public ActionableType ActionableType { get; set; }
         public Type ActorType { get; set; }
@@ -21,8 +26,7 @@ namespace WilliamPersonalMultiTool
 
         public BaseActor ToActor(string item, List<PKey> keysToPrepend)
         {
-            object actorObject = Activator.CreateInstance(ActorType);
-            BaseActor actor = actorObject as BaseActor;
+            T actor = Activator.CreateInstance<T>();
             actor?.Initialize(ActionableType, item, keysToPrepend);
             return actor;
         }

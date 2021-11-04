@@ -68,7 +68,7 @@ namespace WilliamPersonalMultiTool
         {
             Actionables = new Actionable
             {
-                ["type"] = {Item = new ActionableItem(ActionableType.Type, typeof(TypeActor))},
+                ["type"] = {Item = new ActionableItem<TypeActor>(ActionableType.Type, typeof(TypeActor)) },
                 ["run"] = {Item = new ActionableItem(ActionableType.Run, typeof(RunActor))},
                 ["choose"] = {Item = new ActionableItem(ActionableType.Choose, typeof(ChooseActor))},
                 ["move"] = {Item = new ActionableItem(ActionableType.Move, typeof(MoveActor))},

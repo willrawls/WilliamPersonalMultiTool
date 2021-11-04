@@ -11,7 +11,9 @@ namespace WilliamPersonalMultiTool
         public TypeActor(string item) : base(ActionableType.Type, item)
         {
             if (item.IsEmpty()) return;
-            
+            <<< Start here:
+            //      All the actors need Initialize or something equivalent
+            //      
             var tokens = Arguments.AllTokens(" ", StringSplitOptions.RemoveEmptyEntries);
             Verb = tokens.Count > 1 
                 ? tokens[0] 

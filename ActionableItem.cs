@@ -5,6 +5,11 @@ using NHotPhrase.Keyboard;
 
 namespace WilliamPersonalMultiTool
 {
+    public class ConcreteActionableItem
+    {
+
+    }
+
     public abstract class ActionableItem
     {
         public ActionableType ActionableType { get; set; }
@@ -13,22 +18,14 @@ namespace WilliamPersonalMultiTool
         public ActionableItem()
         {
         }
-
-        /*
-        public ActionableItem(ActionableType actionableType, Type actorType)
-        {
-            ActionableType = actionableType;
-            ActorType = actorType;
-        }
-        */
-
+        
         public abstract BaseActor ToActor(string item, List<PKey> keysToPrepend);
 
         public ActionableItem InitializeActor(ActionableType actionableType, Type actorType)
         {
             ActionableType = actionableType;
             ActorType = actorType;
-            InitializeBase();
+            return this;
         }
 
         public List<BaseActor> ToActors(List<string> relatedItems, List<PKey> keysToPrepend)

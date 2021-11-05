@@ -2,7 +2,7 @@
 
 namespace WilliamPersonalMultiTool
 {
-    public class Actionable : AssocArray<ActionableItem>
+    public class Actionable : AssocArray<ConcreteActionableItem>
     {
         public Actionable()
         {

@@ -66,17 +66,40 @@ namespace WilliamPersonalMultiTool
 
         static ActorHelper()
         {
+            Actionables.AddRange(new []
+            {
+                new ActionableItem().Initialize(false, (item, keys) =>
+                {
+                    var actor = new TypeActor(); 
+                    return actor.InitializeActor();
+
+                }),
+                new ActionableItem().Initialize(false, (item, keys) => new ChooseActor()),
+                new ActionableItem().Initialize(false, (item, keys) => new MoveActor()),
+                new ActionableItem().Initialize(false, (item, keys) => new RunActor()),
+                new ActionableItem().Initialize(false, (item, keys) => new SizeActor()),
+                new ActionableItem().Initialize(false, (item, keys) => new AdjustActor()),
+                new ActionableItem().Initialize(false, (item, keys) => new ContinuationActor()),
+            });
+
             Actionables = new Actionable
             {
-                ["type"] = {Item = new ActionableItem<TypeActor>().InitializeActor(ActionableType.Type, typeof(TypeActor)) },
-                ["run"] = {Item = new ActionableItem(ActionableType.Run, typeof(RunActor))},
-                ["choose"] = {Item = new ActionableItem(ActionableType.Choose, typeof(ChooseActor))},
-                ["move"] = {Item = new ActionableItem(ActionableType.Move, typeof(MoveActor))},
-                ["Size"] = {Item = new ActionableItem(ActionableType.Size, typeof(SizeActor))},
-                ["adjust"] = {Item = new ActionableItem(ActionableType.Adjust, typeof(AdjustActor))},
+                ["run"] =
+                {
+                    
+                },
+                ["choose"] = { Item = new ActionableItem<ChooseActor>(ActionableType.Choose) },
+                ["move"] = { Item = new ActionableItem<MoveActor>(ActionableType.Move, typeof(MoveActor)) },
+                ["Size"] = { Item = new ActionableItem<SizeActor(ActionableType.Size, typeof(SizeActor)) },
+                ["adjust"] = { Item = new ActionableItem<AdjustActor>() },
 
-                ["continuation"] = {Item = new ActionableItem(ActionableType.Adjust, typeof(ContinuationActor))},
+                ["continuation"] = { Item = new ActionableItem(ActionableType.Adjust, typeof(ContinuationActor)) },
             };
+            
+            
+            Actionables[item.ActionableType.ToString().ToLower()].Item = item;
+
+            Actionables["type"].Item.Initialize(false, () => { return new ActionableItem(); });
 
             Actionables["unknown"].Item.ActionableType = ActionableType.Type;
         }
@@ -92,5 +115,15 @@ namespace WilliamPersonalMultiTool
             return Actionables["continuation"].Item;
         }
 
+        public static BaseActor Factory(string item, List<PKey> keysToPrepend = null)
+        {
+            ActionableItem actionableItem = GetActionType(item);
+            if (actionableItem == null) return null;
+            if (actionableItem.ActionableType == ActionableType.Unknown) return null;
+
+            BaseActor actor = actionableItem.Factory(item, keysToPrepend);
+            return actor;
+
+        }
     }
 }

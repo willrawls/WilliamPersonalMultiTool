@@ -4,7 +4,7 @@ using NHotPhrase.Keyboard;
 
 namespace WilliamPersonalMultiTool.Tests
 {
-    public class My
+    public static class My
     {
         public static void AssertAllAreEqual(List<PKey> expected, List<PKey> actual)
         {

@@ -146,7 +146,7 @@ namespace WilliamPersonalMultiTool
         private void InternalAddGenericAction(BaseActor actor, string parameters, List<PKey> keySequence,
             List<KeySequence> resultingSequences, int wildcardCount, WildcardMatchType wildcardMatchType)
         {
-            var action = actor.Actionable.ToString();
+            var action = actor.ActionableType.ToString();
             if (action.StartsWith("choose") && parameters.Replace("\r", "").StartsWith("\n"))
                 parameters = parameters.Substring(1);
 

@@ -1,4 +1,6 @@
-﻿using NHotPhrase.Phrase;
+﻿using System.Collections.Generic;
+using NHotPhrase.Keyboard;
+using NHotPhrase.Phrase;
 
 namespace WilliamPersonalMultiTool
 {
@@ -6,8 +8,14 @@ namespace WilliamPersonalMultiTool
     {
         public int RepeatLastCount { get; set; }
 
-        public AdjustActor(string item) : base(ActionableType.Adjust, item)
+        public AdjustActor() 
         {
+            ActionableType = ActionableType.Adjust;
+            Verbs = new List<string>
+            {
+                "percent",
+                "default"
+            };
         }
 
         public override bool Act(PhraseEventArguments phraseEventArguments)

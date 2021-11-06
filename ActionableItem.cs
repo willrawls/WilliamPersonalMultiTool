@@ -5,26 +5,26 @@ using NHotPhrase.Keyboard;
 
 namespace WilliamPersonalMultiTool
 {
-    public class ConcreteActionableItem
-    {
-
-    }
-
-    public abstract class ActionableItem
+    public class ActionableItem
     {
         public ActionableType ActionableType { get; set; }
-        public Type ActorType { get; set;  }
+        public bool CanContinue {get; set; }
 
-        public ActionableItem()
+        public BaseActor Factory(string item, List<PKey> keysToPrepend = null)
         {
+            if (InternalFactory == null)
+                return null;
+
+            BaseActor actor = InternalFactory(item, keysToPrepend);
+            actor.Initialize(item, keysToPrepend);
+            return actor;
         }
-        
-        public abstract BaseActor ToActor(string item, List<PKey> keysToPrepend);
+        public Func<string, List<PKey>, BaseActor> InternalFactory;
 
-        public ActionableItem InitializeActor(ActionableType actionableType, Type actorType)
+        public ActionableItem Initialize(bool canContinue, Func<string, List<PKey>, BaseActor> factory)
         {
-            ActionableType = actionableType;
-            ActorType = actorType;
+            CanContinue = canContinue;
+            InternalFactory = factory;
             return this;
         }
 
@@ -34,7 +34,7 @@ namespace WilliamPersonalMultiTool
 
             foreach(var item in relatedItems)
             {
-                var actor = ToActor(item, keysToPrepend);
+                var actor = Factory(item, keysToPrepend);
                 if (actor == null)
                     throw new ArgumentOutOfRangeException(nameof(ActionableType), ActionableType, null);
                 actors.Add(actor);
@@ -43,7 +43,7 @@ namespace WilliamPersonalMultiTool
         }
     }
 
-    public class ActionableItem<T> : ActionableItem where T: BaseActor, new()
+    /*public class ActionableItem<T> : ActionableItem where T: BaseActor, new()
     {
         public ActionableItem()
         {
@@ -58,7 +58,7 @@ namespace WilliamPersonalMultiTool
         public override BaseActor ToActor(string item, List<PKey> keysToPrepend)
         {
             var actor = new T();
-            actor.InitializeActor(item);
+            actor.Initialize(item);
 
             if (keysToPrepend.IsNotEmpty())
                 actor.KeySequence.Sequence.InsertRange(0, keysToPrepend);
@@ -66,5 +66,5 @@ namespace WilliamPersonalMultiTool
             return actor;
         }
 
-    }
+    }*/
 }

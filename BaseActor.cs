@@ -8,37 +8,27 @@ using NHotPhrase.Phrase;
 
 namespace WilliamPersonalMultiTool
 {
-    public abstract class BaseActor : IAct, IInitializeActor
+    public class BaseActor : IAct
     {
         public BaseActor()
         {
         }
 
-        public BaseActor(ActionableType actionableType, string item)
+        public virtual void Initialize(string item, List<PKey> keysToPrepend)
         {
-            InitializeBase(actionableType, item, null);
-        }
-
-        public abstract void InitializeActor(string item);
-
-        public void InitializeBase(ActionableType actionableType, string item, List<PKey> keysToPrepend)
-        {
-            Actionable = actionableType;
             var cleanItem = item
                 .Replace("\r", "")
                 .FirstToken("\n")
                 .Trim();
-            Separator = $" {Actionable}";
+            Separator = $" {ActionableType}";
 
             Arguments = cleanItem.TokensAfterFirst(Separator);
             if (Arguments.StartsWith(" "))
                 Arguments = Arguments.Substring(1);
 
             KeyText = cleanItem.FirstToken(Separator);
-            if (KeyText.ToLower().StartsWith("when "))
-                KeyText = KeyText.TokensAfterFirst("when ");
-            if (KeyText.ToLower().StartsWith("or "))
-                KeyText = KeyText.TokensAfterFirst("or ");
+            if (KeyText.ToLower().StartsWith("when ")) KeyText = KeyText.TokensAfterFirst("when ");
+            if (KeyText.ToLower().StartsWith("or "))   KeyText = KeyText.TokensAfterFirst("or ");
 
             KeySequence = new CustomKeySequence(KeyText, Arguments, this, keysToPrepend);
         }
@@ -49,8 +39,9 @@ namespace WilliamPersonalMultiTool
         public string Separator { get; set; }
 
         public Func<bool> OnAct { get; set; }
-        public ActionableType Actionable { get; set; }
-        public string Verb { get; set; }
+        public Func<string, bool> Factory { get; set; }
+        public ActionableType ActionableType { get; set; }
+        public List<string> Verbs { get; set; }
         public KeySequence KeySequence { get; set; }
 
         public virtual bool Act(PhraseEventArguments phraseEventArguments)

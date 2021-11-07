@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 
@@ -10,6 +11,39 @@ namespace WilliamPersonalMultiTool
 {
     public static class Extensions
     {
+        public static int WhenContains(this List<Verb> target, Verb verb, int value)
+        {
+            if (target.Contains(verb))
+            {
+                return value;
+            }
+
+            return 0;
+        }
+
+        public static bool Contains(this List<Verb> target, Verb verb)
+        {
+            if (target.IsEmpty() || verb == null)
+                return false;
+
+            return target
+                .Any(v => string
+                    .Equals(v.Name, verb.Name, StringComparison
+                        .InvariantCultureIgnoreCase));
+        }
+
+        public static bool ContainsAny(this List<Verb> target, List<Verb> verbs)
+        {
+            if (target.IsEmpty() || verbs.IsEmpty())
+                return false;
+
+            return target
+                .Any(v1 => verbs
+                    .Any(v2 => string
+                        .Equals(v1.Name, v2.Name, StringComparison
+                            .InvariantCultureIgnoreCase)));
+        }
+
         public static List<PKey> ToPKeyList(
             this string keys,
             List<PKey> prepend,

@@ -11,7 +11,7 @@ namespace WilliamPersonalMultiTool
         public AdjustActor() 
         {
             ActionableType = ActionableType.Adjust;
-            Verbs = new List<string>
+            LegalVerbs = new List<string>
             {
                 "percent",
                 "default"

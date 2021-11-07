@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using NHotPhrase.Phrase;
 
@@ -9,9 +9,9 @@ namespace WilliamPersonalMultiTool
         Func<bool> OnAct { get; set; }
         Func<string, bool> Factory { get; set; }
         ActionableType ActionableType { get; }
-        List<string> Verbs { get; set; }
+        List<string> LegalVerbs { get; set; }
         bool Act(PhraseEventArguments phraseEventArguments);
         KeySequence KeySequence { get; set; }
 
     }
-}
+}*/

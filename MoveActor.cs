@@ -12,47 +12,57 @@ namespace WilliamPersonalMultiTool
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public MoveActor(string item) : base(ActionableType.Move, item)
-        {
-            var tokens = Arguments.AllTokens(" ", StringSplitOptions.RemoveEmptyEntries);
-            if (tokens.Count == 5)
-            {
-                Verb = tokens[0].Replace("%", "percent");
-                Left = tokens[1].AsInteger();
-                Top = tokens[2].AsInteger();
-                Width = tokens[3].AsInteger();
-                Height = tokens[4].AsInteger();
-            }
-            else if (tokens.Count > 0) // Default is "to"
-            {
-                Verb = "to";
-                if(tokens.Count > 0) Left = tokens[0].AsInteger();
-                if(tokens.Count > 1) Top = tokens[1].AsInteger();
-                if(tokens.Count > 2) Width = tokens[2].AsInteger();
-                if(tokens.Count > 3) Height = tokens[3].AsInteger();
-            }
+        public static Verb Relative { get; set; }
+        public static Verb Absolute { get; set; }
+        public static Verb Percent { get; set; }
+        public static Verb To { get; set; }
 
-            if (Verb != "to" && Verb != "percent")
-                throw new Exception($"MoveActor: Invalid verb: {Arguments}");
+        static MoveActor()
+        {
+            // Move window to a specific location
+            To = AddLegalVerb("to");                         
+            
+            // Move window by a certain amount
+            Percent = BaseActor.AddLegalVerb("percent", To);            
+
+            // With absolute coordinates
+            Absolute = BaseActor.AddLegalVerb("absolute"); 
+
+            // With relative coordinates
+            Relative = BaseActor.AddLegalVerb("relative", Relative); 
         }
 
-        public override bool Act(PhraseEventArguments phraseEventArguments)
+        public MoveActor()
         {
-            if (Verb.IsEmpty())
+            OnAct = Act;
+            DefaultVerb = Percent;
+        }
+
+        public override bool Initialize(string item)
+        {
+            if (!base.Initialize(item))
                 return false;
 
-            switch (Verb.ToLower())
+            var tokens = Arguments.AllTokens(" ", StringSplitOptions.RemoveEmptyEntries);
+            if (tokens.Count != 4)
             {
-                case "to":
-                    break;
-
-                case "%":
-                case "percent":
-                    break;
-
-                default:
-                    break;
+                Errors = "Move actor: wrong number of arguments";
+                return false;
             }
+
+            Left = tokens[1].AsInteger();
+            Top = tokens[2].AsInteger();
+            Width = tokens[3].AsInteger();
+            Height = tokens[4].AsInteger();
+
+            return true;
+        }
+
+        public bool Act(PhraseEventArguments phraseEventArguments)
+        {
+            if (Errors.IsNotEmpty())
+                return true;
+
             return true;
         }
     }

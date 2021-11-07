@@ -6,21 +6,11 @@ using NHotPhrase.Phrase;
 
 namespace WilliamPersonalMultiTool
 {
-    public interface IContinueAction
+    public class ChooseActor : BaseActor
     {
-        void ContinueWith(string item);
-    }
-
-    public class ChooseActor : BaseActor, IContinueAction
-    {
-        public ChooseActor(string item) : base(ActionableType.Choose, item)
+        public ChooseActor()
         {
-            InitializeActor(item);
-        }
-
-        public sealed override void InitializeActor(string item)
-        {
-            KeySequence.Name = Arguments.Trim();
+            base.CanContinue = true;
         }
 
         public override bool Act(PhraseEventArguments phraseEventArguments)

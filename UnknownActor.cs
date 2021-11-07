@@ -1,6 +1,6 @@
 ﻿namespace WilliamPersonalMultiTool
 {
-    public class ContinuationActor : BaseActor
+    public class UnknownActor : BaseActor
     {
     }
 }

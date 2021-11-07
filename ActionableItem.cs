@@ -7,23 +7,24 @@ namespace WilliamPersonalMultiTool
 {
     public class ActionableItem
     {
-        public ActionableType ActionableType { get; set; }
-        public bool CanContinue {get; set; }
+        public Func<BaseActor> InternalFactory;
 
         public BaseActor Factory(string item, List<PKey> keysToPrepend = null)
         {
             if (InternalFactory == null)
                 return null;
 
-            BaseActor actor = InternalFactory(item, keysToPrepend);
-            actor.Initialize(item, keysToPrepend);
+            var actor = InternalFactory();
+            actor.Initialize(item);
+
+            if (keysToPrepend.IsNotEmpty())
+                actor.KeySequence.Sequence.InsertRange(0, keysToPrepend);
+            
             return actor;
         }
-        public Func<string, List<PKey>, BaseActor> InternalFactory;
 
-        public ActionableItem Initialize(bool canContinue, Func<string, List<PKey>, BaseActor> factory)
+        public ActionableItem WithActorFactory(Func<BaseActor> factory)
         {
-            CanContinue = canContinue;
             InternalFactory = factory;
             return this;
         }
@@ -32,13 +33,14 @@ namespace WilliamPersonalMultiTool
         {
             var actors = new List<BaseActor>();
 
-            foreach(var item in relatedItems)
+            foreach (var item in relatedItems)
             {
                 var actor = Factory(item, keysToPrepend);
                 if (actor == null)
-                    throw new ArgumentOutOfRangeException(nameof(ActionableType), ActionableType, null);
+                    throw new Exception($"Actor factory failed: {item}");
                 actors.Add(actor);
             }
+
             return actors;
         }
     }
@@ -58,7 +60,7 @@ namespace WilliamPersonalMultiTool
         public override BaseActor ToActor(string item, List<PKey> keysToPrepend)
         {
             var actor = new T();
-            actor.Initialize(item);
+            actor.WithActorFactory(item);
 
             if (keysToPrepend.IsNotEmpty())
                 actor.KeySequence.Sequence.InsertRange(0, keysToPrepend);

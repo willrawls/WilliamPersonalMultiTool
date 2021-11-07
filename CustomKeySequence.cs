@@ -27,7 +27,7 @@ namespace WilliamPersonalMultiTool
             BackColor = backColor ?? Color.White;
         }
 
-        public CustomKeySequence(string keyText, string arguments, IAct actor, List<PKey> keysToPrepend)
+        public CustomKeySequence(string keyText, string arguments, BaseActor actor, List<PKey> keysToPrepend = null)
         {
             Actor = actor;
             Arguments = arguments;

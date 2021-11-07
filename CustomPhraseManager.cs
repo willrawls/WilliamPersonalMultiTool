@@ -51,7 +51,7 @@ namespace WilliamPersonalMultiTool
             // var debug = MakeReadyForSending(textToSend, SplitLength, true);
             // SendString(textToSend, 2, true);
 
-            NormalSendKeysAndWait(textToSend);
+            PausableNormalSendKeysAndWait(textToSend);
         }
 
         private string WildcardTemplate(KeySequence stateKeySequence)
@@ -298,27 +298,27 @@ namespace WilliamPersonalMultiTool
             if (choice < 1 || choice is not >= 0 || choice.Value > customKeySequence.Choices.Count) return;
 
             var keySequenceChoice = customKeySequence.Choices[choice.Value - 1];
-            NormalSendKeysAndWait(keySequenceChoice.Text);
+            PausableNormalSendKeysAndWait(keySequenceChoice.Text);
 
             //var textToSend = MakeReadyForSending(keySequenceChoice.Text, SplitLength, true);
             //SendStrings(textToSend, 2);
         }
 
-        private static void NormalSendKeysAndWait(string toSend)
+        public static void PausableNormalSendKeysAndWait(string toSend)
         {
             if (toSend.ToLower().Contains("{pause "))
             {
                 var parts = toSend.AllTokens("{pause ");
                 if (parts.Count == 1)
-                    InternalNormalSendKeysAndWait(toSend);
+                    NormalSendKeysAndWait(toSend);
             }
             else
             {
-                InternalNormalSendKeysAndWait(toSend);
+                NormalSendKeysAndWait(toSend);
             }
         }
 
-        private static void InternalNormalSendKeysAndWait(string toSend)
+        public static void NormalSendKeysAndWait(string toSend)
         {
             try
             {

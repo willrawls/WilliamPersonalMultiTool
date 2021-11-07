@@ -6,7 +6,7 @@ namespace WilliamPersonalMultiTool
     {
         public int RepeatLastCount { get; set; }
 
-        public RepeatActor(string item) : base(ActionableType.Repeat, item)
+        public RepeatActor(string item)
         {
         }
 

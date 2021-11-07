@@ -129,7 +129,7 @@ namespace WilliamPersonalMultiTool.Tests
             Assert.AreEqual(ActionableType.Type, actual.Actor.ActionableType);
             var actor = (TypeActor) actual.Actor;
             Clipboard.SetText("123");
-            Assert.AreEqual("123", actor.TextToPaste());
+            Assert.AreEqual("123", actor.ClipboardText());
         }
 
         private static CustomKeySequence Build(string input)

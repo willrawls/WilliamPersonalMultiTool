@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using MetX.Standard.Library;
@@ -11,7 +12,20 @@ namespace WilliamPersonalMultiTool
 {
     public class TypeActor : BaseActor
     {
-        static TypeActor()
+        public static Verb Expand { get; set; }
+        public static Verb TypeOutTheClipboard { get; set; }
+        public static Verb TypeContentsOfFile { get; set; }
+        public static Verb TypeFast { get; set; }
+        public static Verb TypeSlow { get; set; }
+        public static Verb TypeSlowest { get; set; }
+        public static Verb TypeSlower { get; set; }
+
+        public string Filename { get; set; }
+        public string TextToType { get; set; }
+        public bool FromClipboard { get; set; }
+        public int DelayInMilliseconds { get; set; } = 3;
+
+        public TypeActor()
         {
             // Type everything else, allowing send key translation (The default)
             Expand = AddLegalVerb("expand");
@@ -33,23 +47,7 @@ namespace WilliamPersonalMultiTool
 
             // Causes quick typing (Fast is the default)
             TypeFast = AddLegalVerb("fast", TypeSlowest);
-        }
 
-        public static Verb Expand { get; set; }
-        public static Verb TypeOutTheClipboard { get; set; }
-        public static Verb TypeContentsOfFile { get; set; }
-        public static Verb TypeFast { get; set; }
-        public static Verb TypeSlow { get; set; }
-        public static Verb TypeSlowest { get; set; }
-        public static Verb TypeSlower { get; set; }
-
-        public string Filename { get; set; }
-        public string TextToType { get; set; }
-        public bool FromClipboard { get; set; }
-        public int DelayInMilliseconds { get; set; } = 3;
-
-        public TypeActor()
-        {
             OnAct = Act;
             DefaultVerb = Expand;
             CanContinue = true;
@@ -59,16 +57,9 @@ namespace WilliamPersonalMultiTool
         {
             if (!base.Initialize(item))
                 return false;
-
+            
             if (ExtractedVerbs.Contains(TypeContentsOfFile))
                 Filename = Arguments;
-            else if (ExtractedVerbs.Contains(TypeOutTheClipboard))
-                FromClipboard = true;
-            else
-            {
-                // Expand
-                TextToType = Arguments;
-            }
 
             DelayInMilliseconds =
                 ExtractedVerbs.WhenContains(TypeSlowest, 50) +
@@ -79,16 +70,38 @@ namespace WilliamPersonalMultiTool
             KeySequence.Name = Arguments.Trim();
             return true;
         }
-
-        public string TextToPaste()
+        
+        public string ClipboardText()
         {
-            var text = Clipboard.GetText();
+            var text = "";
+            try
+            {
+                text = Clipboard.GetText();
+            }
+            catch
+            {
+                // Ignored
+            }
             return text;
         }
 
         public bool Act(PhraseEventArguments phraseEventArguments)
         {
-            
+            if (ExtractedVerbs.Contains(TypeContentsOfFile))
+            {
+                TextToType = File.ReadAllText(Filename);
+            }
+            else if (ExtractedVerbs.Contains(TypeOutTheClipboard))
+            {
+                TextToType = ClipboardText();
+            }
+            else   // Expand
+            {
+                TextToType = Arguments;
+            }
+            CustomPhraseManager.NormalSendKeysAndWait(TextToType);
+
+            return false;
         }
     }
 }

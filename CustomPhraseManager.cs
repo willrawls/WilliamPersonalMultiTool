@@ -120,7 +120,7 @@ namespace WilliamPersonalMultiTool
                 }
                 if (actionableItem.ActionableType == ActionableType.Continuation && actor != null)
                 {
-                    var continueWith = actor.ContinueWith(line);
+                    var continueWith = actor.OnContinue(line);
                     Actors.Add(continueWith);
                     keySequencesToAdd.Add(continueWith.KeySequence);
                 }

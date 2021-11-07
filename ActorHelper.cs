@@ -73,7 +73,7 @@ namespace WilliamPersonalMultiTool
                 new ActionableItem().WithActorFactory(() => new MoveActor()),
                 new ActionableItem().WithActorFactory(() => new RunActor()),
                 new ActionableItem().WithActorFactory(() => new SizeActor()),
-                new ActionableItem().WithActorFactory(() => new AdjustActor()),
+                new ActionableItem().WithActorFactory(() => new RandomActor()),
                 new ActionableItem().WithActorFactory(() => new ContinuationActor()),
                 new ActionableItem().WithActorFactory(() => new UnknownActor()),
             });

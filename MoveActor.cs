@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Drawing2D;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
 using NHotPhrase.Phrase;
@@ -13,29 +14,21 @@ namespace WilliamPersonalMultiTool
         public int Height { get; set; }
 
         public static Verb Relative { get; set; }
-        public static Verb Absolute { get; set; }
         public static Verb Percent { get; set; }
         public static Verb To { get; set; }
 
-        static MoveActor()
+        public MoveActor()
         {
             // Move window to a specific location
             To = AddLegalVerb("to");                         
             
             // Move window by a certain amount
-            Percent = BaseActor.AddLegalVerb("percent", To);            
-
-            // With absolute coordinates
-            Absolute = BaseActor.AddLegalVerb("absolute"); 
+            Percent = AddLegalVerb("percent", To);            
 
             // With relative coordinates
-            Relative = BaseActor.AddLegalVerb("relative", Relative); 
-        }
+            Relative = AddLegalVerb("relative");
 
-        public MoveActor()
-        {
             OnAct = Act;
-            DefaultVerb = Percent;
         }
 
         public override bool Initialize(string item)

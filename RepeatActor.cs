@@ -10,7 +10,7 @@ namespace WilliamPersonalMultiTool
         {
         }
 
-        public override bool Act(PhraseEventArguments phraseEventArguments)
+        public bool Act(PhraseEventArguments phraseEventArguments)
         {
             return true;
         }

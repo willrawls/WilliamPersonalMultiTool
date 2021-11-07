@@ -1,20 +1,26 @@
 //
 // Ideas
-//   Line starts with /* and contains */ should remove /*...*/ and continue processing line
-//   Caps Caps XYZ = Caps X Y Z
+no	//   Line starts with /* and contains */ should remove /*...*/ and continue processing line
+yes	//   Caps Caps XYZ = Caps X Y Z
 //
 //   ... move to top, left, width, height
-//   ... move % 10, 10, 75, 50
-//   ... adjust % -10, 0, -10, 0
-//   ... size width, height
-//   ... size percent %, %
+//   ... move to 1000, 0
+//   ... move to 1000, 0, 1500, 1000
+//   ... move percent 10, 10, 75, 50
+//   ... move percent relative -10, 0, -10, 0
+//   ... move relative -100, 0, 0, 0
+//   ... size 700, 500
+//   ... size percent 50, 40
 //
-//   ... type C{Pause 3}X = Type "C" then pause for 3 seconds then type "X"
-//   ... type C{Random 10}X = CtenrandomlettersX
-//   ... type C{Random number 10}X = CtenrandomdigitsX
-//?  History of activations (sequence including wildcards plus final text sent) (to file with phrase to open)
-//?   ... typeHidden ... = Activating this entry does not record to history (like passwords)
-//   Caps Caps Caps Caps = Repeat last type operation (last on history. do not add entry to history)
+//   ... type C::Pause 3::X = Type "C" then pause for 3 seconds then type "X"
+//   ... random letters 10 "before" "after" = beforeCABCDEFGHIJafter
+//   ... random digits 5 "before" "after" = before0123456789after
+//   ... random dice 3 d6 "before" "after" = before20after
+//   ... random number 1 to 100 "before" "after" = before81after
+
+no  //?  History of activations (sequence including wildcards plus final text sent) (to file with phrase to open)
+no  //?   ... typeHidden ... = Activating this entry does not record to history (like passwords)
+no  //   Caps Caps Caps Caps = Repeat last type operation (last on history. do not add entry to history)
 //   ... type ... {Paste from clipboard} or simple {PASTE}
 //   Drag/drop file/files
 //		No keys down 	= Copy full path(s) to clipboard, one per line

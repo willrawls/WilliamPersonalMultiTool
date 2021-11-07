@@ -29,7 +29,8 @@ namespace WilliamPersonalMultiTool.Tests
 
             Assert.IsNotNull(actual.LegalVerbs);
             Assert.AreEqual(1, actual.LegalVerbs.Count);
-            Assert.AreEqual("maximized", actual.LegalVerbs[0]);
+            Assert.AreEqual(1, actual.ExtractedVerbs);
+            Assert.AreEqual("maximized", actual.ExtractedVerbs[0]);
 
             Assert.IsNotNull(actual.ExtractedVerbs);
             Assert.AreEqual(1, actual.ExtractedVerbs.Count);

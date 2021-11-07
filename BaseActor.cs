@@ -9,7 +9,7 @@ namespace WilliamPersonalMultiTool
 {
     public class BaseActor
     {
-        public Action<string> ContinueWith = item => { };
+        public Func<string, bool> OnContinue = (item) => false;
         public Func<PhraseEventArguments, bool> OnAct = _ => false;
         public Func<string, bool> Factory { get; set; } = _ => false;
 
@@ -23,7 +23,7 @@ namespace WilliamPersonalMultiTool
         public ActionableType ActionableType { get; set; }
         public List<Verb> ExtractedVerbs { get; set; } = new List<Verb>();
         public KeySequence KeySequence { get; set; }
-        public static AssocArray<Verb> LegalVerbs { get; set; } = new AssocArray<Verb>();
+        public AssocArray<Verb> LegalVerbs { get; set; } = new AssocArray<Verb>();
 
 
         public virtual bool Initialize(string item)
@@ -45,7 +45,7 @@ namespace WilliamPersonalMultiTool
                 if (CanContinue)
                     KeyText = KeyText.TokensAfterFirst("or ");
 
-            if (!ExtractVerbs(item))
+            if (!GetVerbs(item))
                 return false;
 
             KeySequence = new CustomKeySequence(KeyText, Arguments, this);
@@ -53,7 +53,7 @@ namespace WilliamPersonalMultiTool
             return true;
         }
 
-        public bool ExtractVerbs(string item)
+        public bool GetVerbs(string item)
         {
             var tokens = Arguments.AllTokens();
             var firstToken = tokens[0].Trim();
@@ -83,12 +83,12 @@ namespace WilliamPersonalMultiTool
                 .Any(v1 => v1
                                .Excludes != null
                            && ExtractedVerbs.Any(v2 => v2.Excludes != null && v2.Excludes.Name == v1.Excludes.Name));
-            if (exclusivityBreached) Errors += "ExtractVerbs: Exclusivity breached";
+            if (exclusivityBreached) Errors += "GetVerbs: Exclusivity breached";
 
             return true;
         }
 
-        public static Verb AddLegalVerb(string name, Verb excludesVerb = null)
+        public Verb AddLegalVerb(string name, Verb excludesVerb = null)
         {
             return LegalVerbs[name].Item = Verb.Factory(name, excludesVerb);
         }

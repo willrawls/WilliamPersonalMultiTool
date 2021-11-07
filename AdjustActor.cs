@@ -1,26 +1,43 @@
-﻿using System.Collections.Generic;
-using NHotPhrase.Keyboard;
-using NHotPhrase.Phrase;
+﻿using NHotPhrase.Phrase;
 
 namespace WilliamPersonalMultiTool
 {
-    public class AdjustActor : BaseActor
+    public class RandomActor : BaseActor
     {
-        public int RepeatLastCount { get; set; }
+        public int Count { get; set; } = 10;
+        public int Sides { get; set; } = 6;
+        public string Before { get; set; } = "";
+        public string After { get; set; } = "";
 
-        public AdjustActor() 
+        public Verb Dice { get; set; }
+        public Verb Number { get; set; }
+        public Verb Digits { get; set; }
+        public Verb Letters { get; set; }
+
+
+        public RandomActor()
         {
-            ActionableType = ActionableType.Adjust;
-            LegalVerbs = new List<string>
-            {
-                "percent",
-                "default"
-            };
+            Letters = AddLegalVerb("letters");
+            Digits = AddLegalVerb("digits");
+            Number = AddLegalVerb("number");
+            Dice = AddLegalVerb("dice");
+
+            OnAct = Act;
+            DefaultVerb = Number;
+            CanContinue = false;
         }
 
-        public override bool Act(PhraseEventArguments phraseEventArguments)
+        public override bool Initialize(string item)
         {
-            return true;
+            if (!base.Initialize(item))
+                return false;
+
+            << Start here
+        }
+
+        public bool Act(PhraseEventArguments phraseEventArguments)
+        {
+            return false;
         }
     }
 }

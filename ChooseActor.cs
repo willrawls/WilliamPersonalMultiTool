@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
@@ -8,33 +9,30 @@ namespace WilliamPersonalMultiTool
 {
     public class ChooseActor : BaseActor
     {
+        private List<string> Choices { get; set; } = new List<string>();
         public ChooseActor()
         {
-            base.CanContinue = true;
+            CanContinue = true;
+            OnAct = Act;
+            OnContinue = Continue;
         }
 
-        public override bool Act(PhraseEventArguments phraseEventArguments)
+        public bool Act(PhraseEventArguments phraseEventArguments)
         {
+            return false;
+        }
+
+        // Return true to continue to the next line
+        public bool Continue(string item)
+        {
+            if (item.Trim().StartsWith("Or "))
+                item = item.TokensAfterFirst("Or ");
+
+            if (item.IsEmpty()) return true;
+
+            Choices.Add(item.TrimStart());
+
             return true;
-        }
-
-        public void ContinueWith(string item)
-        {
-            if (item.IsEmpty()) return;
-
-            var tokens = Arguments.AllTokens(" ", StringSplitOptions.RemoveEmptyEntries);
-            Verb = tokens.Count > 0
-                ? tokens[0]
-                : "default";
-
-            if (item.Trim().StartsWith("Or"))
-            {
-                var actionableItem = ActorHelper.GetActionType(item);
-                var keysToPrepend = KeySequence.Sequence.Take(KeySequence.Sequence.Count - 1).ToList();
-                return actionableItem.ToActor(item.TokensAfterFirst("Or"), keysToPrepend);
-            }
-
-            return actor;
         }
 
     }

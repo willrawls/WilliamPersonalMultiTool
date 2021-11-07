@@ -16,7 +16,7 @@ namespace WilliamPersonalMultiTool
         public string ExecutablePath { get; set; }
         public Color BackColor { get; set; } = Color.White;
         public List<CustomKeySequenceChoice> Choices { get; set; }
-        public IAct Actor { get; set; }
+        public BaseActor Actor { get; set; }
 
         public CustomKeySequence(string name, List<PKey> keys, EventHandler<PhraseEventArguments> hotPhraseEventArgs, int backspaceCount = 0, Color? backColor = null)
             : base(name, keys, hotPhraseEventArgs)
@@ -32,8 +32,8 @@ namespace WilliamPersonalMultiTool
             Actor = actor;
             Arguments = arguments;
             Name = arguments;
-            Sequence = keyText.ToPKeyList(null, out var wildcardMatchType, out int wildcardCount);
-            ThenCall((sender, eventArguments) => { actor.Act(eventArguments); });
+            Sequence = keyText.ToPKeyList(null, out var wildcardMatchType, out var wildcardCount);
+            ThenCall((sender, eventArguments) => { actor.OnAct(eventArguments); });
 
             if (keysToPrepend.IsEmpty())
                 return;

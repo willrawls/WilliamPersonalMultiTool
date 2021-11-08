@@ -1,4 +1,4 @@
-﻿namespace WilliamPersonalMultiTool
+﻿namespace WilliamPersonalMultiTool.Acting
 {
     public enum ActionableType
     {

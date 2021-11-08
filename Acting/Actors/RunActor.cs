@@ -4,7 +4,7 @@ using MetX.Standard.IO;
 using MetX.Standard.Library;
 using NHotPhrase.Phrase;
 
-namespace WilliamPersonalMultiTool
+namespace WilliamPersonalMultiTool.Acting.Actors
 {
     public class RunActor : BaseActor
     {

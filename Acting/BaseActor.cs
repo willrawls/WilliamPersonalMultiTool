@@ -4,8 +4,9 @@ using System.Linq;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Generics;
 using NHotPhrase.Phrase;
+using WilliamPersonalMultiTool.Custom;
 
-namespace WilliamPersonalMultiTool
+namespace WilliamPersonalMultiTool.Acting
 {
     public class BaseActor
     {

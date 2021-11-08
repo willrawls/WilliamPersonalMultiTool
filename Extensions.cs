@@ -6,6 +6,8 @@ using MetX.Standard.Library.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
+using WilliamPersonalMultiTool.Acting;
+using WilliamPersonalMultiTool.Custom;
 
 namespace WilliamPersonalMultiTool
 {

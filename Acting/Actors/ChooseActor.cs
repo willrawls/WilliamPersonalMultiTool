@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
 using NHotPhrase.Phrase;
 
-namespace WilliamPersonalMultiTool
+namespace WilliamPersonalMultiTool.Acting.Actors
 {
     public class ChooseActor : BaseActor
     {

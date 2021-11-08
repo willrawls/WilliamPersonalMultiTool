@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Windows.Forms;
-using MetX.Standard.Library;
-using MetX.Standard.Library.Extensions;
-using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
+using WilliamPersonalMultiTool.Custom;
 
-namespace WilliamPersonalMultiTool
+namespace WilliamPersonalMultiTool.Acting.Actors
 {
     public class TypeActor : BaseActor
     {

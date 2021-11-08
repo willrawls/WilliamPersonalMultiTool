@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Drawing.Drawing2D;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
 using NHotPhrase.Phrase;
 
-namespace WilliamPersonalMultiTool
+namespace WilliamPersonalMultiTool.Acting.Actors
 {
     public class MoveActor : BaseActor
     {

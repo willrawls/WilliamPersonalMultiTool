@@ -1,6 +1,6 @@
 ﻿using NHotPhrase.Phrase;
 
-namespace WilliamPersonalMultiTool
+namespace WilliamPersonalMultiTool.Acting.Actors
 {
     public class RepeatActor : BaseActor
     {

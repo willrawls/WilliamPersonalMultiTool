@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using MetX.Standard.Library.Extensions;
-using Microsoft.Win32;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
-using Win32Interop.Enums;
+using WilliamPersonalMultiTool.Acting;
 
-namespace WilliamPersonalMultiTool
+namespace WilliamPersonalMultiTool.Custom
 {
     public class CustomKeySequence : KeySequence
     {

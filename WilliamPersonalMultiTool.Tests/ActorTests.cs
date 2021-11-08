@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHotPhrase.Keyboard;
+using WilliamPersonalMultiTool.Acting;
 
 namespace WilliamPersonalMultiTool.Tests
 {

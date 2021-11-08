@@ -15,8 +15,8 @@ yes	//   Caps Caps XYZ = Caps X Y Z
 //   ... type C::Pause 3::X = Type "C" then pause for 3 seconds then type "X"
 //   ... random letters 10 "before" "after" = beforeCABCDEFGHIJafter
 //   ... random digits 5 "before" "after" = before0123456789after
-//   ... random dice 3 d6 "before" "after" = before20after
-//   ... random number 1 to 100 "before" "after" = before81after
+//   ... random dice 3 6 "before" "after" = before20after
+//   ... random number 1 100 "before" "after" = before81after
 
 no  //?  History of activations (sequence including wildcards plus final text sent) (to file with phrase to open)
 no  //?   ... typeHidden ... = Activating this entry does not record to history (like passwords)

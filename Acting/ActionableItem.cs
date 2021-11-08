@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using MetX.Standard.Library.Extensions;
+using MetX.Standard.Library.Generics;
 using NHotPhrase.Keyboard;
 
-namespace WilliamPersonalMultiTool
+namespace WilliamPersonalMultiTool.Acting
 {
     public class ActionableItem
     {
@@ -23,10 +24,12 @@ namespace WilliamPersonalMultiTool
             return actor;
         }
 
-        public ActionableItem WithActorFactory(Func<BaseActor> factory)
+        public static ActionableItem WithActorFactory(Func<BaseActor> factory)
         {
-            InternalFactory = factory;
-            return this;
+            var assocItem = new AssocItem<ActionableItem>();
+            assocItem.Item.InternalFactory = factory;
+            ActorHelper.Actionables[assocItem.Key] = assocItem;
+            return assocItem.Item;
         }
 
         public List<BaseActor> ToActors(List<string> relatedItems, List<PKey> keysToPrepend)
@@ -44,29 +47,4 @@ namespace WilliamPersonalMultiTool
             return actors;
         }
     }
-
-    /*public class ActionableItem<T> : ActionableItem where T: BaseActor, new()
-    {
-        public ActionableItem()
-        {
-        }
-
-        public ActionableItem(ActionableType actionableType)
-        {
-            ActionableType = actionableType;
-            ActorType = typeof(T);
-        }
-
-        public override BaseActor ToActor(string item, List<PKey> keysToPrepend)
-        {
-            var actor = new T();
-            actor.WithActorFactory(item);
-
-            if (keysToPrepend.IsNotEmpty())
-                actor.KeySequence.Sequence.InsertRange(0, keysToPrepend);
-
-            return actor;
-        }
-
-    }*/
 }

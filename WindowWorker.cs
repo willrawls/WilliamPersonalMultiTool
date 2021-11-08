@@ -8,6 +8,7 @@ using MetX.Standard.Library;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
+using WilliamPersonalMultiTool.Custom;
 using User32 = Win32Interop.Methods.User32;
 using Win32Interop.Enums;
 using Win32Interop.Structs;

@@ -10,8 +10,9 @@ using MetX.Standard.Library.Extensions;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 using NHotPhrase.WindowsForms;
+using WilliamPersonalMultiTool.Acting;
 
-namespace WilliamPersonalMultiTool
+namespace WilliamPersonalMultiTool.Custom
 {
     public class CustomPhraseManager : HotPhraseManagerForWinForms
     {
@@ -30,7 +31,7 @@ namespace WilliamPersonalMultiTool
 
         public void OnExpandToNameOfTrigger(object sender, PhraseEventArguments e)
         {
-            var customKeySequence = (CustomKeySequence) e.State.KeySequence;
+            var customKeySequence = (CustomKeySequence)e.State.KeySequence;
             SendBackspaces(customKeySequence.BackspaceCount);
             var textToSend = e.Name;
             if (e.State.KeySequence.WildcardMatchType != WildcardMatchType.None
@@ -108,21 +109,20 @@ namespace WilliamPersonalMultiTool
                 .ToList();
 
             var keySequencesToAdd = new List<KeySequence>();
-            Actors ??= new BaseActorList();
+            Actors ??= new List<BaseActor>();
             BaseActor actor = null;
+            BaseActor previousActor = null;
 
             foreach (var line in linesWithNoComments)
             {
-                var actionableItem = ActorHelper.GetActionType(line);
-                if (actionableItem.ActionableType == ActionableType.Unknown)
-                {
+                actor = ActorHelper.Factory(line, null);
+                if (actor.ActionableType == ActionableType.Unknown)
                     throw new Exception($"Invalid Line: {line}");
-                }
-                if (actionableItem.ActionableType == ActionableType.Continuation && actor != null)
+
+                if (actor.ActionableType == ActionableType.Continuation && previousActor != null)
                 {
-                    var continueWith = actor.OnContinue(line);
-                    Actors.Add(continueWith);
-                    keySequencesToAdd.Add(continueWith.KeySequence);
+                    if (previousActor.OnContinue(line))
+                        keySequencesToAdd.Add(continueWith.KeySequence);
                 }
                 else
                 {
@@ -130,6 +130,8 @@ namespace WilliamPersonalMultiTool
                     Actors.Add(actor);
                     keySequencesToAdd.Add(actor.KeySequence);
                 }
+
+                previousActor = actor;
             }
 
             Actors.KeySequences ??= new KeySequenceList();
@@ -141,7 +143,7 @@ namespace WilliamPersonalMultiTool
             return keySequencesToAdd;
         }
 
-        public BaseActorList Actors { get; set; }
+        public List<BaseActor> Actors { get; set; }
 
         private void InternalAddGenericAction(BaseActor actor, string parameters, List<PKey> keySequence,
             List<KeySequence> resultingSequences, int wildcardCount, WildcardMatchType wildcardMatchType)
@@ -210,7 +212,7 @@ namespace WilliamPersonalMultiTool
 
         private void OnRunTriggerHandler(object sender, PhraseEventArguments e)
         {
-            var customKeySequence = (CustomKeySequence) e.State.KeySequence;
+            var customKeySequence = (CustomKeySequence)e.State.KeySequence;
             if (customKeySequence.BackspaceCount > 0)
                 SendBackspaces(customKeySequence.BackspaceCount);
 
@@ -287,7 +289,7 @@ namespace WilliamPersonalMultiTool
 
         private void OnChooseTriggerHandler(object sender, PhraseEventArguments e)
         {
-            var customKeySequence = (CustomKeySequence) e.State.KeySequence;
+            var customKeySequence = (CustomKeySequence)e.State.KeySequence;
             if (customKeySequence.BackspaceCount > 0)
             {
                 var backspaces = customKeySequence.BackspaceCount + customKeySequence.WildcardCount;
@@ -341,7 +343,7 @@ namespace WilliamPersonalMultiTool
             return count;
         }
 
-        
+
         public static KeySequence Factory(string name = null, string keys = null)
         {
             var keySequence = new KeySequence()

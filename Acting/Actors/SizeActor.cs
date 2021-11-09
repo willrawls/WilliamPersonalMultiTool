@@ -36,7 +36,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             if (!base.Initialize(item))
                 return false;
 
-            List<string> tokens = Arguments.Replace(",", "").AllTokens(compare: StringSplitOptions.RemoveEmptyEntries);
+            var tokens = Arguments.Replace(",", "").AllTokens(compare: StringSplitOptions.RemoveEmptyEntries);
 
             if (tokens.Count == 2)
             {

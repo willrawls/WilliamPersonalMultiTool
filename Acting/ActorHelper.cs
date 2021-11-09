@@ -19,9 +19,13 @@ namespace WilliamPersonalMultiTool.Acting
             ActionableItem.WithActorFactory(() => new RunActor());
             ActionableItem.WithActorFactory(() => new SizeActor());
             ActionableItem.WithActorFactory(() => new RandomActor());
-            ActionableItem.WithActorFactory(() => new ContinuationActor());
-            ActionableItem.WithActorFactory(() => new UnknownActor());
+            Continuation = ActionableItem.WithActorFactory(() => new ContinuationActor());
+            Unknown = ActionableItem.WithActorFactory(() => new UnknownActor());
         }
+
+        public static ActionableItem Unknown { get; set; }
+
+        public static ActionableItem Continuation { get; set; }
 
         public static ActionableItem GetActionType(string line)
         {
@@ -29,21 +33,20 @@ namespace WilliamPersonalMultiTool.Acting
             if (lower.StartsWith("when ")) lower = lower.TokensAfterFirst("when ");
             if (lower.StartsWith("or ")) lower = lower.TokensAfterFirst("or ");
 
-            if (Actionables.ContainsKey(lower))
-                return Actionables[lower].Item;
-            return Actionables["continuation"].Item;
+            return Actionables.ContainsKey(lower) 
+                ? Actionables[lower].Item 
+                : Continuation;
         }
 
         public static BaseActor Factory(string item, BaseActor previousActor = null)
         {
-            ActionableItem actionableItem = GetActionType(item);
+            var actionableItem = GetActionType(item);
             if (actionableItem == null) return null;
 
-            BaseActor actor = actionableItem.Factory(item, previousActor);
-            if (actor.ActionableType == ActionableType.Unknown) return null;
-
-            return actor;
-
+            var actor = actionableItem.Factory(item, previousActor);
+            return actor is {ActionableType: ActionableType.Unknown} 
+                ? null 
+                : actor;
         }
     }
 }

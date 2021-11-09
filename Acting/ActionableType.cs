@@ -10,6 +10,8 @@
         Adjust,
         Run,
         Choose,
-        Continuation
+        Continuation,
+        Or,
+        Random
     }
 }

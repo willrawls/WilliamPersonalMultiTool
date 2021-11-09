@@ -34,12 +34,12 @@ namespace WilliamPersonalMultiTool.Acting
             return Actionables["continuation"].Item;
         }
 
-        public static BaseActor Factory(string item, List<PKey> keysToPrepend = null)
+        public static BaseActor Factory(string item, BaseActor previousActor = null)
         {
             ActionableItem actionableItem = GetActionType(item);
             if (actionableItem == null) return null;
 
-            BaseActor actor = actionableItem.Factory(item, keysToPrepend);
+            BaseActor actor = actionableItem.Factory(item, previousActor);
             if (actor.ActionableType == ActionableType.Unknown) return null;
 
             return actor;

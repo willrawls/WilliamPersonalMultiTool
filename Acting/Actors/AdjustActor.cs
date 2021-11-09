@@ -24,10 +24,11 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             Digits = AddLegalVerb("digits");
             Number = AddLegalVerb("number");
             Dice = AddLegalVerb("dice");
-
+            
             OnAct = Act;
             DefaultVerb = Number;
             CanContinue = false;
+            ActionableType = ActionableType.Random;
         }
 
         public override bool Initialize(string item)

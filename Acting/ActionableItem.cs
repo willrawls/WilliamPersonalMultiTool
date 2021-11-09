@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MetX.Standard.Library.Extensions;
 using MetX.Standard.Library.Generics;
 using NHotPhrase.Keyboard;
@@ -10,7 +11,7 @@ namespace WilliamPersonalMultiTool.Acting
     {
         public Func<BaseActor> InternalFactory;
 
-        public BaseActor Factory(string item, List<PKey> keysToPrepend = null)
+        public BaseActor Factory(string item, BaseActor previousActor = null)
         {
             if (InternalFactory == null)
                 return null;
@@ -18,33 +19,25 @@ namespace WilliamPersonalMultiTool.Acting
             var actor = InternalFactory();
             actor.Initialize(item);
 
+            if (previousActor == null) return actor;
+
+            var keysToPrepend = previousActor.KeySequence
+                .Sequence
+                .Take(previousActor.KeySequence.Sequence.Count - 1)
+                .ToList();
+
             if (keysToPrepend.IsNotEmpty())
                 actor.KeySequence.Sequence.InsertRange(0, keysToPrepend);
-            
+
             return actor;
         }
 
         public static ActionableItem WithActorFactory(Func<BaseActor> factory)
         {
-            var assocItem = new AssocItem<ActionableItem>();
-            assocItem.Item.InternalFactory = factory;
+            var assocItem = new AssocItem<ActionableItem> {Item = {InternalFactory = factory}};
             ActorHelper.Actionables[assocItem.Key] = assocItem;
             return assocItem.Item;
         }
 
-        public List<BaseActor> ToActors(List<string> relatedItems, List<PKey> keysToPrepend)
-        {
-            var actors = new List<BaseActor>();
-
-            foreach (var item in relatedItems)
-            {
-                var actor = Factory(item, keysToPrepend);
-                if (actor == null)
-                    throw new Exception($"Actor factory failed: {item}");
-                actors.Add(actor);
-            }
-
-            return actors;
-        }
     }
 }

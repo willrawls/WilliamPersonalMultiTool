@@ -26,6 +26,15 @@ namespace WilliamPersonalMultiTool.Acting
         public KeySequence KeySequence { get; set; }
         public AssocArray<Verb> LegalVerbs { get; set; } = new AssocArray<Verb>();
 
+        public bool Has(Verb verb)
+        {
+            if (verb == null)
+                return false;
+            return ExtractedVerbs != null && ExtractedVerbs
+                .Any(v => string
+                .Equals(v.Name, verb.Name, StringComparison
+                    .InvariantCultureIgnoreCase));
+        }
 
         public virtual bool Initialize(string item)
         {

@@ -1,5 +1,8 @@
 ﻿
+using System.DirectoryServices.ActiveDirectory;
+using System.Reflection.Metadata.Ecma335;
 using System.Windows.Forms;
+using Accessibility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WilliamPersonalMultiTool.Acting;
 using WilliamPersonalMultiTool.Acting.Actors;
@@ -25,16 +28,19 @@ namespace WilliamPersonalMultiTool.Tests
         }
 
         [TestMethod]
-        public void ActionsCanBeTwoWords_MoveTo()
+        public void ActorsCanHaveVerbs_MoveTo()
         {
-            var actual = Build("CapsLock A move to 1 2 3 4");
+            var actual = Build("When CapsLock A move to relative 1 2 3 4");
             Assert.AreEqual("1 2 3 4", actual.Arguments);
 
             Assert.IsNotNull(actual.Actor);
             Assert.AreEqual(ActionableType.Move, actual.Actor.ActionableType);
             var moveActor = (MoveActor) actual.Actor;
 
-            Assert.AreEqual("to", moveActor.Verb);
+            Assert.IsNotNull(moveActor.ExtractedVerbs);
+            Assert.AreEqual(1, moveActor.ExtractedVerbs.Count);
+            Assert.AreEqual(ActionableType.Move, moveActor.ActionableType);
+
             Assert.AreEqual(1, moveActor.Left);
             Assert.AreEqual(2, moveActor.Top);
             Assert.AreEqual(3, moveActor.Width);
@@ -44,16 +50,18 @@ namespace WilliamPersonalMultiTool.Tests
         [TestMethod]
         public void ActionsCanBeTwoWords_MovePercent()
         {
-            var actual = Build("CapsLock A move % 10 10 75 50");
+            var actual = Build("CapsLock A move percent 10 10 75 50");
             Assert.IsInstanceOfType(actual.Actor, typeof(MoveActor));
             My.AssertAllAreEqual(TestPKeys.ABD, actual.Sequence);
-            Assert.AreEqual("1 2 3 4", actual.Arguments);
+            Assert.AreEqual("10 10 75 50", actual.Arguments);
 
             Assert.IsNotNull(actual.Actor);
             Assert.AreEqual(ActionableType.Move, actual.Actor.ActionableType);
             var actor = (MoveActor) actual.Actor;
 
-            Assert.AreEqual("percent", actor.Verb);
+            Assert.AreEqual(1, actor.ExtractedVerbs.Count);
+            Assert.AreEqual("percent", actor.ExtractedVerbs[0].Name);
+
             Assert.AreEqual(10, actor.Left);
             Assert.AreEqual(10, actor.Top);
             Assert.AreEqual(75, actor.Width);
@@ -66,43 +74,45 @@ namespace WilliamPersonalMultiTool.Tests
             var actual = Build("CapsLock A size 500 400");
             Assert.AreEqual(ActionableType.Size, actual.Actor.ActionableType);
             var actor = (SizeActor) actual.Actor;
-            Assert.AreEqual("to", actor.Verb);
+            Assert.AreEqual(actor.To.Name, actor.DefaultVerb.Name);
         }
 
         [TestMethod]
         public void SizeActor_SizePercent()
         {
-            var actual = Build("CapsLock A size % -10 +10");
+            var actual = Build("CapsLock A size percent -10 +10");
             Assert.AreEqual(ActionableType.Size, actual.Actor.ActionableType);
             var actor = (SizeActor) actual.Actor;
-            Assert.AreEqual("percent", actor.Verb);
+
+            Assert.AreEqual(actor.Percent.Name, actor.ExtractedVerbs[0].Name);
         }
 
         [TestMethod]
         public void TypeActor_RandomString_Letters()
         {
-            var actual = Build("CapsLock A type .{10 random letters}.");
-            Assert.AreEqual(ActionableType.Type, actual.Actor.ActionableType);
-            var actor = (TypeActor) actual.Actor;
-            Assert.AreEqual("expand", actor.Verb);
+            var actual = Build("CapsLock A random number 10 20");
+            Assert.AreEqual(ActionableType.Random, actual.Actor.ActionableType);
+            var actor = (RandomActor) actual.Actor;
+            Assert.IsTrue(actor.Has(actor.Number));
         }
 
         [TestMethod]
         public void TypeActor_RandomString_Numbers()
         {
-            var actual = Build("CapsLock A type .{Random number 1 to 20}.");
+            var actual = Build("CapsLock A type random letters 10");
             Assert.AreEqual(ActionableType.Type, actual.Actor.ActionableType);
-            var actor = (TypeActor) actual.Actor;
-            Assert.AreEqual("expand", actor.Verb);
+            var actor = (RandomActor) actual.Actor;
+            Assert.IsTrue(actor.Has(actor.Letters));
+            Assert.AreEqual(10, actor.Count);
         }
 
         [TestMethod]
         public void TypeActor_Hidden()
         {
-            var actual = Build("CapsLock A type hidden fred");
+            var actual = Build("CapsLock A type slowest fred");
             Assert.AreEqual(ActionableType.Type, actual.Actor.ActionableType);
             var actor = (TypeActor) actual.Actor;
-            Assert.AreEqual("hidden", actor.Verb);
+            Assert.AreEqual(100, actor.DelayInMilliseconds);
         }
 
         [TestMethod]
@@ -111,7 +121,7 @@ namespace WilliamPersonalMultiTool.Tests
             var actual = Build("CapsLock A repeat");
             Assert.AreEqual(ActionableType.Repeat, actual.Actor.ActionableType);
             var actor = (RepeatActor) actual.Actor;
-            Assert.AreEqual("last", actor.Verb);
+            Assert.AreEqual("last", actor.RepeatLastCount);
             Assert.AreEqual(1, actor.RepeatLastCount);
         }
 
@@ -121,14 +131,14 @@ namespace WilliamPersonalMultiTool.Tests
             var actual = Build("CapsLock A repeat last 4");
             Assert.AreEqual(ActionableType.Repeat, actual.Actor.ActionableType);
             var actor = (RepeatActor) actual.Actor;
-            Assert.AreEqual("last", actor.Verb);
+            Assert.IsTrue(actor.Has(actor.Last));
             Assert.AreEqual(4, actor.RepeatLastCount);
         }
 
         [TestMethod]
-        public void TypeActor_Paste()
+        public void TypeActor_TypeTheContentsOfTheClipboard()
         {
-            var actual = Build("CapsLock A type .{Paste from keyboard}.");
+            var actual = Build("CapsLock A type clipboard");
             Assert.AreEqual(ActionableType.Type, actual.Actor.ActionableType);
             var actor = (TypeActor) actual.Actor;
             Clipboard.SetText("123");

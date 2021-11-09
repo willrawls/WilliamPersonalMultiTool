@@ -108,34 +108,49 @@ namespace WilliamPersonalMultiTool.Custom
                 .Where(line => !line.Trim().StartsWith("//"))
                 .ToList();
 
-            var keySequencesToAdd = new List<KeySequence>();
             Actors ??= new List<BaseActor>();
-            BaseActor actor = null;
             BaseActor previousActor = null;
 
             foreach (var line in linesWithNoComments)
             {
-                actor = ActorHelper.Factory(line, null);
+                var actor = ActorHelper.Factory(line, previousActor);
                 if (actor.ActionableType == ActionableType.Unknown)
                     throw new Exception($"Invalid Line: {line}");
 
-                if (actor.ActionableType == ActionableType.Continuation && previousActor != null)
+                if (actor.ActionableType == ActionableType.Continuation)
                 {
-                    if (previousActor.OnContinue(line))
-                        keySequencesToAdd.Add(continueWith.KeySequence);
+                    if(previousActor is {CanContinue: true})
+                    {
+                        if (previousActor.OnContinue(line))
+                            actor = null;
+                    }
+                    else
+                    {
+                        // Error condition
+                    }
+                }
+                else if (actor.ActionableType == ActionableType.Or)
+                {
+                    if(previousActor is {CanContinue: true})
+                    {
+                        
+                        if (previousActor.OnContinue(line))
+                            actor = null;
+                    }
+                    else
+                    {
+                        // Error condition
+                    }
                 }
                 else
                 {
-                    actor = actionableItem.ToActor(line, null);
                     Actors.Add(actor);
-                    keySequencesToAdd.Add(actor.KeySequence);
                 }
 
                 previousActor = actor;
             }
 
-            Actors.KeySequences ??= new KeySequenceList();
-            Actors.KeySequences.AddRange(keySequencesToAdd);
+            List<KeySequence> keySequencesToAdd = Actors.Select(a => a.KeySequence).ToList();
 
             Keyboard.KeySequences ??= new KeySequenceList();
             Keyboard.KeySequences.AddRange(keySequencesToAdd);

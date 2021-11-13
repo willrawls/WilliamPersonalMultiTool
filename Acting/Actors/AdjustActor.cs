@@ -20,6 +20,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
         public RandomActor()
         {
+            ActionableType = ActionableType.Random;
+
             Letters = AddLegalVerb("letters");
             Digits = AddLegalVerb("digits");
             Number = AddLegalVerb("number");
@@ -28,7 +30,6 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             OnAct = Act;
             DefaultVerb = Number;
             CanContinue = false;
-            ActionableType = ActionableType.Random;
         }
 
         public override bool Initialize(string item)

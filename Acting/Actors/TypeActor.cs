@@ -22,6 +22,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
         public TypeActor()
         {
+            ActionableType = ActionableType.Type;
+
             // Type everything else, allowing send key translation (The default)
             Expand = AddLegalVerb("expand");
 

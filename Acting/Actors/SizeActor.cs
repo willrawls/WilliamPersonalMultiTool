@@ -18,6 +18,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
         public SizeActor()
         {
+            ActionableType = ActionableType.Size;
+
             To = AddLegalVerb("to");
             Percent = AddLegalVerb("percent", To);
             Relative = AddLegalVerb("relative");

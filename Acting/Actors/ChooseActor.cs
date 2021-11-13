@@ -10,6 +10,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
         private List<string> Choices { get; set; } = new List<string>();
         public ChooseActor()
         {
+            ActionableType = ActionableType.Choose;
             CanContinue = true;
             OnAct = Act;
             OnContinue = Continue;

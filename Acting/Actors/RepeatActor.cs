@@ -8,12 +8,13 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
         public RepeatActor(string item)
         {
+            ActionableType = ActionableType.Repeat;
+
             Last = AddLegalVerb("last");
             
             OnAct = Act;
             DefaultVerb = Last;
             CanContinue = false;
-            ActionableType = ActionableType.Repeat;
         }
 
         public Verb Last { get; set; }

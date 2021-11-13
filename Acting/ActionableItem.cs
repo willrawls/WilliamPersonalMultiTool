@@ -34,8 +34,11 @@ namespace WilliamPersonalMultiTool.Acting
 
         public static ActionableItem WithActorFactory(Func<BaseActor> factory)
         {
-            var assocItem = new AssocItem<ActionableItem> {Item = {InternalFactory = factory}};
-            ActorHelper.Actionables[assocItem.Key] = assocItem;
+            var sampleActor = factory();
+
+            var assocItem = ActorHelper.Actionables[sampleActor.ActionableType.ToString()];
+            assocItem.Item.InternalFactory = factory;
+            assocItem.Name = assocItem.Key;
             return assocItem.Item;
         }
 

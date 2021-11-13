@@ -7,7 +7,7 @@ using WilliamPersonalMultiTool.Acting.Actors;
 namespace WilliamPersonalMultiTool.Tests
 {
     [TestClass]
-    public class ActorTestsTests
+    public class RunActorTests
     {
         [TestMethod]
         public void RunActor_Simple()
@@ -34,18 +34,5 @@ namespace WilliamPersonalMultiTool.Tests
             Assert.AreEqual("notepad", actual.Arguments);
         }
 
-        [TestMethod]
-        public void TypeActor_WithTwoContinuations()
-        {
-            var expected = @"abc123
-Continued
-And again.";
-            // Act
-            TypeActor typeActor = (TypeActor) ActorHelper.Factory(@"When CapsLock 123 type abc123");
-            BaseActor continuation1 = (ContinuationActor) ActorHelper.Factory("Continued", typeActor);
-            BaseActor continuation2 = (ContinuationActor) ActorHelper.Factory("And again.", typeActor);
-
-            Assert.AreEqual(expected, typeActor.TextToType);
-        }
     }
 }

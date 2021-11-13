@@ -2,5 +2,10 @@
 {
     public class ContinuationActor : BaseActor
     {
+        public ContinuationActor()
+        {
+            ActionableType = ActionableType.Continuation;
+
+        }
     }
 }

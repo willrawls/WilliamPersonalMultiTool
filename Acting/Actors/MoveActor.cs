@@ -18,6 +18,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
         public MoveActor()
         {
+            ActionableType = ActionableType.Move;
+
             // Move window to a specific location
             To = AddLegalVerb("to");                         
             

@@ -7,11 +7,17 @@ namespace WilliamPersonalMultiTool.Acting
 {
     public static class ActorHelper
     {
-        public static Actionables Actionables;
+        private static Actionables _actionables;
 
-        static ActorHelper()
+        public static Actionables Actionables
         {
-            Actionables = new Actionables();
+            get { return _actionables ??= Initialize(); }
+            set { _actionables = value; }
+        }
+
+        public static Actionables Initialize()
+        {
+            _actionables = new Actionables();
 
             ActionableItem.WithActorFactory(() => new TypeActor());
             ActionableItem.WithActorFactory(() => new ChooseActor());
@@ -21,6 +27,8 @@ namespace WilliamPersonalMultiTool.Acting
             ActionableItem.WithActorFactory(() => new RandomActor());
             Continuation = ActionableItem.WithActorFactory(() => new ContinuationActor());
             Unknown = ActionableItem.WithActorFactory(() => new UnknownActor());
+
+            return Actionables;
         }
 
         public static ActionableItem Unknown { get; set; }
@@ -33,9 +41,9 @@ namespace WilliamPersonalMultiTool.Acting
             if (lower.StartsWith("when ")) lower = lower.TokensAfterFirst("when ");
             if (lower.StartsWith("or ")) lower = lower.TokensAfterFirst("or ");
 
-            return Actionables.ContainsKey(lower) 
-                ? Actionables[lower].Item 
-                : Continuation;
+            var item = Actionables.MatchingActionable(lower);
+
+            return item;
         }
 
         public static BaseActor Factory(string item, BaseActor previousActor = null)

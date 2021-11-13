@@ -19,7 +19,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
         public RunActor()
         {
-            ActionableType = ActionableType.Random;
+            ActionableType = ActionableType.Run;
 
             Minimize = AddLegalVerb("minimize");
             Maximize = AddLegalVerb("maximize");

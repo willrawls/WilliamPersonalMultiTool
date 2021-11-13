@@ -5,6 +5,7 @@
         public Verb Excludes;
         public int Max = 1;
         public string Name;
+        public bool Mentioned { get; set; }
 
         public static Verb Factory(string name, int max = 1, Verb modifies = null)
         {

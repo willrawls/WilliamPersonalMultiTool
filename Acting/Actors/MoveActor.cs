@@ -12,9 +12,9 @@ namespace WilliamPersonalMultiTool.Acting.Actors
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public static Verb Relative { get; set; }
-        public static Verb Percent { get; set; }
-        public static Verb To { get; set; }
+        public Verb Relative { get; set; }
+        public Verb Percent { get; set; }
+        public Verb To { get; set; }
 
         public MoveActor()
         {
@@ -44,10 +44,10 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 return false;
             }
 
-            Left = tokens[1].AsInteger();
-            Top = tokens[2].AsInteger();
-            Width = tokens[3].AsInteger();
-            Height = tokens[4].AsInteger();
+            Left = tokens[0].AsInteger();
+            Top = tokens[1].AsInteger();
+            Width = tokens[2].AsInteger();
+            Height = tokens[3].AsInteger();
 
             return true;
         }

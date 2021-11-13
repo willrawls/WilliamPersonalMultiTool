@@ -13,18 +13,20 @@ namespace WilliamPersonalMultiTool.Tests
     [TestClass]
     public class NewFeatureTests
     {
+        /*
         [TestMethod]
         public void TextBetweenSlashStarAreComments()
         {
-            var actual = Build("A B /* C */D type 123");
+            var actual = Build("A B /* C #1#D type 123");
             My.AssertAllAreEqual(TestPKeys.ABD, actual.Sequence);
         }
+        */
 
         [TestMethod]
         public void KeysNotSeparatedBySpacesGetInterpretedAsIfThereWereSpaces()
         {
             var actual = Build("CapsLock ABD type 123");
-            My.AssertAllAreEqual(TestPKeys.ABD, actual.Sequence);
+            My.AssertAllAreEqual(TestPKeys.CapsABD, actual.Sequence);
         }
 
         [TestMethod]
@@ -38,8 +40,9 @@ namespace WilliamPersonalMultiTool.Tests
             var moveActor = (MoveActor) actual.Actor;
 
             Assert.IsNotNull(moveActor.ExtractedVerbs);
-            Assert.AreEqual(1, moveActor.ExtractedVerbs.Count);
+            Assert.AreEqual(2, moveActor.ExtractedVerbs.Count);
             Assert.AreEqual(ActionableType.Move, moveActor.ActionableType);
+            Assert.IsTrue(moveActor.Relative.Mentioned);
 
             Assert.AreEqual(1, moveActor.Left);
             Assert.AreEqual(2, moveActor.Top);
@@ -50,7 +53,7 @@ namespace WilliamPersonalMultiTool.Tests
         [TestMethod]
         public void ActionsCanBeTwoWords_MovePercent()
         {
-            var actual = Build("CapsLock A move percent 10 10 75 50");
+            var actual = Build("A B D move percent 10 10 75 50");
             Assert.IsInstanceOfType(actual.Actor, typeof(MoveActor));
             My.AssertAllAreEqual(TestPKeys.ABD, actual.Sequence);
             Assert.AreEqual("10 10 75 50", actual.Arguments);
@@ -88,7 +91,7 @@ namespace WilliamPersonalMultiTool.Tests
         }
 
         [TestMethod]
-        public void TypeActor_RandomString_Letters()
+        public void RandomActor_RandomNumber_10To20_Inclusive()
         {
             var actual = Build("CapsLock A random number 10 20");
             Assert.AreEqual(ActionableType.Random, actual.Actor.ActionableType);
@@ -97,24 +100,27 @@ namespace WilliamPersonalMultiTool.Tests
         }
 
         [TestMethod]
-        public void TypeActor_RandomString_Numbers()
+        public void RandomActor_TenRandomLetters()
         {
-            var actual = Build("CapsLock A type random letters 10");
-            Assert.AreEqual(ActionableType.Type, actual.Actor.ActionableType);
+            var actual = Build("CapsLock A random letters 10");
+            Assert.AreEqual(ActionableType.Random, actual.Actor.ActionableType);
             var actor = (RandomActor) actual.Actor;
             Assert.IsTrue(actor.Has(actor.Letters));
+            Assert.IsTrue(actor.Letters.Mentioned);
+            Assert.IsFalse(actor.Digits.Mentioned);
             Assert.AreEqual(10, actor.Count);
         }
 
         [TestMethod]
-        public void TypeActor_Hidden()
+        public void TypeActor_Slowest()
         {
             var actual = Build("CapsLock A type slowest fred");
             Assert.AreEqual(ActionableType.Type, actual.Actor.ActionableType);
             var actor = (TypeActor) actual.Actor;
-            Assert.AreEqual(100, actor.DelayInMilliseconds);
+            Assert.AreEqual(50, actor.DelayInMilliseconds);
         }
 
+        /*
         [TestMethod]
         public void RepeatActor_RepeatLast()
         {
@@ -124,7 +130,9 @@ namespace WilliamPersonalMultiTool.Tests
             Assert.AreEqual("last", actor.RepeatLastCount);
             Assert.AreEqual(1, actor.RepeatLastCount);
         }
+        */
 
+        /*
         [TestMethod]
         public void RepeatActor_RepeatLast4()
         {
@@ -144,6 +152,7 @@ namespace WilliamPersonalMultiTool.Tests
             Clipboard.SetText("123");
             Assert.AreEqual("123", actor.ClipboardText());
         }
+        */
 
         private static CustomKeySequence Build(string input)
         {

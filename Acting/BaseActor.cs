@@ -50,7 +50,8 @@ namespace WilliamPersonalMultiTool.Acting
                 Arguments = Arguments.Substring(1);
 
             KeyText = cleanItem.FirstToken(Separator);
-            if (KeyText.ToLower().StartsWith("when ")) KeyText = KeyText.TokensAfterFirst("when ");
+            if (KeyText.ToLower().StartsWith("when ")) 
+                KeyText = KeyText.TokensAfterFirst("when ");
             if (KeyText.ToLower().StartsWith("or "))
                 if (CanContinue)
                     KeyText = KeyText.TokensAfterFirst("or ");
@@ -75,6 +76,7 @@ namespace WilliamPersonalMultiTool.Acting
                 if (LegalVerbs.ContainsKey(token))
                 {
                     var verb = LegalVerbs[token].Item;
+                    verb.Mentioned = true;
                     ExtractedVerbs.Add(verb);
                     tokens[i] = "";
                     tokensToRemove++;

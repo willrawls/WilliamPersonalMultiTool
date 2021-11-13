@@ -118,21 +118,21 @@ namespace WilliamPersonalMultiTool
 
             if (singlePKeyText.IsEmpty()) return PKey.None;
 
-            if (singlePKeyText.Length > 0)
-            {
-                if (singlePKeyText.All(x => x == '#'))
-                {
-                    wildcardMatchType = WildcardMatchType.Digits;
-                    wildcardCount = singlePKeyText.Length;
-                    return PKey.None;
-                }
+            if(singlePKeyText.Length == 1 && char.IsLower(singlePKeyText[0]))
+                singlePKeyText = singlePKeyText.ToUpper();
 
-                if (singlePKeyText.All(x => x == '*'))
-                {
-                    wildcardMatchType = WildcardMatchType.AlphaNumeric;
-                    wildcardCount = singlePKeyText.Length;
-                    return PKey.None;
-                }
+            if (singlePKeyText.All(x => x == '#'))
+            {
+                wildcardMatchType = WildcardMatchType.Digits;
+                wildcardCount = singlePKeyText.Length;
+                return PKey.None;
+            }
+
+            if (singlePKeyText.All(x => x == '*'))
+            {
+                wildcardMatchType = WildcardMatchType.AlphaNumeric;
+                wildcardCount = singlePKeyText.Length;
+                return PKey.None;
             }
 
             switch (singlePKeyText.ToUpper())

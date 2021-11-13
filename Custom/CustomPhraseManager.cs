@@ -114,7 +114,7 @@ namespace WilliamPersonalMultiTool.Custom
             foreach (var line in linesWithNoComments)
             {
                 var actor = ActorHelper.Factory(line, previousActor);
-                if (actor.ActionableType == ActionableType.Unknown)
+                if (actor == null || actor.ActionableType == ActionableType.Unknown)
                     throw new Exception($"Invalid Line: {line}");
 
                 if (actor.ActionableType == ActionableType.Continuation)

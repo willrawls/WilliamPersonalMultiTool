@@ -12,6 +12,7 @@ namespace WilliamPersonalMultiTool.Tests
         public static readonly List<PKey> Caps1A3 = new List<PKey>() { PKey.CapsLock, PKey.D1, PKey.A, PKey.D3 };
 
         public static readonly List<PKey> ABD = new List<PKey>() { PKey.A, PKey.B, PKey.D };
+        public static readonly List<PKey> CapsABD = new List<PKey>() { PKey.CapsLock, PKey.A, PKey.B, PKey.D };
 
         public static readonly List<PKey> ShiftX2 = new List<PKey>() { PKey.Shift, PKey.X };
 

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MetX.Standard.Library;
+using MetX.Standard.Library.Extensions;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 using NHotPhrase.WindowsForms;

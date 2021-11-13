@@ -46,8 +46,15 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             TypeFast = AddLegalVerb("fast", TypeSlowest);
 
             OnAct = Act;
+            OnContinue = Continue;
             DefaultVerb = Expand;
             CanContinue = true;
+        }
+
+        public bool Continue(string line)
+        {
+            TextToType += "\n" + line;
+            return true;
         }
 
         public override bool Initialize(string item)
@@ -65,6 +72,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 ExtractedVerbs.WhenContains(TypeFast, 1);
 
             KeySequence.Name = Arguments.Trim();
+            TextToType = Arguments;
             return true;
         }
         

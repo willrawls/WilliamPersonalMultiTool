@@ -72,9 +72,9 @@ namespace WilliamPersonalMultiTool.Acting
             for (var i = 0; i < tokens.Count; i++)
             {
                 var token = tokens[i];
-                var verb = LegalVerbs[token].Item;
                 if (LegalVerbs.ContainsKey(token))
                 {
+                    var verb = LegalVerbs[token].Item;
                     ExtractedVerbs.Add(verb);
                     tokens[i] = "";
                     tokensToRemove++;

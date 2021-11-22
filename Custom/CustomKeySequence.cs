@@ -17,7 +17,8 @@ namespace WilliamPersonalMultiTool.Custom
         public List<CustomKeySequenceChoice> Choices { get; set; }
         public BaseActor Actor { get; set; }
 
-        public CustomKeySequence(string name, List<PKey> keys, EventHandler<PhraseEventArguments> hotPhraseEventArgs, int backspaceCount = 0, Color? backColor = null)
+        public CustomKeySequence(string name, List<PKey> keys, EventHandler<PhraseEventArguments> hotPhraseEventArgs, 
+            int backspaceCount = 0, Color? backColor = null)
             : base(name, keys, hotPhraseEventArgs)
         {
             if (backspaceCount < 0)

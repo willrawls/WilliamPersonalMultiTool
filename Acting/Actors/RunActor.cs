@@ -50,16 +50,21 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             if (Arguments.Trim().Length == 0)
                 return false;
 
+            if (Arguments.StartsWith(" "))
+                Arguments = Arguments.Substring(1);
+
+            if (!Arguments.Contains("\"")) return true;
+
+            TargetExecutable = Arguments.TokenAt(2, "\"");
+            Arguments = Arguments.TokensAfter(2, "\"");
+
+            if (Arguments.StartsWith(" "))
+                Arguments = Arguments.Substring(1);
+
             if (Arguments.Contains("\""))
             {
-                Filename = Arguments.TokenAt(2, "\"");
-                Arguments = Arguments.TokensAfter(2, "\"");
-
-                if (Arguments.Contains("\""))
-                {
-                    WorkingFolder = Arguments.TokenAt(2, "\"");
-                    Arguments = Arguments.TokensAfter(2, "\"");
-                }
+                Filename = Arguments.TokenAt(1, "\"");
+                Arguments = Arguments.TokenAt(2, "\"");
             }
 
             return true;

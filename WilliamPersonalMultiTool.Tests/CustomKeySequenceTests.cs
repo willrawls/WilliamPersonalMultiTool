@@ -105,11 +105,11 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
             var actual = data.AddSet(@"
 
 When CapsLock Shift W type William\tRawls
-Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
+  Or 1 run ""C:\Windows\notepad.exe"" arguments.txt ""Mike Fred George Mary""
 
 ");
             Assert.AreEqual(2, actual.Count);
-            Assert.AreEqual(@"Run ""C:\Windows\notepad.exe"" arguments.txt ""Mike Fred George Mary""", actual[1].Name);
+            Assert.AreEqual("\n\"C:\\Windows\\notepad.exe\" arguments.txt \"Mike Fred George Mary\"", "\n" + actual[1].Name);
             Assert.AreEqual(2, data.Keyboard.KeySequences.Count);
             var sequence = (CustomKeySequence) data.Keyboard.KeySequences[1];
             

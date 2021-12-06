@@ -7,7 +7,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 {
     public class ChooseActor : BaseActor
     {
-        private List<string> Choices { get; set; } = new List<string>();
+        public List<string> Choices { get; set; } = new List<string>();
         public ChooseActor()
         {
             ActionableType = ActionableType.Choose;

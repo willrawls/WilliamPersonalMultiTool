@@ -114,7 +114,8 @@ When CapsLock Shift W type William\tRawls
             var sequence = (CustomKeySequence) data.Keyboard.KeySequences[1];
             
             Assert.AreEqual(@"notepad.exe", sequence.ExecutablePath);
-            Assert.AreEqual(@"arguments.txt ""Mike Fred George Mary""", sequence.Arguments);
+            Assert.AreEqual(@"
+""arguments.txt"" ""Mike Fred George Mary""", "\n" + sequence.Arguments);
         }
 
         [TestMethod]

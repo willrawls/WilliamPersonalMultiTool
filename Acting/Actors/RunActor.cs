@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Windows.Forms;
 using MetX.Standard.IO;
 using MetX.Standard.Library;
 using NHotPhrase.Phrase;
+using WilliamPersonalMultiTool.Custom;
 
 namespace WilliamPersonalMultiTool.Acting.Actors
 {
@@ -47,25 +49,38 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             if (!base.Initialize(item))
                 return false;
 
-            if (Arguments.Trim().Length == 0)
+            var argumentWorkspace = Arguments;
+            if (argumentWorkspace.Trim().Length == 0)
                 return false;
 
-            if (Arguments.StartsWith(" "))
-                Arguments = Arguments.Substring(1);
+            if (argumentWorkspace.StartsWith(" "))
+                argumentWorkspace = argumentWorkspace.Substring(1);
 
-            if (!Arguments.Contains("\"")) return true;
-
-            TargetExecutable = Arguments.TokenAt(2, "\"");
-            Arguments = Arguments.TokensAfter(2, "\"");
-
-            if (Arguments.StartsWith(" "))
-                Arguments = Arguments.Substring(1);
-
-            if (Arguments.Contains("\""))
+            if (!argumentWorkspace.Contains("\""))
             {
-                Filename = Arguments.TokenAt(1, "\"");
-                Arguments = Arguments.TokenAt(2, "\"");
+                Arguments = argumentWorkspace;
+                return true;
             }
+
+            TargetExecutable = argumentWorkspace.TokenAt(2, "\"");
+            argumentWorkspace = argumentWorkspace.TokensAfter(2, "\"");
+
+            if (argumentWorkspace.StartsWith(" "))
+                argumentWorkspace = argumentWorkspace.Substring(1);
+
+            if (argumentWorkspace.Contains("\""))
+            {
+                Filename = argumentWorkspace.TokenAt(1, "\"");
+                argumentWorkspace = argumentWorkspace.TokenAt(2, "\"");
+            }
+
+            var customKeySequence = (CustomKeySequence)KeySequence;
+            customKeySequence.ExecutablePath = TargetExecutable;
+            Arguments = argumentWorkspace;
+            if (Filename.Length > 0)
+                customKeySequence.Arguments = $"\"{Filename}\" \"{Arguments}\"";
+            else
+                customKeySequence.Arguments = $"\"{Arguments}\"";
 
             return true;
         }

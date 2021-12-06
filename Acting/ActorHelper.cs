@@ -49,7 +49,12 @@ namespace WilliamPersonalMultiTool.Acting
         public static BaseActor Factory(string item, BaseActor previousActor = null)
         {
             var actionableItem = GetActionType(item);
-            if (actionableItem == null) return null;
+            if (actionableItem == null)
+            {
+                if (previousActor is not { CanContinue: true }) return null;
+
+                return previousActor.OnContinue(item) ? previousActor : null;
+            }
 
             var actor = actionableItem.Factory(item, previousActor);
             return actor is {ActionableType: ActionableType.Unknown} 

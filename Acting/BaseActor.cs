@@ -25,6 +25,7 @@ namespace WilliamPersonalMultiTool.Acting
         public List<Verb> ExtractedVerbs { get; set; } = new List<Verb>();
         public KeySequence KeySequence { get; set; }
         public AssocArray<Verb> LegalVerbs { get; set; } = new AssocArray<Verb>();
+        public Guid ID { get; set; } = Guid.NewGuid();
 
         public bool Has(Verb verb)
         {
@@ -91,10 +92,9 @@ namespace WilliamPersonalMultiTool.Acting
                 Arguments = Arguments.TokensAfter(tokensToRemove);
 
             // Check bound conditions here (too many, exclusivity)
-            var exclusivityBreached = ExtractedVerbs
-                .Any(v1 => v1
-                               .Excludes != null
-                           && ExtractedVerbs.Any(v2 => v2.Excludes != null && v2.Excludes.Name == v1.Excludes.Name));
+            var exclusivityBreached = ExtractedVerbs.Count > 1 
+                && ExtractedVerbs.Any(v1 => v1.Excludes != null
+                                  && ExtractedVerbs.Any(v2 => v2.Excludes != null && v2.Excludes.Name == v1.Excludes.Name));
             if (exclusivityBreached) Errors += "GetVerbs: Exclusivity breached";
 
             return true;

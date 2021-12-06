@@ -117,19 +117,7 @@ namespace WilliamPersonalMultiTool.Custom
                 if (actor == null || actor.ActionableType == ActionableType.Unknown)
                     throw new Exception($"Invalid Line: {line}");
 
-                if (actor.ActionableType == ActionableType.Continuation)
-                {
-                    if(previousActor is {CanContinue: true})
-                    {
-                        if (previousActor.OnContinue(line))
-                            actor = null;
-                    }
-                    else
-                    {
-                        // Error condition
-                    }
-                }
-                else if (actor.ActionableType == ActionableType.Or)
+                if (actor.ActionableType == ActionableType.Or)
                 {
                     if(previousActor is {CanContinue: true})
                     {
@@ -142,7 +130,8 @@ namespace WilliamPersonalMultiTool.Custom
                         // Error condition
                     }
                 }
-                else
+                else if(previousActor == null
+                        || actor.ID != previousActor.ID)
                 {
                     Actors.Add(actor);
                 }
@@ -216,13 +205,13 @@ namespace WilliamPersonalMultiTool.Custom
             }
 
             var backspaceCount = ToBackspaceCount(keys);
-            var orSequence = new CustomKeySequence(runName, keys, OnRunTriggerHandler, backspaceCount)
+            var customKeySequence = new CustomKeySequence(runName, keys, OnRunTriggerHandler, backspaceCount)
             {
                 ExecutablePath = executablePath,
                 Arguments = arguments,
                 BackColor = Color.Tan
             };
-            result.ReplaceMatching(orSequence);
+            result.ReplaceMatching(customKeySequence);
         }
 
         private void OnRunTriggerHandler(object sender, PhraseEventArguments e)

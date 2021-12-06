@@ -19,7 +19,7 @@ namespace WilliamPersonalMultiTool.Acting
             var actor = InternalFactory();
             actor.Initialize(item);
 
-            if (previousActor == null) return actor;
+            if (previousActor == null || actor.ID == previousActor.ID) return actor;
 
             var keysToPrepend = previousActor.KeySequence
                 .Sequence

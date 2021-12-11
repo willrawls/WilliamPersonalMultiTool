@@ -35,6 +35,8 @@ namespace WilliamPersonalMultiTool.Custom
             Sequence = keyText.ToPKeyList(null, out var wildcardMatchType, out var wildcardCount);
             WildcardCount = wildcardCount;
             WildcardMatchType = wildcardMatchType;
+            BackspaceCount = CustomPhraseManager.ToBackspaceCount(Sequence);
+
             ThenCall((sender, eventArguments) => { actor.OnAct(eventArguments); });
 
             if (keysToPrepend.IsEmpty())

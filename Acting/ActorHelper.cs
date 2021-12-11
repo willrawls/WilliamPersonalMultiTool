@@ -2,6 +2,7 @@
 using MetX.Standard.Library;
 using NHotPhrase.Keyboard;
 using WilliamPersonalMultiTool.Acting.Actors;
+using WilliamPersonalMultiTool.Custom;
 
 namespace WilliamPersonalMultiTool.Acting
 {
@@ -46,7 +47,7 @@ namespace WilliamPersonalMultiTool.Acting
             return item;
         }
 
-        public static BaseActor Factory(string item, BaseActor previousActor = null)
+        public static BaseActor Factory(string item, CustomPhraseManager customPhraseManager, BaseActor previousActor = null)
         {
             var actionableItem = GetActionType(item);
             if (actionableItem == null)
@@ -57,6 +58,7 @@ namespace WilliamPersonalMultiTool.Acting
             }
 
             var actor = actionableItem.Factory(item, previousActor);
+            actor.Manager = customPhraseManager;
             return actor is {ActionableType: ActionableType.Unknown} 
                 ? null 
                 : actor;

@@ -5,25 +5,23 @@ using WilliamPersonalMultiTool.Acting;
 using WilliamPersonalMultiTool.Acting.Actors;
 using WilliamPersonalMultiTool.Custom;
 
-namespace WilliamPersonalMultiTool.Tests
+namespace WilliamPersonalMultiTool.Tests.Acting.Actors
 {
     [TestClass]
-    public class RunActorTests
+    public class MoveActorTestsTests
     {
         [TestMethod]
-        public void RunActor_Simple()
+        public void Simple_MoveTo_Absolute_1_2_3_4()
         {
             List<PKey> expected = TestPKeys.Caps123;
 
             // Act
             var customPhraseManager = new CustomPhraseManager(null);
-            BaseActor actual = ActorHelper.Factory("CapsLock 123 run maximize notepad", customPhraseManager);
+            BaseActor actual = ActorHelper.Factory("CapsLock 123 move to 1 2 3 4", customPhraseManager);
 
             Assert.IsNotNull(actual);
-            RunActor runActor = (RunActor) actual;
-
-            Assert.AreEqual(ActionableType.Run, actual.ActionableType);
-            
+            MoveActor moveActor = (MoveActor) actual;
+            Assert.AreEqual(ActionableType.Move, actual.ActionableType);
             My.AssertAllAreEqual(expected, actual.KeySequence.Sequence);
 
             Assert.IsNotNull(actual.LegalVerbs);
@@ -31,15 +29,17 @@ namespace WilliamPersonalMultiTool.Tests
 
             Assert.IsNotNull(actual.ExtractedVerbs);
             Assert.AreEqual(1, actual.ExtractedVerbs.Count);
-            Assert.AreEqual("maximize", actual.ExtractedVerbs[0].Name);
+            Assert.AreEqual("to", actual.ExtractedVerbs[0].Name);
             Assert.IsTrue(actual.ExtractedVerbs[0].Mentioned);
-            Assert.IsTrue(runActor.Maximize.Mentioned);
+            Assert.IsTrue(moveActor.To.Mentioned);
 
-            Assert.IsFalse(actual.Has(runActor.Minimize));
-            Assert.IsTrue(actual.Has(runActor.Maximize));
-            Assert.IsFalse(actual.Has(runActor.Normal));
+            Assert.IsFalse(actual.Has(moveActor.Percent));
+            Assert.IsFalse(actual.Has(moveActor.Relative));
 
-            Assert.AreEqual("notepad", actual.Arguments);
+            Assert.AreEqual(1, moveActor.Left);
+            Assert.AreEqual(2, moveActor.Top);
+            Assert.AreEqual(3, moveActor.Width);
+            Assert.AreEqual(4, moveActor.Height);
         }
     }
 }

@@ -26,6 +26,7 @@ namespace WilliamPersonalMultiTool.Acting
         public KeySequence KeySequence { get; set; }
         public AssocArray<Verb> LegalVerbs { get; set; } = new AssocArray<Verb>();
         public Guid ID { get; set; } = Guid.NewGuid();
+        public CustomPhraseManager Manager { get; set; }
 
         public bool Has(Verb verb)
         {

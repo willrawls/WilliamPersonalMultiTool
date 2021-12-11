@@ -141,6 +141,16 @@ When CapsLock Shift W type William\tRawls
         }
 
         [TestMethod]
+        public void AddSet_BackspaceCountSetTo2()
+        {
+            var data = new CustomPhraseManager(null);
+            var actual = data.AddSet("When Shift X Y type fred");
+            My.AssertAllAreEqual(TestPKeys.ShiftXY, actual[0].Sequence);
+
+            Assert.AreEqual(2, ((CustomKeySequence)actual[0]).BackspaceCount);
+        }
+
+        [TestMethod]
         public void AddOrReplace_SingleLine_Caps123()
         {
             var data = new CustomPhraseManager(null);

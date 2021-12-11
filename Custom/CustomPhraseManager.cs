@@ -113,7 +113,7 @@ namespace WilliamPersonalMultiTool.Custom
 
             foreach (var line in linesWithNoComments)
             {
-                var actor = ActorHelper.Factory(line, previousActor);
+                var actor = ActorHelper.Factory(line, this, previousActor);
                 if (actor == null || actor.ActionableType == ActionableType.Unknown)
                     throw new Exception($"Invalid Line: {line}");
 
@@ -314,7 +314,7 @@ namespace WilliamPersonalMultiTool.Custom
             //SendStrings(textToSend, 2);
         }
 
-        public static void PausableNormalSendKeysAndWait(string toSend)
+        public void PausableNormalSendKeysAndWait(string toSend)
         {
             if (toSend.ToLower().Contains("{pause "))
             {
@@ -328,10 +328,12 @@ namespace WilliamPersonalMultiTool.Custom
             }
         }
 
-        public static void NormalSendKeysAndWait(string toSend)
+        public void NormalSendKeysAndWait(string toSend, int backspaceCount = 0)
         {
             try
             {
+                if (backspaceCount > 0)
+                    SendBackspaces(backspaceCount);
                 SendKeys.SendWait(toSend);
             }
             catch
@@ -345,7 +347,7 @@ namespace WilliamPersonalMultiTool.Custom
             resultingSequences.ReplaceMatching(sequence);
         }
 
-        public int ToBackspaceCount(List<PKey> pKeyList)
+        public static int ToBackspaceCount(List<PKey> pKeyList)
         {
             var count = pKeyList.Count(key => key is >= PKey.D0 and <= PKey.Z or >= PKey.NumPad0 and <= PKey.NumPad9);
             return count;

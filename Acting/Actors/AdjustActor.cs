@@ -82,7 +82,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 if (After.IsNotEmpty())
                     textToSend += After;
 
-                CustomPhraseManager.NormalSendKeysAndWait(textToSend);
+                Manager.NormalSendKeysAndWait(textToSend);
             }
             return true;
         }

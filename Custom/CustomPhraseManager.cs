@@ -133,6 +133,10 @@ namespace WilliamPersonalMultiTool.Custom
                 else if(previousActor == null
                         || actor.ID != previousActor.ID)
                 {
+                    var existingActorWithSameKeySequence =
+                        Actors.FirstOrDefault(a => a.KeySequence.Sequence.AreEqual(actor.KeySequence.Sequence));
+                    if (existingActorWithSameKeySequence != null)
+                        Actors.Remove(existingActorWithSameKeySequence);
                     Actors.Add(actor);
                 }
 

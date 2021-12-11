@@ -26,7 +26,7 @@ namespace WilliamPersonalMultiTool.Acting
                 .Take(previousActor.KeySequence.Sequence.Count - 1)
                 .ToList();
 
-            if (keysToPrepend.IsNotEmpty())
+            if (!item.Trim().ToLower().StartsWith("when") && keysToPrepend.IsNotEmpty())
                 actor.KeySequence.Sequence.InsertRange(0, keysToPrepend);
 
             return actor;

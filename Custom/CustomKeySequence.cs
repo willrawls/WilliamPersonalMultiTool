@@ -33,6 +33,8 @@ namespace WilliamPersonalMultiTool.Custom
             Arguments = arguments;
             Name = arguments;
             Sequence = keyText.ToPKeyList(null, out var wildcardMatchType, out var wildcardCount);
+            WildcardCount = wildcardCount;
+            WildcardMatchType = wildcardMatchType;
             ThenCall((sender, eventArguments) => { actor.OnAct(eventArguments); });
 
             if (keysToPrepend.IsEmpty())

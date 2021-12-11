@@ -53,7 +53,11 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
         public bool Continue(string line)
         {
-            TextToType += "\n" + line;
+            if (TextToType.Trim().Length == 0)
+                TextToType = line;
+            else
+                TextToType += "{ENTER}" + line;
+            KeySequence.Name = TextToType;
             return true;
         }
 

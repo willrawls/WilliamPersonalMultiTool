@@ -49,6 +49,9 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             if (!base.Initialize(item))
                 return false;
 
+            if(!KeySequence.Name.StartsWith("Run "))
+                KeySequence.Name = "Run " + KeySequence.Name;
+
             var argumentWorkspace = Arguments;
             if (argumentWorkspace.Trim().Length == 0)
                 return false;
@@ -77,11 +80,16 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             var customKeySequence = (CustomKeySequence)KeySequence;
             customKeySequence.ExecutablePath = TargetExecutable;
             Arguments = argumentWorkspace;
-            if (Filename.Length > 0)
+            if (Filename.Trim().Length > 0)
+            {
+                Filename = Filename.Trim();
                 customKeySequence.Arguments = $"\"{Filename}\" \"{Arguments}\"";
+            }
             else
                 customKeySequence.Arguments = $"\"{Arguments}\"";
 
+            if(!customKeySequence.Name.StartsWith("Run "))
+                customKeySequence.Name = "Run " + customKeySequence.Name;
             return true;
         }
     }

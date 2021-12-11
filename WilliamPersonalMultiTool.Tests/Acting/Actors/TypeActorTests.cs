@@ -32,7 +32,7 @@ namespace WilliamPersonalMultiTool.Tests
 
             Assert.IsNotNull(typeActor);
             Assert.AreEqual(
-                "\n" + expected.Replace(" ", ".").Replace("\n", "."), 
+                "\n" + "a{ENTER}b{ENTER}c", 
                 "\n" + typeActor.TextToType.Replace(" ", ".").Replace("\n", "."));
         }
     }

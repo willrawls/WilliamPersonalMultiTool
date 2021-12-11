@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
 using NHotPhrase.Phrase;
+using Win32Interop.Structs;
 
 namespace WilliamPersonalMultiTool.Acting.Actors
 {
@@ -65,8 +67,26 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 Width = Right - Left;
                 Height = Bottom - Top;
             }
+
+            TargetScreen = 0;
+            if (Percent.Mentioned)
+            {
+                while (Left > 100 || Right > 100 || Width > 100)
+                {
+                    TargetScreen++;
+                    if(Left - 100 > 0)
+                        Left -= 100;
+                    if(Right - 100 > 0)
+                        Right -= 100;
+                    if(Right - Left > 0)
+                        Width = Right - Left;
+                }
+            }
+
             return true;
         }
+
+        public int TargetScreen { get; set; }
 
         public int Bottom { get; set; }
 
@@ -78,6 +98,70 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 return true;
 
             return true;
+        }
+
+        public RECT CalculateNewPosition(RECT originalPosition)
+        {
+            RECT newPosition;
+            if(Has(To)) // To or Percent
+            {
+                if(Has(Relative))
+                {
+                    // Additive
+                    newPosition = new RECT
+                    {
+                        left = originalPosition.left + Left,
+                        top = originalPosition.top + Top,
+                        right = originalPosition.right + Width,
+                        bottom = originalPosition.bottom + Height,
+                    };
+                }
+                else
+                {
+                    // Absolute
+                    newPosition = new RECT
+                    {
+                        left = Left,
+                        top = Top,
+                        right = Right,
+                        bottom = Bottom,
+                    };
+                }
+            }
+            else if(Has(Relative))
+            {
+                // Percent == true
+                // Relative
+                Screen screen = Screen.AllScreens[TargetScreen];
+                var onePercentX = screen.WorkingArea.Width / 100;
+                var onePercentY = screen.WorkingArea.Height / 100;
+
+                newPosition = new RECT
+                {
+                    left = originalPosition.left + (Left * onePercentX),
+                    top = originalPosition.top + (Top * onePercentY),
+                    right = originalPosition.right + (Right * onePercentX),
+                    bottom = originalPosition.bottom + (Bottom * onePercentY),
+                };
+            }
+            else
+            {
+                // Percent == true
+                // Absolute
+                Screen screen = Screen.AllScreens[TargetScreen];
+                var onePercentX = screen.WorkingArea.Width / 100;
+                var onePercentY = screen.WorkingArea.Height / 100;
+
+                newPosition = new RECT
+                {
+                    left =  (Left * onePercentX),
+                    top = (Top * onePercentY),
+                    right = (Right * onePercentX),
+                    bottom = (Bottom * onePercentY),
+                };
+            }
+
+            return newPosition;
         }
     }
 }

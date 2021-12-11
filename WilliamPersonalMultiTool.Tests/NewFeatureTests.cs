@@ -53,7 +53,7 @@ namespace WilliamPersonalMultiTool.Tests
         [TestMethod]
         public void ActionsCanBeTwoWords_MovePercent()
         {
-            var actual = Build("A B D move percent 10 10 75 50");
+            var actual = Build("A B D move percent relative 10 10 75 50");
             Assert.IsInstanceOfType(actual.Actor, typeof(MoveActor));
             My.AssertAllAreEqual(TestPKeys.ABD, actual.Sequence);
             Assert.AreEqual("10 10 75 50", actual.Arguments);
@@ -62,7 +62,7 @@ namespace WilliamPersonalMultiTool.Tests
             Assert.AreEqual(ActionableType.Move, actual.Actor.ActionableType);
             var actor = (MoveActor) actual.Actor;
 
-            Assert.AreEqual(1, actor.ExtractedVerbs.Count);
+            Assert.AreEqual(2, actor.ExtractedVerbs.Count);
             Assert.AreEqual("percent", actor.ExtractedVerbs[0].Name);
 
             Assert.AreEqual(10, actor.Left);

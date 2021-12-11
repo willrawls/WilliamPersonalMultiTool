@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms.VisualStyles;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
 using NHotPhrase.Phrase;
@@ -13,8 +14,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
         public int Height { get; set; }
 
         public Verb Relative { get; set; }
-        public Verb Percent { get; set; }
-        public Verb To { get; set; }
+        public Verb Percent { get; set; }   
+        public Verb To { get; set; }        
 
         public MoveActor()
         {
@@ -44,13 +45,32 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 return false;
             }
 
-            Left = tokens[0].AsInteger();
-            Top = tokens[1].AsInteger();
-            Width = tokens[2].AsInteger();
-            Height = tokens[3].AsInteger();
+            if(Relative.Mentioned)
+            {
+                Left = tokens[0].AsInteger();
+                Top = tokens[1].AsInteger();
+                Width = tokens[2].AsInteger();
+                Height = tokens[3].AsInteger();
 
+                Right = Left + Width;
+                Bottom = Top + Height;
+            }
+            else // Absolute coordinates
+            {
+                Left = tokens[0].AsInteger();
+                Top = tokens[1].AsInteger();
+                Right = tokens[2].AsInteger();
+                Bottom = tokens[3].AsInteger();
+
+                Width = Right - Left;
+                Height = Bottom - Top;
+            }
             return true;
         }
+
+        public int Bottom { get; set; }
+
+        public int Right { get; set; }
 
         public bool Act(PhraseEventArguments phraseEventArguments)
         {

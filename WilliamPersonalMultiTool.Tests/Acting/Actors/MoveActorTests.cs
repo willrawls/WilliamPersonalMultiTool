@@ -108,7 +108,7 @@ namespace WilliamPersonalMultiTool.Tests.Acting.Actors
             moveActor.Initialize("When A move to 1 2 3 4");
             var originalPosition = new RECT{ left = 10, right = 20, top = 30, bottom = 40};
 
-            var actual = moveActor.CalculateNewPosition(originalPosition);
+            var actual = moveActor.CalculateNewPosition(0, originalPosition);
             Assert.AreEqual(1, actual.left);
             Assert.AreEqual(2, actual.top);
             Assert.AreEqual(3, actual.right);
@@ -122,10 +122,8 @@ namespace WilliamPersonalMultiTool.Tests.Acting.Actors
             moveActor.Initialize("When A move to 10 10 10 10");
             var originalPosition = new RECT{ left = 0, right = 0, top = 0, bottom = 0};
 
-            var screen = System.Windows.Forms.Screen.AllScreens[0];
-            var oneX = (screen.WorkingArea.Width - screen.WorkingArea.Left) / 100;
-            var oneY = (screen.WorkingArea.Height - screen.WorkingArea.Top) / 100;
-            var actual = moveActor.CalculateNewPosition(originalPosition);
+            var actual = moveActor.CalculateNewPosition(0, originalPosition);
+
             Assert.AreEqual(1, actual.left);
             Assert.AreEqual(2, actual.top);
             Assert.AreEqual(3, actual.right);

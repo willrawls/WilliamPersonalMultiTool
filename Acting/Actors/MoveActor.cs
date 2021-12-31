@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using MetX.Standard.Library;
@@ -15,25 +16,40 @@ namespace WilliamPersonalMultiTool.Acting.Actors
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public Verb Relative { get; set; }
-        public Verb Percent { get; set; }   
+        public Verb Add { get; set; }        
         public Verb To { get; set; }        
+        public Verb Relative { get; set; }
+        public Verb Resize { get; set; }
+        public Verb Percent { get; set; }   
 
         public MoveActor()
         {
             ActionableType = ActionableType.Move;
 
-            // Move window to a specific location
-            To = AddLegalVerb("to");                         
-            
-            // Move window by a certain amount
-            Percent = AddLegalVerb("percent", To);            
-
-            // With relative coordinates
+            Add = AddLegalVerb("add");
+            To = AddLegalVerb("to");
+            Percent = AddLegalVerb("percent", To);
             Relative = AddLegalVerb("relative");
+            Resize = AddLegalVerb("size");
 
             OnAct = Act;
         }
+
+        //
+        //  Add      = Add/subtract to/from current position and optionally resize on current or target screen
+        //  To       = Move to position and optionally resize on current or target screen
+        //  Relative = Move to relative position and optionally resize on current or target screen
+        //  Resize     = Resize on current or target screen
+        //             2 Coordinates= width, height 
+        //
+        //Modifiers
+        // +Percent  = Coordinates are percentages of the target/current screen
+        //
+        // 2 coordinates= left, top
+        // 3 coordinates= left, top, screen
+        // 4 coordinates= left, top, width, height   (primary screen)
+        // 5 coordinates= left, top, width, height, screen
+        //
 
         public override bool Initialize(string item)
         {
@@ -47,40 +63,47 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 return false;
             }
 
-            if(Relative.Mentioned)
+            if (Resize.Mentioned)
+            {
+                if(tokens.Count == 2)
+                {
+                    Width = tokens[0].AsInteger();
+                    Height = tokens[1].AsInteger();
+                }
+                else if (tokens.Count == 3)
+                {
+                    Width = tokens[0].AsInteger();
+                    Height = tokens[1].AsInteger();
+                    TargetScreen = tokens[2].AsInteger() - 1;
+                }
+                else
+                {
+                    throw new Exception("Too many or too few parameters for the mentioned verbs.");
+                }
+            }
+            else if(tokens.Count == 4)
             {
                 Left = tokens[0].AsInteger();
                 Top = tokens[1].AsInteger();
                 Width = tokens[2].AsInteger();
                 Height = tokens[3].AsInteger();
+                Right = Left + Width;
+                Bottom = Top + Height;
+            }
+            else if(tokens.Count == 5)
+            {
+                Left = tokens[0].AsInteger();
+                Top = tokens[1].AsInteger();
+                Width = tokens[2].AsInteger();
+                Height = tokens[3].AsInteger();
+                TargetScreen = tokens[4].AsInteger() - 1;
 
                 Right = Left + Width;
                 Bottom = Top + Height;
             }
-            else // Absolute coordinates
+            else
             {
-                Left = tokens[0].AsInteger();
-                Top = tokens[1].AsInteger();
-                Right = tokens[2].AsInteger();
-                Bottom = tokens[3].AsInteger();
-
-                Width = Right - Left;
-                Height = Bottom - Top;
-            }
-
-            TargetScreen = 0;
-            if (Percent.Mentioned)
-            {
-                while (Left > 100 || Right > 100 || Width > 100)
-                {
-                    TargetScreen++;
-                    if(Left - 100 > 0)
-                        Left -= 100;
-                    if(Right - 100 > 0)
-                        Right -= 100;
-                    if(Right - Left > 0)
-                        Width = Right - Left;
-                }
+                throw new Exception("Too many or too few parameters for the mentioned verbs.");
             }
 
             return true;
@@ -96,28 +119,68 @@ namespace WilliamPersonalMultiTool.Acting.Actors
         {
             if (Errors.IsNotEmpty())
                 return true;
-
+            
             return true;
         }
 
-        public RECT CalculateNewPosition(RECT originalPosition)
+        public RECT CalculateNewPosition(int currentScreen, RECT origin)
         {
-            RECT newPosition;
-            if(Has(To)) // To or Percent
+            var targetScreen = TargetScreen < 1
+                ? Screen.AllScreens[currentScreen]
+                : Screen.AllScreens[TargetScreen];
+
+            if (Add.Mentioned)
             {
-                if(Has(Relative))
+                return CalculateNewAddPosition(origin, targetScreen);
+            }
+            else if (To.Mentioned)
+            {
+                return CalculateNewToPosition(targetScreen);
+            }
+            else if (Relative.Mentioned)
+            {
+                return CalculateNewRelativePosition(origin, targetScreen);
+            }
+            else if (Resize.Mentioned)
+            {
+                return CalculateNewSize(origin, targetScreen);
+            }
+
+            
+            if (Percent.Mentioned)
+            {
+                while (Left > 100 || Right > 100 || Width > 100)
                 {
+                    TargetScreen++;
+                    if(Left - 100 > 0)
+                        Left -= 100;
+                    if(Right - 100 > 0)
+                        Right -= 100;
+                    if(Right - Left > 0)
+                        Width = Right - Left;
+                }
+            }
+
+
+
+            RECT newPosition;
+            if(To.Mentioned) // To means not Percent
+            {
+                if(Relative.Mentioned)
+                {
+                    // To + Relative (-Percent)
                     // Additive
                     newPosition = new RECT
                     {
-                        left = originalPosition.left + Left,
-                        top = originalPosition.top + Top,
-                        right = originalPosition.right + Width,
-                        bottom = originalPosition.bottom + Height,
+                        left = origin.left + Left,
+                        top = origin.top + Top,
+                        right = origin.right + Width,
+                        bottom = origin.bottom + Height,
                     };
                 }
                 else
                 {
+                    // To alone (-Percent -Relative)
                     // Absolute
                     newPosition = new RECT
                     {
@@ -128,8 +191,9 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                     };
                 }
             }
-            else if(Has(Relative))
+            else if(Relative.Mentioned)
             {
+                // Relative alone (-Top +Percent)
                 // Percent == true
                 // Relative
                 Screen screen = Screen.AllScreens[TargetScreen];
@@ -138,16 +202,16 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
                 newPosition = new RECT
                 {
-                    left = originalPosition.left + (Left * onePercentX),
-                    top = originalPosition.top + (Top * onePercentY),
-                    right = originalPosition.right + (Right * onePercentX),
-                    bottom = originalPosition.bottom + (Bottom * onePercentY),
+                    left = origin.left + (Left * onePercentX),
+                    top = origin.top + (Top * onePercentY),
+                    right = origin.right + (Right * onePercentX),
+                    bottom = origin.bottom + (Bottom * onePercentY),
                 };
             }
             else
             {
-                // Percent == true
-                // Absolute
+                // Percent == true (-Top -Relative)
+                // Absolute percent
                 Screen screen = Screen.AllScreens[TargetScreen];
                 var onePercentX = screen.WorkingArea.Width / 100;
                 var onePercentY = screen.WorkingArea.Height / 100;
@@ -162,6 +226,94 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             }
 
             return newPosition;
+        }
+
+        private RECT CalculateNewRelativePosition(RECT origin, Screen targetScreen)
+        {
+            if (!Percent.Mentioned)
+                return new RECT
+                {
+                    left = origin.left + Left,
+                    top = origin.top + Top,
+                    right = origin.left + Left + (origin.right - origin.left) + Width,
+                    bottom = origin.top + Top + (origin.bottom - origin.top) + Height,
+                };
+
+            var onePercentX = ((int) (targetScreen.Bounds.Width / 100f));
+            var onePercentY = ((int) (targetScreen.Bounds.Height / 100f));
+
+            var relativeLeft = onePercentX * Left;
+            var relativeRight = onePercentX * Right;
+            var relativeTop = onePercentY * Top;
+            var relativeBottom = onePercentY * Bottom;
+            var relativeWidth = relativeRight - relativeLeft;
+            var relativeHeight = relativeBottom - relativeTop;
+
+            return new RECT
+            {
+                left = origin.left + relativeLeft,
+                top = origin.top + relativeTop,
+                right = origin.left + relativeLeft + (origin.right - origin.left) + relativeWidth,
+                bottom = origin.top + relativeTop + (origin.bottom - origin.top) + relativeHeight,
+            };
+        }
+
+        private RECT CalculateNewToPosition(Screen targetScreen)
+        {
+            if (!Percent.Mentioned)
+                return new RECT
+                {
+                    left = Left,
+                    top = Top,
+                    right = Left,
+                    bottom = Top,
+                };
+            
+            var onePercentX = ((int) (targetScreen.Bounds.Width / 100f));
+            var onePercentY = ((int) (targetScreen.Bounds.Height / 100f));
+
+            var relativeLeft = onePercentX * Left;
+            var relativeRight = onePercentX * Right;
+            var relativeTop = onePercentY * Top;
+            var relativeBottom = onePercentY * Bottom;
+
+            return new RECT
+            {
+                left = relativeLeft,
+                top = relativeTop,
+                right = relativeRight,
+                bottom = relativeBottom,
+            };
+        }
+
+        private RECT CalculateNewAddPosition(RECT origin, Screen targetScreen)
+        {
+            if (!Percent.Mentioned)
+                return new RECT
+                {
+                    left = origin.left + Left,
+                    top = origin.top + Top,
+                    right = origin.left + Left + (origin.right - origin.left) + Width,
+                    bottom = origin.top + Top + (origin.bottom - origin.top) + Height,
+                };
+
+            var onePercentX = ((int) (targetScreen.Bounds.Width / 100f));
+            var onePercentY = ((int) (targetScreen.Bounds.Height / 100f));
+
+            var relativeLeft = onePercentX * Left;
+            var relativeRight = onePercentX * Right;
+            var relativeTop = onePercentY * Top;
+            var relativeBottom = onePercentY * Bottom;
+            var relativeWidth = relativeRight - relativeLeft;
+            var relativeHeight = relativeBottom - relativeTop;
+
+            return new RECT
+            {
+                left = origin.left + relativeLeft,
+                top = origin.top + relativeTop,
+                right = origin.left + relativeLeft + (origin.right - origin.left) + relativeWidth,
+                bottom = origin.top + relativeTop + (origin.bottom - origin.top) + relativeHeight,
+            };
         }
     }
 }

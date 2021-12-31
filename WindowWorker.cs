@@ -72,7 +72,7 @@ namespace WilliamPersonalMultiTool
         public int CurrentCorner = 0;
 
         public CustomPhraseManager Manager { get; }
-        public IntPtr ParentHandle { get; private set; }
+        public static IntPtr ParentHandle { get; private set; }
         public List<CustomKeySequence> Sequences { get; set; }
 
         public WindowWorker(CustomPhraseManager Manager, IntPtr parentHandle)
@@ -197,12 +197,13 @@ namespace WilliamPersonalMultiTool
 
                 User32.GetWindowRect(handle, out var startingWindowPosition);
                 var newPosition = CalculateCornerForRECT(startingWindowPosition, 0, entry);
-                MoveTo(newPosition);
+                MoveForegroundWindowTo(newPosition);
 
             }
         }
 
-        public void OnMoveCurrentWindowToPosition(object sender, PhraseEventArguments e){
+        public void OnMoveCurrentWindowToPosition(object sender, PhraseEventArguments e)
+        {
             var triggered = e.State.KeySequence;
             var entry = triggered.Sequence[^1] - PKey.D0;
 
@@ -214,7 +215,7 @@ namespace WilliamPersonalMultiTool
                 CurrentPosition = entry;
 
                 var p = WindowPositions[entry];
-                MoveTo(p);
+                MoveForegroundWindowTo(p);
             }
         }
 
@@ -230,7 +231,7 @@ namespace WilliamPersonalMultiTool
             if (entry is < 1 or > 9) return;
 
             var p = WindowPositions[entry - 1];
-            MoveTo(p);
+            MoveForegroundWindowTo(p);
         }
 
         public void OnMoveCurrentWindowToNextPosition(object sender, PhraseEventArguments e)
@@ -245,16 +246,16 @@ namespace WilliamPersonalMultiTool
             if (entry is < 1 or > 9) return;
 
             var p = WindowPositions[entry - 1];
-            MoveTo(p);
+            MoveForegroundWindowTo(p);
         }
 
         public void OnMoveTo00(object sender, PhraseEventArguments e)
         { 
             Manager.SendBackspaces(2);
-            MoveTo(null);
+            MoveForegroundWindowTo(null);
         }
 
-        private void MoveTo(RECT? p)
+        public static void MoveForegroundWindowTo(RECT? p)
         {
             var handle = User32.GetForegroundWindow();
 
@@ -284,8 +285,8 @@ namespace WilliamPersonalMultiTool
             }
         }
 
-        public int AmountOfShift = -10;
-        private RECT ShiftABit(RECT rect)
+        public static int AmountOfShift = -10;
+        private static RECT ShiftABit(RECT rect)
         {
             AmountOfShift += 10;
             if (AmountOfShift >= 50)

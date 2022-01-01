@@ -133,36 +133,22 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             {
                 return CalculateNewAddPosition(origin, targetScreen);
             }
-            else if (To.Mentioned)
+
+            if (To.Mentioned)
             {
                 return CalculateNewToPosition(targetScreen);
             }
-            else if (Relative.Mentioned)
+
+            if (Relative.Mentioned)
             {
                 return CalculateNewRelativePosition(origin, targetScreen);
             }
-            else if (Resize.Mentioned)
+
+            if (Resize.Mentioned)
             {
                 return CalculateNewSize(origin, targetScreen);
             }
-
             
-            if (Percent.Mentioned)
-            {
-                while (Left > 100 || Right > 100 || Width > 100)
-                {
-                    TargetScreen++;
-                    if(Left - 100 > 0)
-                        Left -= 100;
-                    if(Right - 100 > 0)
-                        Right -= 100;
-                    if(Right - Left > 0)
-                        Width = Right - Left;
-                }
-            }
-
-
-
             RECT newPosition;
             if(To.Mentioned) // To means not Percent
             {
@@ -225,6 +211,37 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 };
             }
 
+            return newPosition;
+        }
+
+        private RECT CalculateNewSize(RECT origin, Screen targetScreen)
+        {
+            RECT newPosition;
+
+            if (Percent.Mentioned)
+            {
+                var onePercentX = targetScreen.WorkingArea.Width / 100;
+                var onePercentY = targetScreen.WorkingArea.Height / 100;
+
+                newPosition = new RECT
+                {
+                    left =  origin.left + (Left * onePercentX),
+                    top = origin.top + (Top * onePercentY),
+                    right = origin.right + (Right * onePercentX),
+                    bottom = origin.bottom + (Bottom * onePercentY),
+                };
+
+            }
+            else
+            {
+                newPosition = new RECT
+                {
+                    left = origin.left + Left,
+                    top = origin.top + Top,
+                    right = origin.right + Right,
+                    bottom = origin.bottom + Bottom,
+                };
+            }            
             return newPosition;
         }
 

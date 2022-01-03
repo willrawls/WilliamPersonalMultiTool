@@ -111,8 +111,8 @@ namespace WilliamPersonalMultiTool.Tests.Acting.Actors
             var actual = moveActor.CalculateNewPosition(0, originalPosition);
             Assert.AreEqual(1, actual.left);
             Assert.AreEqual(2, actual.top);
-            Assert.AreEqual(3, actual.right);
-            Assert.AreEqual(4, actual.bottom);
+            Assert.AreEqual(4, actual.right);
+            Assert.AreEqual(6, actual.bottom);
         }
 
         [TestMethod]

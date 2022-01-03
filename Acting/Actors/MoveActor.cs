@@ -282,8 +282,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 {
                     left = Left,
                     top = Top,
-                    right = Left,
-                    bottom = Top,
+                    right = Right,
+                    bottom = Bottom,
                 };
             
             var onePercentX = ((int) (targetScreen.Bounds.Width / 100f));

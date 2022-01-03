@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHotPhrase.Keyboard;
 using WilliamPersonalMultiTool.Acting;
@@ -119,15 +120,18 @@ namespace WilliamPersonalMultiTool.Tests.Acting.Actors
         public void CalculateNewPosition_To_Percent()
         {
             var moveActor = new MoveActor();
-            moveActor.Initialize("When A move to 10 10 10 10");
-            var originalPosition = new RECT{ left = 0, right = 0, top = 0, bottom = 0};
+            moveActor.Initialize("When A move percent 10 10 10 10");
+            var originalPosition = new RECT{ left = 0, right = 100, top = 0, bottom = 100};
 
+            var tenX = Screen.AllScreens[0].PercentX(10);
+            var tenY = Screen.AllScreens[0].PercentY(10);
+            
             var actual = moveActor.CalculateNewPosition(0, originalPosition);
 
-            Assert.AreEqual(1, actual.left);
-            Assert.AreEqual(2, actual.top);
-            Assert.AreEqual(3, actual.right);
-            Assert.AreEqual(4, actual.bottom);
+            Assert.AreEqual(tenX, actual.left);
+            Assert.AreEqual(tenY, actual.top);
+             Assert.AreEqual(100 + tenX, actual.right);
+            Assert.AreEqual(100 + tenY, actual.bottom);
         }
     }
 }

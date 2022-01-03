@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -13,6 +14,16 @@ namespace WilliamPersonalMultiTool
 {
     public static class Extensions
     {
+        public static int PercentX(this Screen target, int percent = 1)
+        {
+            return (int) (target.Bounds.Width / 100.0) * percent;
+        }
+
+        public static int PercentY(this Screen target, int percent = 1)
+        {
+            return (int) (target.Bounds.Height / 100.0) * percent;
+        }
+
         public static int WhenContains(this List<Verb> target, Verb verb, int value)
         {
             if (target.Contains(verb))

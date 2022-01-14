@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
@@ -334,7 +335,13 @@ namespace WilliamPersonalMultiTool.Custom
             {
                 if (backspaceCount > 0)
                     SendBackspaces(backspaceCount);
-                SendKeys.SendWait(toSend);
+
+                foreach (var c in toSend)
+                {
+                    SendKeys.SendWait(c.ToString());
+                    Thread.Sleep(5);
+                }
+                
             }
             catch
             {

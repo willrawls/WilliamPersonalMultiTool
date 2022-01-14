@@ -8,6 +8,7 @@ using MetX.Standard.Library;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
+using WilliamPersonalMultiTool.Custom;
 using User32 = Win32Interop.Methods.User32;
 using Win32Interop.Enums;
 using Win32Interop.Structs;
@@ -72,7 +73,7 @@ namespace WilliamPersonalMultiTool
         public int CurrentCorner = 0;
 
         public CustomPhraseManager Manager { get; }
-        public IntPtr ParentHandle { get; private set; }
+        public static IntPtr ParentHandle { get; private set; }
         public List<CustomKeySequence> Sequences { get; set; }
 
         public WindowWorker(CustomPhraseManager Manager, IntPtr parentHandle)
@@ -81,16 +82,15 @@ namespace WilliamPersonalMultiTool
             ParentHandle = parentHandle;
             Sequences = new List<CustomKeySequence>
             {
-                new("Move window to position 1", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D1}, OnMoveCurrentWindowToPosition),
-                new("Window to position 2", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D2}, OnMoveCurrentWindowToPosition),
-                new("Window to position 3", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D3}, OnMoveCurrentWindowToPosition),
-                new("Window to position 4", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D4}, OnMoveCurrentWindowToPosition),
-                new("Window to position 5", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D5}, OnMoveCurrentWindowToPosition),
-                new("Window to position 6", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D6}, OnMoveCurrentWindowToPosition),
-                new("Window to position 7", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D7}, OnMoveCurrentWindowToPosition),
-                new("Window to position 8", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D8}, OnMoveCurrentWindowToPosition),
-                new("Window to position 9", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D9}, OnMoveCurrentWindowToPosition),
-                new("Window to position 0", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D0}, OnMoveCurrentWindowToPosition),
+                new("Window to position 1", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D1}, OnMoveCurrentWindowToPosition),
+                new("Window to position 2", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D2}, OnMoveCurrentWindowToPosition),
+                new("Window to position 3", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D3}, OnMoveCurrentWindowToPosition),
+                new("Window to position 4", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D4}, OnMoveCurrentWindowToPosition),
+                new("Window to position 5", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D5}, OnMoveCurrentWindowToPosition),
+                new("Window to position 6", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D6}, OnMoveCurrentWindowToPosition),
+                new("Window to position 7", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D7}, OnMoveCurrentWindowToPosition),
+                new("Window to position 8", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D8}, OnMoveCurrentWindowToPosition),
+                new("Window to position 9", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D9}, OnMoveCurrentWindowToPosition),
 
                 new("Window to upper left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D1}, OnMoveCurrentWindowToCorner),
                 new("Window to upper right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D2}, OnMoveCurrentWindowToCorner),
@@ -196,12 +196,13 @@ namespace WilliamPersonalMultiTool
 
                 User32.GetWindowRect(handle, out var startingWindowPosition);
                 var newPosition = CalculateCornerForRECT(startingWindowPosition, 0, entry);
-                MoveTo(newPosition);
+                MoveForegroundWindowTo(newPosition);
 
             }
         }
 
-        public void OnMoveCurrentWindowToPosition(object sender, PhraseEventArguments e){
+        public void OnMoveCurrentWindowToPosition(object sender, PhraseEventArguments e)
+        {
             var triggered = e.State.KeySequence;
             var entry = triggered.Sequence[^1] - PKey.D0;
 
@@ -213,7 +214,7 @@ namespace WilliamPersonalMultiTool
                 CurrentPosition = entry;
 
                 var p = WindowPositions[entry];
-                MoveTo(p);
+                MoveForegroundWindowTo(p);
             }
         }
 
@@ -229,7 +230,7 @@ namespace WilliamPersonalMultiTool
             if (entry is < 1 or > 9) return;
 
             var p = WindowPositions[entry - 1];
-            MoveTo(p);
+            MoveForegroundWindowTo(p);
         }
 
         public void OnMoveCurrentWindowToNextPosition(object sender, PhraseEventArguments e)
@@ -244,16 +245,28 @@ namespace WilliamPersonalMultiTool
             if (entry is < 1 or > 9) return;
 
             var p = WindowPositions[entry - 1];
-            MoveTo(p);
+            MoveForegroundWindowTo(p);
         }
 
         public void OnMoveTo00(object sender, PhraseEventArguments e)
         { 
             Manager.SendBackspaces(2);
-            MoveTo(null);
+            MoveForegroundWindowTo(null);
         }
 
-        private void MoveTo(RECT? p)
+        public static RECT? GetForegroundWindowPosition()
+        {
+            var handle = User32.GetForegroundWindow();
+
+            if (handle == IntPtr.Zero)
+                return null;
+
+            return User32.GetWindowRect(handle, out var position) 
+                ? position 
+                : null;
+        }
+
+        public static void MoveForegroundWindowTo(RECT? p)
         {
             var handle = User32.GetForegroundWindow();
 
@@ -283,8 +296,8 @@ namespace WilliamPersonalMultiTool
             }
         }
 
-        public int AmountOfShift = -10;
-        private RECT ShiftABit(RECT rect)
+        public static int AmountOfShift = -10;
+        private static RECT ShiftABit(RECT rect)
         {
             AmountOfShift += 10;
             if (AmountOfShift >= 50)

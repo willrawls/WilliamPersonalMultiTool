@@ -4,14 +4,16 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 using NHotPhrase.WindowsForms;
+using WilliamPersonalMultiTool.Acting;
 
-namespace WilliamPersonalMultiTool
+namespace WilliamPersonalMultiTool.Custom
 {
     public class CustomPhraseManager : HotPhraseManagerForWinForms
     {
@@ -30,7 +32,7 @@ namespace WilliamPersonalMultiTool
 
         public void OnExpandToNameOfTrigger(object sender, PhraseEventArguments e)
         {
-            var customKeySequence = (CustomKeySequence) e.State.KeySequence;
+            var customKeySequence = (CustomKeySequence)e.State.KeySequence;
             SendBackspaces(customKeySequence.BackspaceCount);
             var textToSend = e.Name;
             if (e.State.KeySequence.WildcardMatchType != WildcardMatchType.None
@@ -51,7 +53,7 @@ namespace WilliamPersonalMultiTool
             // var debug = MakeReadyForSending(textToSend, SplitLength, true);
             // SendString(textToSend, 2, true);
 
-            NormalSendKeysAndWait(textToSend);
+            PausableNormalSendKeysAndWait(textToSend);
         }
 
         private string WildcardTemplate(KeySequence stateKeySequence)
@@ -76,17 +78,17 @@ namespace WilliamPersonalMultiTool
 
         public CustomKeySequence Add(CustomKeySequence keySequence)
         {
-            Extensions.ReplaceMatching(Keyboard.KeySequences, keySequence);
+            Keyboard.KeySequences.ReplaceMatching(keySequence);
             return keySequence;
         }
 
         public CustomKeySequence AddOrReplace(string keys)
         {
-            var pKeyList = Extensions.ToPKeyList(keys, null, out var wildcardMatchType, out var wildcardCount);
+            var pKeyList = keys.ToPKeyList(null, out var wildcardMatchType, out var wildcardCount);
             var keySequence =
                 new CustomKeySequence(keys, pKeyList, OnExpandToNameOfTrigger, ToBackspaceCount(pKeyList));
 
-            Extensions.ReplaceMatching(Keyboard.KeySequences, keySequence);
+            Keyboard.KeySequences.ReplaceMatching(keySequence);
 
             if (wildcardCount <= 0) return keySequence;
 
@@ -101,83 +103,61 @@ namespace WilliamPersonalMultiTool
             while (text.StartsWith("\n")) text = text.Substring(1);
             while (text.EndsWith("\n")) text = text.Substring(0, text.Length - 1);
 
-            var keySequencesToAdd = new List<KeySequence>();
-            var textWithNoComments = string.Join("\n",
-                text.Replace("\r", "")
-                    .LineList()
-                    .Where(line => !line.Trim().StartsWith("//"))
-                    .ToList());
-
-            var whens = textWithNoComments
-                .AllTokens("When ", StringSplitOptions
-                    .RemoveEmptyEntries)
-                .Where(t => t
-                    .Trim()
-                    .IsNotEmpty() 
-                            && t.Trim()
-                                .StartsWith("//"))
+            var linesWithNoComments = text
+                .Replace("\r", "")
+                .LineList()
+                .Where(line => !line.Trim().StartsWith("//"))
                 .ToList();
 
-            Actors = new BaseActorList();
+            Actors ??= new List<BaseActor>();
+            BaseActor previousActor = null;
 
-            foreach (var when in whens)
+            foreach (var line in linesWithNoComments)
             {
-                var whenWithItsOrs = when
-                    .Replace("\nOr ", "Or ", StringComparison.InvariantCultureIgnoreCase)
-                    .Replace("\n  Or ", "Or ", StringComparison.InvariantCultureIgnoreCase)
-                    .Replace("\n   Or ", "Or ", StringComparison.InvariantCultureIgnoreCase)
-                    .Replace("\n    Or ", "Or ", StringComparison.InvariantCultureIgnoreCase)
-                    .Replace("\n\tOr ", "Or ", StringComparison.InvariantCultureIgnoreCase)
-                    .AllTokens("Or ", StringSplitOptions.RemoveEmptyEntries);
+                var actor = ActorHelper.Factory(line, this, previousActor);
+                if (actor == null || actor.ActionableType == ActionableType.Unknown)
+                    throw new Exception($"Invalid Line: {line}");
 
-                for (var i = 0; i < whenWithItsOrs.Count; i++)
-                    if (whenWithItsOrs[i].TokenCount("\n") == 2 && whenWithItsOrs[i].EndsWith("\n"))
-                        whenWithItsOrs[i] = whenWithItsOrs[i].FirstToken("\n");
-
-                var actionType = ActorHelper.GetActionType(whenWithItsOrs[0]);
-                if (actionType.Value == ActionType.Unknown)
-                    throw new Exception($"Invalid Entry: {when}");
-
-                Actors.AddRange(ActorHelper.Factory(actionType.Value, whenWithItsOrs));
-
-                /*
-                if (ors.Count < 2) continue;
-
-                foreach (var or in ors.Skip(1))
+                if (actor.ActionableType == ActionableType.Or)
                 {
-                    actionType = ActorHelper.GetActionType(or);
-                    if (actionType.Value == ActionType.Unknown)
-                        throw new Exception($"Invalid Entry: {when}");
-
-                    paddedActionSeparator = $" {actionType.Key} ";
-
-                    parameters = ors[0].TokensAfterFirst(paddedActionSeparator).Substring(1);
-
-                    var orKeyText = or.FirstToken(paddedActionSeparator);
-                    var keysToPrepend = new List<PKey>(keysAtWhenLevel.GetRange(0, keysAtWhenLevel.Count - 1));
-
-                    var keySequenceForThisOr = ToPKeyList(orKeyText, keysToPrepend, out wildcardMatchType,
-                        out wildcardCount);
-                    if (keySequenceForThisOr.IsEmpty()) continue;
-
-                    var expansion = or.TokensAfterFirst(" " + actionType);
-                    if (expansion.IsEmpty()) continue;
-                    InternalAddGenericAction(actor, parameters, keySequenceForThisOr, keySequencesToAdd, wildcardCount, wildcardMatchType);
+                    if(previousActor is {CanContinue: true})
+                    {
+                        
+                        if (previousActor.OnContinue(line))
+                            actor = null;
+                    }
+                    else
+                    {
+                        // Error condition
+                    }
                 }
-*/
+                else if(previousActor == null
+                        || actor.ID != previousActor.ID)
+                {
+                    var existingActorWithSameKeySequence =
+                        Actors.FirstOrDefault(a => a.KeySequence.Sequence.AreEqual(actor.KeySequence.Sequence));
+                    if (existingActorWithSameKeySequence != null)
+                        Actors.Remove(existingActorWithSameKeySequence);
+                    Actors.Add(actor);
+                }
+
+                previousActor = actor;
             }
 
-            keySequencesToAdd = Actors.KeySequences;
+            List<KeySequence> keySequencesToAdd = Actors.Select(a => a.KeySequence).ToList();
+
+            Keyboard.KeySequences ??= new KeySequenceList();
             Keyboard.KeySequences.AddRange(keySequencesToAdd);
+
             return keySequencesToAdd;
         }
 
-        public BaseActorList Actors { get; set; }
+        public List<BaseActor> Actors { get; set; }
 
         private void InternalAddGenericAction(BaseActor actor, string parameters, List<PKey> keySequence,
             List<KeySequence> resultingSequences, int wildcardCount, WildcardMatchType wildcardMatchType)
         {
-            var action = actor.Action.ToString();
+            var action = actor.ActionableType.ToString();
             if (action.StartsWith("choose") && parameters.Replace("\r", "").StartsWith("\n"))
                 parameters = parameters.Substring(1);
 
@@ -230,18 +210,18 @@ namespace WilliamPersonalMultiTool
             }
 
             var backspaceCount = ToBackspaceCount(keys);
-            var orSequence = new CustomKeySequence(runName, keys, OnRunTriggerHandler, backspaceCount)
+            var customKeySequence = new CustomKeySequence(runName, keys, OnRunTriggerHandler, backspaceCount)
             {
                 ExecutablePath = executablePath,
                 Arguments = arguments,
                 BackColor = Color.Tan
             };
-            Extensions.ReplaceMatching(result, orSequence);
+            result.ReplaceMatching(customKeySequence);
         }
 
         private void OnRunTriggerHandler(object sender, PhraseEventArguments e)
         {
-            var customKeySequence = (CustomKeySequence) e.State.KeySequence;
+            var customKeySequence = (CustomKeySequence)e.State.KeySequence;
             if (customKeySequence.BackspaceCount > 0)
                 SendBackspaces(customKeySequence.BackspaceCount);
 
@@ -313,12 +293,12 @@ namespace WilliamPersonalMultiTool
                 BackColor = Color.PaleGoldenrod
             };
 
-            Extensions.ReplaceMatching(result, chooseSequence);
+            result.ReplaceMatching(chooseSequence);
         }
 
         private void OnChooseTriggerHandler(object sender, PhraseEventArguments e)
         {
-            var customKeySequence = (CustomKeySequence) e.State.KeySequence;
+            var customKeySequence = (CustomKeySequence)e.State.KeySequence;
             if (customKeySequence.BackspaceCount > 0)
             {
                 var backspaces = customKeySequence.BackspaceCount + customKeySequence.WildcardCount;
@@ -329,31 +309,39 @@ namespace WilliamPersonalMultiTool
             if (choice < 1 || choice is not >= 0 || choice.Value > customKeySequence.Choices.Count) return;
 
             var keySequenceChoice = customKeySequence.Choices[choice.Value - 1];
-            NormalSendKeysAndWait(keySequenceChoice.Text);
+            PausableNormalSendKeysAndWait(keySequenceChoice.Text);
 
             //var textToSend = MakeReadyForSending(keySequenceChoice.Text, SplitLength, true);
             //SendStrings(textToSend, 2);
         }
 
-        private static void NormalSendKeysAndWait(string toSend)
+        public void PausableNormalSendKeysAndWait(string toSend)
         {
             if (toSend.ToLower().Contains("{pause "))
             {
                 var parts = toSend.AllTokens("{pause ");
                 if (parts.Count == 1)
-                    InternalNormalSendKeysAndWait(toSend);
+                    NormalSendKeysAndWait(toSend);
             }
             else
             {
-                InternalNormalSendKeysAndWait(toSend);
+                NormalSendKeysAndWait(toSend);
             }
         }
 
-        private static void InternalNormalSendKeysAndWait(string toSend)
+        public void NormalSendKeysAndWait(string toSend, int backspaceCount = 0)
         {
             try
             {
-                SendKeys.SendWait(toSend);
+                if (backspaceCount > 0)
+                    SendBackspaces(backspaceCount);
+
+                foreach (var c in toSend)
+                {
+                    SendKeys.SendWait(c.ToString());
+                    Thread.Sleep(5);
+                }
+                
             }
             catch
             {
@@ -363,25 +351,28 @@ namespace WilliamPersonalMultiTool
 
         private void InternalAddOrReplace(CustomKeySequence sequence, List<KeySequence> resultingSequences)
         {
-            Extensions.ReplaceMatching(resultingSequences, sequence);
+            resultingSequences.ReplaceMatching(sequence);
         }
 
-        public int ToBackspaceCount(List<PKey> pKeyList)
+        public static int ToBackspaceCount(List<PKey> pKeyList)
         {
             var count = pKeyList.Count(key => key is >= PKey.D0 and <= PKey.Z or >= PKey.NumPad0 and <= PKey.NumPad9);
             return count;
         }
 
-        
+
         public static KeySequence Factory(string name = null, string keys = null)
         {
-            var sequence = new KeySequence()
+            var keySequence = new KeySequence()
             {
                 Name = name ?? Guid.NewGuid().ToString(),
             };
-            if (keys.IsNotEmpty())
-                sequence.Sequence = WilliamPersonalMultiTool.Extensions.ToPKeyList(keys);
-            return sequence;
+            if (keys.IsEmpty()) return keySequence;
+
+            keySequence.Sequence = keys.ToPKeyList(null, out var wildcardMatchType, out var wildcardCount);
+            keySequence.WildcardCount = wildcardCount;
+            keySequence.WildcardMatchType = wildcardMatchType;
+            return keySequence;
         }
 
     }

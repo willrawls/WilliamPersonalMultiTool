@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
+using WilliamPersonalMultiTool.Acting.Actors;
+using WilliamPersonalMultiTool.Custom;
 
 namespace WilliamPersonalMultiTool.Tests
 {
@@ -33,13 +35,14 @@ When CapsLock 1 2 5 type someone.at@hotmail.com
         {
             var data = new CustomPhraseManager(null);
             var set = data.AddSet(SetText);
-            var actual = (CustomKeySequence) set[1];
+            var baseActor = (CustomKeySequence) set[1];
+            var actual = (ChooseActor)baseActor.Actor;
+
             Assert.IsNotNull(actual.Choices);
             Assert.AreEqual(3, actual.Choices.Count);
-            My.AssertAllAreEqual(TestPKeys.Caps124, actual.Sequence);
-            Assert.AreEqual("abc", actual.Choices[0].Text);
-            Assert.AreEqual("def", actual.Choices[1].Text);
-            Assert.AreEqual("ghi", actual.Choices[2].Text);
+            Assert.AreEqual("abc", actual.Choices[0]);
+            Assert.AreEqual("def", actual.Choices[1]);
+            Assert.AreEqual("ghi", actual.Choices[2]);
         }
 
         [TestMethod]
@@ -47,12 +50,13 @@ When CapsLock 1 2 5 type someone.at@hotmail.com
         {
             var data = new CustomPhraseManager(null);
             var set = data.AddSet(SetText);
-            var actual = (CustomKeySequence) set[2];
-            Assert.IsNotNull(actual.Choices);
+            var baseActor = (CustomKeySequence) set[2];
+            var actual = (ChooseActor)baseActor.Actor;
+
+            Assert.IsNotNull(actual);
             Assert.AreEqual(2, actual.Choices.Count);
-            My.AssertAllAreEqual(TestPKeys.Caps12P, actual.Sequence);
-            Assert.AreEqual("jkl", actual.Choices[0].Text);
-            Assert.AreEqual("mno", actual.Choices[1].Text);
+            Assert.AreEqual("jkl", actual.Choices[0]);
+            Assert.AreEqual("mno", actual.Choices[1]);
         }
     }
 }

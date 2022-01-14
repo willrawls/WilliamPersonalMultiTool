@@ -1,4 +1,4 @@
-﻿namespace WilliamPersonalMultiTool
+﻿namespace WilliamPersonalMultiTool.Custom
 {
     public class CustomKeySequenceChoice
     {

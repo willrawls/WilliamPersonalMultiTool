@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
+using WilliamPersonalMultiTool.Custom;
 
 namespace WilliamPersonalMultiTool.Tests
 {
@@ -33,8 +34,8 @@ When CapsLock G 2 type
 When CapsLock G 3 type william.rawls@otherplace.com
 ");
             Assert.AreEqual(3, actual.Count);
-            Assert.AreEqual("william.rawls@gmail.com\n123", actual[0].Name);
-            Assert.AreEqual("\n456\n789!", actual[1].Name);
+            Assert.AreEqual("william.rawls@gmail.com{ENTER}123", actual[0].Name);
+            Assert.AreEqual("456{ENTER}789!", actual[1].Name);
             Assert.AreEqual("william.rawls@otherplace.com", actual[2].Name);
         }
 
@@ -78,6 +79,15 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
         }
 
         [TestMethod]
+        public void AddSet_Caps123_NoSpaces_OnOneLine()
+        {
+            var data = new CustomPhraseManager(null);
+            var actual = data.AddSet("When CapsLock 123 type someone.at@gmail.com");
+            Assert.AreEqual(1, actual.Count);
+            My.AssertAllAreEqual(TestPKeys.Caps123, actual[0].Sequence);
+        }
+
+        [TestMethod]
         public void AddSet_Caps123_RunNotepad_Simple()
         {
             var data = new CustomPhraseManager(null);
@@ -95,16 +105,16 @@ When CapsLock 1 2 3 type someone.at@hotmail.com
             var actual = data.AddSet(@"
 
 When CapsLock Shift W type William\tRawls
-Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
+  Or 1 run ""notepad.exe"" arguments.txt ""Mike Fred George Mary""
 
 ");
             Assert.AreEqual(2, actual.Count);
-            Assert.AreEqual(@"Run ""C:\Windows\notepad.exe"" arguments.txt ""Mike Fred George Mary""", actual[1].Name);
+            Assert.AreEqual("\nRun \"notepad.exe\" arguments.txt \"Mike Fred George Mary\"", "\n" + actual[1].Name);
             Assert.AreEqual(2, data.Keyboard.KeySequences.Count);
             var sequence = (CustomKeySequence) data.Keyboard.KeySequences[1];
             
-            Assert.AreEqual(@"C:\Windows\notepad.exe", sequence.ExecutablePath);
-            Assert.AreEqual(@"arguments.txt ""Mike Fred George Mary""", sequence.Arguments);
+            Assert.AreEqual(@"notepad.exe", sequence.ExecutablePath);
+            Assert.AreEqual("\n" + @"""arguments.txt"" ""Mike Fred George Mary""", "\n" + sequence.Arguments);
         }
 
         [TestMethod]
@@ -113,7 +123,7 @@ Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
             var data = new CustomPhraseManager(null);
             var actual = data.AddSet("When Shift X ## type x~~~~y");
             Assert.AreEqual("x~~~~y", actual[0].Name);
-            My.AssertAllAreEqual(TestPKeys.ShiftX2, actual[0].Sequence);
+            My.AssertAllAreEqual(TestPKeys.ShiftX, actual[0].Sequence);
             Assert.AreEqual(2, actual[0].WildcardCount);
             Assert.AreEqual(WildcardMatchType.Digits, actual[0].WildcardMatchType);
         }
@@ -124,10 +134,20 @@ Or 1 run ""C:\Windows\notepad.exe"" ""arguments.txt ""Mike Fred George Mary""""
             var data = new CustomPhraseManager(null);
             var actual = data.AddSet("When Shift X ** type x~~~~y");
             Assert.AreEqual("x~~~~y", actual[0].Name);
-            My.AssertAllAreEqual(TestPKeys.ShiftX2, actual[0].Sequence);
+            My.AssertAllAreEqual(TestPKeys.ShiftX, actual[0].Sequence);
 
             Assert.AreEqual(2, actual[0].WildcardCount);
             Assert.AreEqual(WildcardMatchType.AlphaNumeric, actual[0].WildcardMatchType);
+        }
+
+        [TestMethod]
+        public void AddSet_BackspaceCountSetTo2()
+        {
+            var data = new CustomPhraseManager(null);
+            var actual = data.AddSet("When Shift X Y type fred");
+            My.AssertAllAreEqual(TestPKeys.ShiftXY, actual[0].Sequence);
+
+            Assert.AreEqual(2, ((CustomKeySequence)actual[0]).BackspaceCount);
         }
 
         [TestMethod]

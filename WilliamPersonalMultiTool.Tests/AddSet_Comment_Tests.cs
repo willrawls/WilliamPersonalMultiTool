@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHotPhrase.Keyboard;
+using WilliamPersonalMultiTool.Custom;
 
 namespace WilliamPersonalMultiTool.Tests
 {
@@ -10,7 +11,7 @@ namespace WilliamPersonalMultiTool.Tests
         private const string SetText = @"
 When CapsLock 1 2 3 type someone.at@a.com
 //When CapsLock 1 2 3 type someone.at@b.com
-When CapsLock 1 2 5 type someone.at@c.com
+Or 5 type someone.at@c.com
 ";
 
         [TestMethod]

@@ -123,15 +123,14 @@ namespace WilliamPersonalMultiTool.Tests.Acting.Actors
             moveActor.Initialize("When A move percent 10 10 10 10");
             var originalPosition = new RECT{ left = 0, right = 100, top = 0, bottom = 100};
 
-            var tenX = Screen.AllScreens[0].PercentX(10);
-            var tenY = Screen.AllScreens[0].PercentY(10);
             moveActor.TargetScreen = 0;
+            var screen = Screen.AllScreens[0];
             var actual = moveActor.CalculateNewPosition(0, originalPosition);
 
-            Assert.AreEqual(tenX, actual.left);
-            Assert.AreEqual(tenY, actual.top);
-             Assert.AreEqual(100 + tenX, actual.right);
-            Assert.AreEqual(100 + tenY, actual.bottom);
+            Assert.AreEqual(screen.PercentX(10), actual.left);
+            Assert.AreEqual(screen.PercentY(10), actual.top);
+            Assert.AreEqual(screen.PercentX(20), actual.right);
+            Assert.AreEqual(screen.PercentY(20), actual.bottom);
         }
     }
 }

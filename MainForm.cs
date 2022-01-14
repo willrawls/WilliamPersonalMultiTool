@@ -117,6 +117,17 @@ namespace WilliamPersonalMultiTool
             Manager.SendString(text, 2, true);
         }
 
+        private void OnTypeWhatsOnTheKeyboard(object sender, PhraseEventArguments e)
+        {
+            var text = Clipboard.GetText();
+            if (text.IsEmpty())
+                return;
+            if (text.Length > 256)
+                return;
+
+            Manager.SendString(text, 2, true);
+        }
+
         private void OnGenerateGuid_N(object sender, PhraseEventArguments e)
         {
             var text = Guid.NewGuid().ToString("N");
@@ -235,15 +246,8 @@ namespace WilliamPersonalMultiTool
 
         private void ToggleOnOffButton_Click(object sender, EventArgs e)
         {
-            if(ToggleOnOffButton.Text == "Turn &Off")
-            {
-                Manager.Keyboard.KeySequences.Clear();
-                KeySequenceList.Items.Clear();
-            }
-            else
-            {
-                ReloadButton_Click(null, null);
-            }
+            Manager.Keyboard.KeySequences.Clear();
+            KeySequenceList.Items.Clear();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

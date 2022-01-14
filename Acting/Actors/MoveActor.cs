@@ -209,8 +209,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             {
                 // Percent == true (-Top -Relative)
                 // Absolute percent
-                var onePercentX = targetScreen.WorkingArea.Width / 100;
-                var onePercentY = targetScreen.WorkingArea.Height / 100;
+                var onePercentX = targetScreen.PercentX();
+                var onePercentY = targetScreen.PercentY();
 
                 newPosition = new RECT
                 {

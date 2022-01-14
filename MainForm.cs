@@ -47,11 +47,11 @@ namespace WilliamPersonalMultiTool
                 new("Edit sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.Alt, PKey.Alt}, OnEditKeySequences, 0),
                 new("Turn off all sequences", new List<PKey> {PKey.RControlKey, PKey.Shift, PKey.Alt, PKey.RControlKey}, OnToggleOnOff, 0),
             
-                new("Generate a GUID, style N", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.G, PKey.N}, OnGenerateGuid_N, 2),
-                new("Generate a GUID, style P", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.G, PKey.P}, OnGenerateGuid_P, 2),
+                new("Generate a GUID, style N", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.G, PKey.N}, OnGenerateGuid_N, 2),
+                new("Generate a GUID, style P", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.G, PKey.P}, OnGenerateGuid_P, 2),
 
-                new("Base64 Encode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.B, PKey.E}, OnEncodeClipboard, 2),
-                new("Base64 Decode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.B, PKey.D}, OnDecodeClipboard, 2),
+                new("Base64 Encode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.B, PKey.E}, OnEncodeClipboard, 2),
+                new("Base64 Decode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.B, PKey.D}, OnDecodeClipboard, 2),
             };
             StaticSequences.ForEach(s => s.BackColor = Color.CadetBlue);
 

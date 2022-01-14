@@ -14,6 +14,21 @@ namespace WilliamPersonalMultiTool
 {
     public static class Extensions
     {
+        public static int Index(this Screen target)
+        {
+            if (target == null)
+                return 0;
+            
+            for (var index = 0; index < Screen.AllScreens.Length; index++)
+            {
+                var x = Screen.AllScreens[index];
+                if (x.WorkingArea == target.WorkingArea)
+                    return index;
+            }
+
+            return 0;
+        }
+
         public static int PercentX(this Screen target, int percent = 1)
         {
             return (int) (target.Bounds.Width / 100.0) * percent;

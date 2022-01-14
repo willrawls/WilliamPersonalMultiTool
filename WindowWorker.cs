@@ -81,15 +81,15 @@ namespace WilliamPersonalMultiTool
             ParentHandle = parentHandle;
             Sequences = new List<CustomKeySequence>
             {
-                new("Move window to position 1", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D1}, OnMoveCurrentWindowToPosition),
-                new("Window to position 2", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D2}, OnMoveCurrentWindowToPosition),
-                new("Window to position 3", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D3}, OnMoveCurrentWindowToPosition),
-                new("Window to position 4", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D4}, OnMoveCurrentWindowToPosition),
-                new("Window to position 5", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D5}, OnMoveCurrentWindowToPosition),
-                new("Window to position 6", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D6}, OnMoveCurrentWindowToPosition),
-                new("Window to position 7", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D7}, OnMoveCurrentWindowToPosition),
-                new("Window to position 8", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D8}, OnMoveCurrentWindowToPosition),
-                new("Window to position 9", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.D9}, OnMoveCurrentWindowToPosition),
+                new("Window to position 1", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D1}, OnMoveCurrentWindowToPosition),
+                new("Window to position 2", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D2}, OnMoveCurrentWindowToPosition),
+                new("Window to position 3", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D3}, OnMoveCurrentWindowToPosition),
+                new("Window to position 4", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D4}, OnMoveCurrentWindowToPosition),
+                new("Window to position 5", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D5}, OnMoveCurrentWindowToPosition),
+                new("Window to position 6", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D6}, OnMoveCurrentWindowToPosition),
+                new("Window to position 7", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D7}, OnMoveCurrentWindowToPosition),
+                new("Window to position 8", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D8}, OnMoveCurrentWindowToPosition),
+                new("Window to position 9", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.ControlKey, PKey.D9}, OnMoveCurrentWindowToPosition),
 
                 new("Window to upper left", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D1}, OnMoveCurrentWindowToCorner),
                 new("Window to upper right", new List<PKey> {PKey.ControlKey, PKey.Shift, PKey.D2}, OnMoveCurrentWindowToCorner),
@@ -253,6 +253,18 @@ namespace WilliamPersonalMultiTool
         { 
             Manager.SendBackspaces(2);
             MoveForegroundWindowTo(null);
+        }
+
+        public static RECT? GetForegroundWindowPosition()
+        {
+            var handle = User32.GetForegroundWindow();
+
+            if (handle == IntPtr.Zero)
+                return null;
+
+            return User32.GetWindowRect(handle, out var position) 
+                ? position 
+                : null;
         }
 
         public static void MoveForegroundWindowTo(RECT? p)

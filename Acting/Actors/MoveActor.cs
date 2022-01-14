@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
+using Microsoft.VisualBasic.Devices;
 using NHotPhrase.Phrase;
+using Win32Interop.Methods;
 using Win32Interop.Structs;
 
 namespace WilliamPersonalMultiTool.Acting.Actors
@@ -120,6 +123,14 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             if (Errors.IsNotEmpty())
                 return true;
             
+            var origin = WindowWorker.GetForegroundWindowPosition();
+            if (!origin.HasValue) return false;
+
+            var mousePosition = Cursor.Position;
+            var currentScreen = Screen.FromPoint(mousePosition);
+            var currentScreenIndex = currentScreen.Index();
+            var newPosition = CalculateNewPosition(currentScreenIndex, origin.Value);
+            WindowWorker.MoveForegroundWindowTo(newPosition);
             return true;
         }
 
@@ -182,7 +193,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 // Relative alone (-Top +Percent)
                 // Percent == true
                 // Relative
-                Screen screen = Screen.AllScreens[TargetScreen];
+                var screen = Screen.AllScreens[TargetScreen];
                 var onePercentX = screen.WorkingArea.Width / 100;
                 var onePercentY = screen.WorkingArea.Height / 100;
 
@@ -198,9 +209,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             {
                 // Percent == true (-Top -Relative)
                 // Absolute percent
-                Screen screen = Screen.AllScreens[TargetScreen];
-                var onePercentX = screen.WorkingArea.Width / 100;
-                var onePercentY = screen.WorkingArea.Height / 100;
+                var onePercentX = targetScreen.WorkingArea.Width / 100;
+                var onePercentY = targetScreen.WorkingArea.Height / 100;
 
                 newPosition = new RECT
                 {

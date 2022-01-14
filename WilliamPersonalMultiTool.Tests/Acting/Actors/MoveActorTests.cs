@@ -125,7 +125,7 @@ namespace WilliamPersonalMultiTool.Tests.Acting.Actors
 
             var tenX = Screen.AllScreens[0].PercentX(10);
             var tenY = Screen.AllScreens[0].PercentY(10);
-            
+            moveActor.TargetScreen = 0;
             var actual = moveActor.CalculateNewPosition(0, originalPosition);
 
             Assert.AreEqual(tenX, actual.left);

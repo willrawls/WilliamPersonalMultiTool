@@ -27,10 +27,10 @@ namespace WilliamPersonalMultiTool.Tests.Acting.Actors
             My.AssertAllAreEqual(expected, actual.KeySequence.Sequence);
 
             Assert.IsNotNull(actual.LegalVerbs);
-            Assert.AreEqual(3, actual.LegalVerbs.Count);
+            Assert.AreEqual(5, actual.LegalVerbs.Count);
 
             Assert.IsNotNull(actual.ExtractedVerbs);
-            Assert.AreEqual(1, actual.ExtractedVerbs.Count);
+           Assert.AreEqual(1, actual.ExtractedVerbs.Count);
             Assert.AreEqual("to", actual.ExtractedVerbs[0].Name);
             Assert.IsTrue(actual.ExtractedVerbs[0].Mentioned);
             Assert.IsTrue(moveActor.To.Mentioned);
@@ -40,10 +40,10 @@ namespace WilliamPersonalMultiTool.Tests.Acting.Actors
 
             Assert.AreEqual(1, moveActor.Left);
             Assert.AreEqual(2, moveActor.Top);
-            Assert.AreEqual(3, moveActor.Right);
-            Assert.AreEqual(4, moveActor.Bottom);
-            Assert.AreEqual(2, moveActor.Width);
-            Assert.AreEqual(2, moveActor.Height);
+            Assert.AreEqual(4, moveActor.Right);
+            Assert.AreEqual(6, moveActor.Bottom);
+            Assert.AreEqual(3, moveActor.Width);
+            Assert.AreEqual(4, moveActor.Height);
         }
 
         [TestMethod]
@@ -61,7 +61,7 @@ namespace WilliamPersonalMultiTool.Tests.Acting.Actors
             My.AssertAllAreEqual(expected, actual.KeySequence.Sequence);
 
             Assert.IsNotNull(actual.LegalVerbs);
-            Assert.AreEqual(3, actual.LegalVerbs.Count);
+            Assert.AreEqual(5, actual.LegalVerbs.Count);
 
             Assert.IsNotNull(actual.ExtractedVerbs);
             Assert.AreEqual(2, actual.ExtractedVerbs.Count);

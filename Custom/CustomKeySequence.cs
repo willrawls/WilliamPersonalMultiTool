@@ -39,7 +39,7 @@ namespace WilliamPersonalMultiTool.Custom
 
             ThenCall((sender, eventArguments) =>
             {
-                actor.Manager.SendBackspaces(BackspaceCount);
+                // actor.Manager.SendBackspaces(BackspaceCount);
                 actor.OnAct(eventArguments);
             });
 

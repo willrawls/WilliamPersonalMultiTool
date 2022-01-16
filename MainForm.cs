@@ -117,7 +117,7 @@ namespace WilliamPersonalMultiTool
             Manager.SendString(text, 2, true);
         }
 
-        private void OnTypeWhatsOnTheKeyboard(object sender, PhraseEventArguments e)
+        private void OnTypeWhatsOnTheClipboard(object sender, PhraseEventArguments e)
         {
             var text = Clipboard.GetText();
             if (text.IsEmpty())

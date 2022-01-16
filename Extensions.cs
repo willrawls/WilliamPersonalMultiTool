@@ -14,6 +14,37 @@ namespace WilliamPersonalMultiTool
 {
     public static class Extensions
     {
+        public static int ToBackspaceCount(this CustomKeySequence target, List<PKey> pKeyList)
+        {
+            var count = pKeyList.Count(key => key is >= PKey.D0 and <= PKey.Z or >= PKey.NumPad0 and <= PKey.NumPad9);
+            if (target.WildcardCount > 0)
+                count += target.WildcardCount;
+            return count;
+        }
+
+        public static TActor Act<TActor>(this CustomKeySequence target) where TActor : BaseActor
+        {
+            if (target.Actor.OnAct(target.BlankPhraseEventArguments()))
+                return (TActor) target.Actor;
+            return null;
+        }
+        public static bool Act(this CustomKeySequence target)
+        {
+            if (target == null)
+                return false;
+
+            return target.Actor.OnAct(target.BlankPhraseEventArguments());
+        }
+
+        public static PhraseEventArguments BlankPhraseEventArguments(this CustomKeySequence target)
+        {
+            var action = new PhraseAction(target);
+            var matchResult = new MatchResult(target, "");
+            var state = new PhraseActionRunState(target, matchResult);
+            var keysToSend = new List<PKey>();
+            return new PhraseEventArguments(action, state, keysToSend);
+        }
+
         public static int Index(this Screen target)
         {
             if (target == null)

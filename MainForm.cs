@@ -43,15 +43,15 @@ namespace WilliamPersonalMultiTool
         {
             StaticSequences = new List<CustomKeySequence>()
             {
-                new("Reload sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.RShiftKey, PKey.RShiftKey}, OnReloadKeySequences, 0),
-                new("Edit sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.Alt, PKey.Alt}, OnEditKeySequences, 0),
-                new("Turn off all sequences", new List<PKey> {PKey.RControlKey, PKey.Shift, PKey.Alt, PKey.RControlKey}, OnToggleOnOff, 0),
+                new CustomKeySequence("Reload sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.RShiftKey, PKey.RShiftKey}, OnReloadKeySequences, 0),
+                new CustomKeySequence("Edit sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.Alt, PKey.Alt}, OnEditKeySequences, 0),
+                new CustomKeySequence("Turn off all sequences", new List<PKey> {PKey.RControlKey, PKey.Shift, PKey.Alt, PKey.RControlKey}, OnToggleOnOff, 0),
             
-                new("Generate a GUID, style N", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.G, PKey.N}, OnGenerateGuid_N, 2),
-                new("Generate a GUID, style P", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.G, PKey.P}, OnGenerateGuid_P, 2),
+                new CustomKeySequence("Generate a GUID, style N", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.G, PKey.N}, OnGenerateGuid_N, 2),
+                new CustomKeySequence("Generate a GUID, style P", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.G, PKey.P}, OnGenerateGuid_P, 2),
 
-                new("Base64 Encode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.B, PKey.E}, OnEncodeClipboard, 2),
-                new("Base64 Decode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.B, PKey.D}, OnDecodeClipboard, 2),
+                new CustomKeySequence("Base64 Encode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.B, PKey.E}, OnEncodeClipboard, 2),
+                new CustomKeySequence("Base64 Decode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.B, PKey.D}, OnDecodeClipboard, 2),
             };
             StaticSequences.ForEach(s => s.BackColor = Color.CadetBlue);
 
@@ -167,7 +167,7 @@ namespace WilliamPersonalMultiTool
         private static string WpmtPath(string filename = "Default")
         {
             var appDataXlg = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "XLG");
-            if (!Directory.Exists(appDataXlg)) Directory.CreateDirectory(appDataXlg);
+            Directory.CreateDirectory(appDataXlg);
 
             var path = Path.Combine(appDataXlg, $"{filename}.wpmt");
             return path;
@@ -177,7 +177,9 @@ namespace WilliamPersonalMultiTool
 
         private void UpdateListView()
         {
+            foreach (ListViewItem item in KeySequenceList.Items) item.Tag = null;
             KeySequenceList.Items.Clear();
+
             foreach (var keySequence in Manager.Keyboard.KeySequences)
             {
                 var customKeySequence = (CustomKeySequence) keySequence;
@@ -221,7 +223,8 @@ namespace WilliamPersonalMultiTool
                 var listViewItem = new ListViewItem
                 {
                     Text = keys, 
-                    BackColor = customKeySequence.BackColor
+                    BackColor = customKeySequence.BackColor,
+                    Tag = customKeySequence
                 };
 
                 var listViewSubItem = new ListViewItem.ListViewSubItem(listViewItem, customKeySequence.Name);
@@ -366,6 +369,13 @@ namespace WilliamPersonalMultiTool
             {
                 // Ignored
             }
+        }
+
+        private void KeySequenceList_DoubleClick(object sender, EventArgs e)
+        {
+            if (KeySequenceList.SelectedItems.Count == 0) return;
+            var customKeySequence = (CustomKeySequence) KeySequenceList.SelectedItems[0].Tag;
+            customKeySequence.Act();
         }
     }
 }

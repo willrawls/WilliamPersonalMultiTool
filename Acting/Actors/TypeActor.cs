@@ -109,7 +109,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 TextToType = Arguments;
             }
 
-            var customKeySequence = ((CustomKeySequence) KeySequence);
+            var customKeySequence = KeySequence;
             Manager.NormalSendKeysAndWait(TextToType, customKeySequence.BackspaceCount);
 
             return false;

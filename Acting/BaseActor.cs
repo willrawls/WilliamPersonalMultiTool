@@ -23,7 +23,7 @@ namespace WilliamPersonalMultiTool.Acting
 
         public ActionableType ActionableType { get; set; }
         public List<Verb> ExtractedVerbs { get; set; } = new List<Verb>();
-        public KeySequence KeySequence { get; set; }
+        public CustomKeySequence KeySequence { get; set; }
         public AssocArray<Verb> LegalVerbs { get; set; } = new AssocArray<Verb>();
         public Guid ID { get; set; } = Guid.NewGuid();
         public CustomPhraseManager Manager { get; set; }

@@ -35,7 +35,7 @@ namespace WilliamPersonalMultiTool.Custom
             Sequence = keyText.ToPKeyList(null, out var wildcardMatchType, out var wildcardCount);
             WildcardCount = wildcardCount;
             WildcardMatchType = wildcardMatchType;
-            BackspaceCount = CustomPhraseManager.ToBackspaceCount(Sequence);
+            BackspaceCount = this.ToBackspaceCount(Sequence);
 
             ThenCall((sender, eventArguments) =>
             {
@@ -45,7 +45,7 @@ namespace WilliamPersonalMultiTool.Custom
 
             if (keysToPrepend.IsEmpty())
                 return;
-            Sequence.InsertRange(0, keysToPrepend);
+            Sequence.InsertRange(0, keysToPrepend!);
         }
     }
 }

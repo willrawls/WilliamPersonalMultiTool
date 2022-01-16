@@ -3,8 +3,10 @@ using System.IO;
 using System.Windows.Forms;
 using MetX.Standard.IO;
 using MetX.Standard.Library;
+using MetX.Standard.Library.Extensions;
 using NHotPhrase.Phrase;
 using WilliamPersonalMultiTool.Custom;
+using Win32Interop.Methods;
 
 namespace WilliamPersonalMultiTool.Acting.Actors
 {
@@ -33,15 +35,67 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
         public bool Act(PhraseEventArguments phraseEventArguments)
         {
+            /*
+            if (KeySequence.BackspaceCount > 0)
+                Manager.SendBackspaces(KeySequence.BackspaceCount);
+            */
+
             ProcessWindowStyle windowStyle;
             if (ExtractedVerbs.Contains(Maximize)) windowStyle = ProcessWindowStyle.Maximized;
             else if (ExtractedVerbs.Contains(Minimize)) windowStyle = ProcessWindowStyle.Minimized;
             else windowStyle = ProcessWindowStyle.Normal;
 
-            if(File.Exists(Filename))
-                FileSystem.FireAndForget(Filename, Arguments, WorkingFolder, windowStyle);
+            var target = TargetExecutable.IsEmpty()
+                ? (Filename.IsNotEmpty() ? Filename : "")
+                : TargetExecutable;
+            if(File.Exists(target))
+            {
+                var arguments = ResolveArguments(KeySequence.Arguments);
+                FileSystem.FireAndForget(target, arguments, WorkingFolder, windowStyle);
+            }
 
             return false;
+        }
+
+        public static string LastFilePath = "";
+        public static string ResolveArguments(string arguments, string delimiter = "~")
+        {
+            if (arguments.IsEmpty()) return "";
+            if (!arguments.Contains("~")) return arguments;
+
+            var dialog = new OpenFileDialog
+            {
+                RestoreDirectory = true, CheckFileExists = true, CheckPathExists = true
+            };
+            if (LastFilePath.IsNotEmpty()) dialog.FileName = LastFilePath;
+
+            var before = "";
+            var after = "";
+            var filename = "";
+            if (arguments.TokenCount("~") > 2)
+            {
+                // ...~filename~...
+                filename = arguments.TokenAt(2, "~");
+                before = arguments.FirstToken("~");
+                after = arguments.TokensAfter(2, "~");
+            }
+            else
+            {
+                before = arguments.FirstToken("~");
+                after = arguments.TokensAfterFirst("~");
+            }
+            if(filename.IsNotEmpty()) dialog.FileName = filename;
+            var result = dialog.ShowDialog(Win32Window.ActiveWindow);
+            if (result != DialogResult.OK) return arguments;
+
+            filename = dialog.FileName;
+            LastFilePath = filename;
+            if (before.IsNotEmpty() && before != "\"") before += " ";
+            if (after.IsNotEmpty() && after != "\"") after = " " + after;
+            if (filename.Contains(" ")) filename = $"\"{filename}\"";
+
+            arguments = $"{before}{filename}{after}".Trim();
+            return arguments;
         }
 
         public override bool Initialize(string item)
@@ -77,7 +131,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 argumentWorkspace = argumentWorkspace.TokenAt(2, "\"");
             }
 
-            var customKeySequence = (CustomKeySequence)KeySequence;
+            var customKeySequence = KeySequence;
             customKeySequence.ExecutablePath = TargetExecutable;
             Arguments = argumentWorkspace;
             if (Filename.Trim().Length > 0)

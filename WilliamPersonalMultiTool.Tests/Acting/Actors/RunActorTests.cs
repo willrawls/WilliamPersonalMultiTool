@@ -42,13 +42,5 @@ namespace WilliamPersonalMultiTool.Tests
             Assert.AreEqual("notepad", actual.Arguments);
         }
 
-        [TestMethod]
-        public void RunActor_Generalized()
-        {
-            // Act
-            var customPhraseManager = new CustomPhraseManager(null);
-            var actual = ActorHelper.Factory<RunActor>("CapsLock 123 run maximize notepad", customPhraseManager);
-            
-        }
     }
 }

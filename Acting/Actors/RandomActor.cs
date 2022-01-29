@@ -7,8 +7,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 {
     public class RandomActor : BaseActor
     {
-        public int Count { get; set; } = 10;
-        public int Sides { get; set; } = 6;
+        public int Count { get; set; }
+        public int Sides { get; set; }
         public string Before { get; set; } = "";
         public string After { get; set; } = "";
 
@@ -37,8 +37,6 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             if (!base.Initialize(item))
                 return false;
 
-            var counts = Arguments.FirstToken("\"");
-            
             Count = Arguments.FirstToken().AsInteger(1);
             Sides = Arguments.TokenAt(2).AsInteger(-1);
 
@@ -46,8 +44,11 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             {
                 Before = Arguments.TokenAt(2, "\"");
                 After = Arguments.TokenAt(4, "\"");
+                Arguments = "";
             }
 
+            if (ExtractedVerbs.Count == 0)
+                Number.Mentioned = true;
             return true;
         }
 

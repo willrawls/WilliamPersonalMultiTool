@@ -13,7 +13,7 @@ namespace WilliamPersonalMultiTool.Tests
         [TestMethod]
         public void RunActor_Simple()
         {
-            List<PKey> expected = TestPKeys.Caps123;
+            var expected = TestPKeys.Caps123;
 
             // Act
             var customPhraseManager = new CustomPhraseManager(null);

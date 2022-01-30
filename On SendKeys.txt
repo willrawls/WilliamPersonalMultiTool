@@ -9,6 +9,9 @@
 Custom SendKeys
 7. To pause for a number of seconds					{Pause 3 seconds}
 
+8. To send "{", send "{{}"
+9. To send "}", send "{}}"
+
 Key				Special Character
 SHIFT			+
 CTRL			^
@@ -48,3 +51,7 @@ F10				{F10}
 F11				{F11}
 F12				{F12}
 
+Keypad add	{ADD}
+Keypad subtract	{SUBTRACT}
+Keypad multiply	{MULTIPLY}
+Keypad divide	{DIVIDE}

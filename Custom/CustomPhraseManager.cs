@@ -48,10 +48,7 @@ namespace WilliamPersonalMultiTool.Custom
                     .Replace(@"\\", @"\")
                 ;
 
-            // var debug = MakeReadyForSending(textToSend, SplitLength, true);
-            // SendString(textToSend, 2, true);
-
-            PausableNormalSendKeysAndWait(textToSend);
+            InlineExpansionSendKeysAndWait(textToSend);
         }
 
         private string WildcardTemplate(KeySequence stateKeySequence)
@@ -151,18 +148,10 @@ namespace WilliamPersonalMultiTool.Custom
 
         public List<BaseActor> Actors { get; set; }
 
-        public void PausableNormalSendKeysAndWait(string toSend)
+        public void InlineExpansionSendKeysAndWait(string toSend)
         {
-            if (toSend.ToLower().Contains("{pause "))
-            {
-                var parts = toSend.AllTokens("{pause ");
-                if (parts.Count == 1)
-                    NormalSendKeysAndWait(toSend);
-            }
-            else
-            {
-                NormalSendKeysAndWait(toSend);
-            }
+            var list = new InlineExpansion(this, toSend);
+            list.Play();
         }
 
         public void NormalSendKeysAndWait(string toSend, int backspaceCount = 0)
@@ -199,5 +188,26 @@ namespace WilliamPersonalMultiTool.Custom
             return keySequence;
         }
 
+        public override void SendString(string textToSend, int millisecondsBetweenKeys, bool sendAsIs)
+        {
+            if(textToSend.IsEmpty())
+                return;
+
+            if (sendAsIs && millisecondsBetweenKeys > 0)
+            {
+                foreach (var c in textToSend)
+                {
+                    if (c == '{')     SendKeys.SendWait("{{}");
+                    else if(c == '}') SendKeys.SendWait("{}}");
+                    else              SendKeys.SendWait(c.ToString());
+                    Thread.Sleep(millisecondsBetweenKeys);
+                }
+                return;
+            }
+
+            SendKeys.SendWait(textToSend);
+            if(millisecondsBetweenKeys > 0)
+                Thread.Sleep(millisecondsBetweenKeys);
+        }
     }
 }

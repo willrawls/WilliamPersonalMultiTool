@@ -10,27 +10,30 @@ using System.Collections.Generic;
 
 namespace WilliamPersonalMultiTool
 {
-    public class InlinePieceList : System.Collections.Generic.List<InlinePiece> 
+    public class InlineExpansion : System.Collections.Generic.List<InlinePiece> 
     {
         public CustomPhraseManager Manager { get; }
 
-        public InlinePieceList(CustomPhraseManager manager, string target)
+        public InlineExpansion(CustomPhraseManager manager, string target)
         {
+            Clear();
             Manager = manager;
-            var pieces = target.Splice("{", "}");
+            target = target.Replace("}{", "}~~~~~{");
+            var pieces = target.Splice("{", "}").ToArray();
             var isOdd = true;
             foreach (var piece in pieces)
             {
                 if (isOdd)
                 {
                     isOdd = false;
-                    this.Add(new InlinePiece(piece, false));
+                    if(piece != "~~~~~")
+                        Add(new InlinePiece(piece, false));
                 }
                 else
                 {
                     var isCommand = piece.Contains(" ") || piece.ToLower().Contains("clipboard");
                     var inlinePiece = new InlinePiece(piece, isCommand);
-                    this.Add(inlinePiece);
+                    Add(inlinePiece);
                     if(!isCommand)
                     {
                         var entry = SendKeyHelper.Entries.FirstOrDefault(x => string.Equals(x.Name, piece, StringComparison.InvariantCultureIgnoreCase));
@@ -46,18 +49,19 @@ namespace WilliamPersonalMultiTool
 
         public void Play()
         {
+            var delay = 2;
             foreach (InlinePiece piece in this)
             {
                 if (piece.Command.IsEmpty())
                 {
-                    Manager.NormalSendKeysAndWait(piece.Contents);
+                    Manager.SendString(piece.Contents, delay, true);
                 }
                 else
                 {
                     switch (piece.Command)
                     {
                         case "pause":
-                            var milliseconds = int.Parse(piece.Arguments);
+                            var milliseconds = piece.Arguments.AsInteger(0);
                             if(milliseconds > 0)
                                 Thread.Sleep(milliseconds);
                             break;
@@ -67,24 +71,31 @@ namespace WilliamPersonalMultiTool
                             if (textToType.IsEmpty())
                                 break;
 
-                            Manager.SendString(textToType, 5, true);
+                            Manager.SendString(textToType, delay, true);
                             break;
 
                         case "guid":
                             var format = piece.Arguments.IsEmpty() ? "N" : piece.Arguments;
                             var guid = Guid.NewGuid().ToString(format);
-                            Manager.SendString(guid, 5, true);
+                            Manager.SendString(guid, delay, true);
                             break;
 
                         case "roll":
                             var count = int.Parse(piece.Arguments.FirstToken());
                             var sides = int.Parse(piece.Arguments.TokenAt(2));
                             var textToSend = SuperRandom.NextRoll(count, sides).ToString();
-                            Manager.SendString(textToSend, 5, true);
+                            Manager.SendString(textToSend, delay, true);
                             break;
 
                         case "pkey":
-                            Manager.SendString($"{{{piece.Contents}}}", 5, false);
+                            Manager.SendString($"{{{piece.Contents}}}", delay, false);
+                            break;
+
+                        case "speed":
+                        case "delay":
+                            delay = piece.Arguments.AsInteger(5);
+                            if (delay < 0)
+                                delay = 0;
                             break;
                     }
                 }

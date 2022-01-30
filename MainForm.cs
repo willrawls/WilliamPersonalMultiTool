@@ -46,12 +46,6 @@ namespace WilliamPersonalMultiTool
                 new CustomKeySequence("Reload sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.RShiftKey, PKey.RShiftKey}, OnReloadKeySequences, 0),
                 new CustomKeySequence("Edit sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.Alt, PKey.Alt}, OnEditKeySequences, 0),
                 new CustomKeySequence("Turn off all sequences", new List<PKey> {PKey.RControlKey, PKey.Shift, PKey.Alt, PKey.RControlKey}, OnToggleOnOff, 0),
-            
-                new CustomKeySequence("Generate a GUID, style N", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.G, PKey.N}, OnGenerateGuid_N, 2),
-                new CustomKeySequence("Generate a GUID, style P", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.G, PKey.P}, OnGenerateGuid_P, 2),
-
-                new CustomKeySequence("Base64 Encode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.B, PKey.E}, OnEncodeClipboard, 2),
-                new CustomKeySequence("Base64 Decode Clipboard", new List<PKey> {PKey.CapsLock, PKey.CapsLock, PKey.Control, PKey.B, PKey.D}, OnDecodeClipboard, 2),
             };
             StaticSequences.ForEach(s => s.BackColor = Color.CadetBlue);
 
@@ -93,6 +87,7 @@ namespace WilliamPersonalMultiTool
             ToggleOnOffButton_Click(null, null);
         }
 
+        /*
         private void OnEncodeClipboard(object sender, PhraseEventArguments e)
         {
             var text = Clipboard.GetText();
@@ -116,7 +111,9 @@ namespace WilliamPersonalMultiTool
             Manager.SendBackspaces(2);
             Manager.SendString(text, 2, true);
         }
+        */
 
+        /*
         private void OnTypeWhatsOnTheClipboard(object sender, PhraseEventArguments e)
         {
             var text = Clipboard.GetText();
@@ -127,7 +124,9 @@ namespace WilliamPersonalMultiTool
 
             Manager.SendString(text, 2, true);
         }
+        */
 
+        /*
         private void OnGenerateGuid_N(object sender, PhraseEventArguments e)
         {
             var text = Guid.NewGuid().ToString("N");
@@ -141,6 +140,7 @@ namespace WilliamPersonalMultiTool
             Manager.SendBackspaces(2);
             Manager.SendString(text, 2, true);
         }
+        */
 
         private void OnEditKeySequences(object sender, PhraseEventArguments e)
         {

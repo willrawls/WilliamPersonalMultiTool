@@ -18,7 +18,7 @@ namespace WilliamPersonalMultiTool.Tests
         public void Pause5Milliseconds()
         {
             var manager = new CustomPhraseManager(null);
-            var actual = new InlinePieceList(manager, "ab{pause 5}cd");
+            var actual = new InlineExpansion(manager, "ab{pause 5}cd");
 
             Assert.AreEqual(3, actual.Count);
             
@@ -39,7 +39,7 @@ namespace WilliamPersonalMultiTool.Tests
         public void Backspace()
         {
             var manager = new CustomPhraseManager(null);
-            var actual = new InlinePieceList(manager, "ab{BACKSPACE}cd");
+            var actual = new InlineExpansion(manager, "ab{BACKSPACE}cd");
 
             Assert.AreEqual(3, actual.Count);
 
@@ -53,7 +53,7 @@ namespace WilliamPersonalMultiTool.Tests
         public void TypeClipboard()
         {
             var manager = new CustomPhraseManager(null);
-            var actual = new InlinePieceList(manager, "ab{Clipboard}cd");
+            var actual = new InlineExpansion(manager, "ab{Clipboard}cd");
 
             Assert.AreEqual(3, actual.Count);
 

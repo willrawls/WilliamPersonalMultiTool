@@ -28,7 +28,7 @@ namespace WilliamPersonalMultiTool
                 }
                 else
                 {
-                    var isCommand = piece.Contains(" ");
+                    var isCommand = piece.Contains(" ") || piece.ToLower().Contains("clipboard");
                     var inlinePiece = new InlinePiece(piece, isCommand);
                     this.Add(inlinePiece);
                     if(!isCommand)

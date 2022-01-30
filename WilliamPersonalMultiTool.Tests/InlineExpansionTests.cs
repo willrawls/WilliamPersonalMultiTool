@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Forms;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WilliamPersonalMultiTool.Acting.Actors;
@@ -44,6 +47,19 @@ namespace WilliamPersonalMultiTool.Tests
             Assert.AreEqual("BACKSPACE", piece.Contents);
             Assert.AreEqual("pkey", piece.Command);
             Assert.IsNull(piece.Arguments);
+        }
+
+        [TestMethod]
+        public void TypeClipboard()
+        {
+            var manager = new CustomPhraseManager(null);
+            var actual = new InlinePieceList(manager, "ab{Clipboard}cd");
+
+            Assert.AreEqual(3, actual.Count);
+
+            var piece = actual[1];
+            Assert.AreEqual("clipboard", piece.Command);
+            Assert.AreEqual("", piece.Arguments);
         }
     }
 }

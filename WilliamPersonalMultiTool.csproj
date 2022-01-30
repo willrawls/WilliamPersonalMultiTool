@@ -20,6 +20,7 @@
   <ItemGroup>
     <None Remove=".gitattributes" />
     <None Remove=".gitignore" />
+    <None Remove="LastGoodWPMT1.7z" />
     <None Remove="WilliamPersonalMultiTool.DotSettings" />
     <None Remove="WilliamPersonalMultiTool.sln.DotSettings" />
   </ItemGroup>

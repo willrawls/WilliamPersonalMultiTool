@@ -6,7 +6,7 @@ using WilliamPersonalMultiTool.Custom;
 namespace WilliamPersonalMultiTool.Tests
 {
     [TestClass]
-    public class AddSet_Comment_Tests
+    public class AddSet_CommentTests
     {
         private const string SetText = @"
 When CapsLock 1 2 3 type someone.at@a.com

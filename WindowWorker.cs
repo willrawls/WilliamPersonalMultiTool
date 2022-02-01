@@ -107,7 +107,11 @@ namespace WilliamPersonalMultiTool
 
                 new("Get window position", new List<PKey> {PKey.ControlKey, PKey.ControlKey, PKey.G, PKey.W}, OnGetWindowPosition),
             };
-            Sequences.ForEach(s => s.BackColor = Color.Aqua);
+            Sequences.ForEach(s =>
+            {
+                s.BackColor = Color.Aqua;
+                s.ForeColor = Color.Black;
+            });
         }
 
         public RECT CalculateCornerForRECT(RECT rect, int screen, int corner)

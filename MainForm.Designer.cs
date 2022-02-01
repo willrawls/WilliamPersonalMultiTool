@@ -52,10 +52,12 @@ namespace WilliamPersonalMultiTool
             // KeySequenceList
             // 
             this.KeySequenceList.AllowDrop = true;
+            this.KeySequenceList.BackColor = System.Drawing.Color.Black;
             this.KeySequenceList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.keySequenceColumnHeader,
             this.actionColumnHeader});
             this.KeySequenceList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.KeySequenceList.ForeColor = System.Drawing.Color.White;
             this.KeySequenceList.FullRowSelect = true;
             this.KeySequenceList.HideSelection = false;
             this.KeySequenceList.Location = new System.Drawing.Point(0, 80);
@@ -96,7 +98,7 @@ namespace WilliamPersonalMultiTool
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(3);
             this.flowLayoutPanel1.Size = new System.Drawing.Size(827, 80);
             this.flowLayoutPanel1.TabIndex = 2;
             // 
@@ -243,7 +245,7 @@ namespace WilliamPersonalMultiTool
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(416, 8);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(5);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(188, 27);
             this.textBox1.TabIndex = 3;

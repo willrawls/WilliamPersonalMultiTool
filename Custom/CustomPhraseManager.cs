@@ -125,8 +125,7 @@ namespace WilliamPersonalMultiTool.Custom
                         // Error condition
                     }
                 }
-                else if(previousActor == null
-                        || actor.ID != previousActor.ID)
+                else if(previousActor == null || actor.ID != previousActor.ID)
                 {
                     var existingActorWithSameKeySequence =
                         Actors.FirstOrDefault(a => a.KeySequence.Sequence.AreEqual(actor.KeySequence.Sequence));
@@ -135,7 +134,9 @@ namespace WilliamPersonalMultiTool.Custom
                     Actors.Add(actor);
                 }
 
-                previousActor = actor;
+                previousActor = actor?.CanContinue == true 
+                    ? actor 
+                    : null;
             }
 
             List<CustomKeySequence> keySequencesToAdd = Actors.Select(a => a.KeySequence).ToList();
@@ -199,6 +200,12 @@ namespace WilliamPersonalMultiTool.Custom
                 {
                     if (c == '{')     SendKeys.SendWait("{{}");
                     else if(c == '}') SendKeys.SendWait("{}}");
+                    else if(c == '(') SendKeys.SendWait("{(}");
+                    else if(c == ')') SendKeys.SendWait("{)}");
+                    else if(c == '+') SendKeys.SendWait("{+}");
+                    else if(c == '^') SendKeys.SendWait("{^}");
+                    else if(c == '%') SendKeys.SendWait("{%}");
+                    else if(c == '~') SendKeys.SendWait("{~}");
                     else              SendKeys.SendWait(c.ToString());
                     Thread.Sleep(millisecondsBetweenKeys);
                 }

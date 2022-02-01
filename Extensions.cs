@@ -30,7 +30,7 @@ namespace WilliamPersonalMultiTool
         }
         public static bool Act(this CustomKeySequence target)
         {
-            if (target == null)
+            if (target?.Actor == null)
                 return false;
 
             return target.Actor.OnAct(target.BlankPhraseEventArguments());

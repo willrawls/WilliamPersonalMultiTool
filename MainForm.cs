@@ -20,7 +20,7 @@ namespace WilliamPersonalMultiTool
     {
         public CustomPhraseManager Manager { get; set; }
         public List<CustomKeySequence> StaticSequences { get; set; }
-        public WindowWorker WindowWorker { get; set; }
+        //public WindowWorker WindowWorker { get; set; }
 
         public bool HideStaticSequences;
 
@@ -47,10 +47,11 @@ namespace WilliamPersonalMultiTool
                 new CustomKeySequence("Edit sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.Alt, PKey.Alt}, OnEditKeySequences, 0),
                 new CustomKeySequence("Turn off all sequences", new List<PKey> {PKey.RControlKey, PKey.Shift, PKey.Alt, PKey.RControlKey}, OnToggleOnOff, 0),
             };
-            StaticSequences.ForEach(s => s.BackColor = Color.CadetBlue);
-
-            WindowWorker = new WindowWorker(Manager, Handle);
-            StaticSequences.AddRange(WindowWorker.Sequences);
+            StaticSequences.ForEach(s =>
+            {
+                s.BackColor = Color.CadetBlue;
+                s.ForeColor = Color.White;
+            });
         }
 
         public string Encode(string plainText) 
@@ -224,6 +225,7 @@ namespace WilliamPersonalMultiTool
                 {
                     Text = keys, 
                     BackColor = customKeySequence.BackColor,
+                    ForeColor = customKeySequence.ForeColor,
                     Tag = customKeySequence
                 };
 

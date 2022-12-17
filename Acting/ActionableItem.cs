@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MetX.Standard.Library.Extensions;
-using MetX.Standard.Library.Generics;
+using MetX.Standard.Strings;
 using NHotPhrase.Keyboard;
 
 namespace WilliamPersonalMultiTool.Acting

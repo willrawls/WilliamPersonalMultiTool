@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using MetX.Standard.Library.Generics;
+using MetX.Standard.Strings.Generics;
 
 namespace WilliamPersonalMultiTool.Acting
 {
-    public class Actionables : AssocArray<ActionableItem>
+    public class Actionables : AssocArrayOfT<ActionableItem>
     {
         public bool ContainsActionableKeyword(string line)
         {

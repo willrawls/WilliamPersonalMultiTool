@@ -8,6 +8,8 @@ using System.Threading;
 using System.Windows.Forms;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
+using MetX.Standard.Strings;
+using Microsoft.VisualBasic.Devices;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 using NHotPhrase.WindowsForms;

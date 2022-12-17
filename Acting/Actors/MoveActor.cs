@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
+using MetX.Standard.Strings;
 using Microsoft.VisualBasic.Devices;
 using NHotPhrase.Phrase;
 using Win32Interop.Methods;

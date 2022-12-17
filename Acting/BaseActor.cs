@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using MetX.Standard.Library;
-using MetX.Standard.Library.Generics;
+using MetX.Standard.Strings;
+using MetX.Standard.Strings.Generics;
 using NHotPhrase.Phrase;
 using WilliamPersonalMultiTool.Custom;
 
@@ -24,7 +25,7 @@ namespace WilliamPersonalMultiTool.Acting
         public ActionableType ActionableType { get; set; }
         public List<Verb> ExtractedVerbs { get; set; } = new List<Verb>();
         public CustomKeySequence KeySequence { get; set; }
-        public AssocArray<Verb> LegalVerbs { get; set; } = new AssocArray<Verb>();
+        public AssocArrayOfT<Verb> LegalVerbs { get; set; } = new();
         public Guid ID { get; set; } = Guid.NewGuid();
         public CustomPhraseManager Manager { get; set; }
 

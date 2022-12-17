@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using MetX.Standard.Library;
 using MetX.Standard.Library.Extensions;
+using MetX.Standard.Strings;
 using NHotPhrase.Keyboard;
 using NHotPhrase.Phrase;
 using WilliamPersonalMultiTool.Custom;
@@ -313,7 +314,7 @@ namespace WilliamPersonalMultiTool
             try
             {
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                Clipboard.SetText(files.AsString("\n"));
+                Clipboard.SetText(files.AsStringFromArray());
             }
             catch 
             {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MetX.Standard.Library;
+using MetX.Standard.Strings;
 using NHotPhrase.Keyboard;
 using WilliamPersonalMultiTool.Acting.Actors;
 using WilliamPersonalMultiTool.Custom;
@@ -47,8 +48,10 @@ namespace WilliamPersonalMultiTool.Acting
             return item;
         }
 
+        /* Recursive
         public static TActor Factory<TActor>(string item, CustomPhraseManager customPhraseManager, TActor previousActor = default) 
             => Factory(item, customPhraseManager, previousActor);
+            */
 
         public static BaseActor Factory(string item, CustomPhraseManager customPhraseManager, BaseActor previousActor = null)
         {

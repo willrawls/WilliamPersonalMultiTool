@@ -1,4 +1,5 @@
 ﻿using MetX.Standard.Library;
+using MetX.Standard.Strings;
 
 namespace WilliamPersonalMultiTool
 {

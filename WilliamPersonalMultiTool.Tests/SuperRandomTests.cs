@@ -1,6 +1,8 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using MetX.Standard.Library;
+using MetX.Standard.Library.Encryption;
 using MetX.Standard.Library.Extensions;
+using MetX.Standard.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace WilliamPersonalMultiTool.Tests

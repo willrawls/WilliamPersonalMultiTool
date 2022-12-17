@@ -60,7 +60,7 @@ namespace WilliamPersonalMultiTool
                 }
                 else
                 {
-                    switch (piece.Command)
+                    switch (piece.Command.ToLower())
                     {
                         case "pause":
                             var milliseconds = piece.Arguments.AsInteger(0);
@@ -92,15 +92,22 @@ namespace WilliamPersonalMultiTool
                         case "pkey":
                             Manager.SendString($"{{{piece.Contents}}}", delay, false);
                             break;
-
+                            
                         case "speed":
                         case "delay":
                             delay = piece.Arguments.AsInteger(5);
                             if (delay < 0)
                                 delay = 0;
                             break;
+
+                        case "enter":
+                            var keysToSend = new List<PKey> {PKey.Return};
+                            
+                            Manager.SendKeysAndWait(keysToSend, delay);
+                            break;
                     }
                 }
+
             }
         }
     }

@@ -214,7 +214,20 @@ namespace WilliamPersonalMultiTool.Custom
                 return;
             }
 
-            SendKeys.SendWait(textToSend);
+            if(textToSend.Contains("~"))
+            {
+                var parts = textToSend.AllTokens("~");
+                foreach (var part in parts)
+                {
+                    SendKeys.SendWait(part);
+                    var key = PKey.Return.ToSendKeysText();
+                    SendKeys.Send(key);
+                }
+            }
+            else
+            {
+                SendKeys.SendWait(textToSend);
+            }
             if(millisecondsBetweenKeys > 0)
                 Thread.Sleep(millisecondsBetweenKeys);
         }

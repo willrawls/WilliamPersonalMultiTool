@@ -1,0 +1,41 @@
+WPMT
+	Format of file
+		One sequence per line
+		Key1 Key2 Key3 KeyX	move to 100, 100
+		
+		
+	Actors
+		Docs
+			Choose				No idea
+			Continuation		No idea
+			Move
+			  Add      = Add/subtract to/from current position and optionally resize on current or target screen
+			  To       = Move to position and optionally resize on current or target screen
+			  Relative = Move to relative position and optionally resize on current or target screen
+			  Resize     = Resize on current or target screen
+						 2 Coordinates= width, height 
+			
+			  Modifiers
+				+Percent  = Coordinates are percentages of the target/current screen
+			
+			   2 coordinates= left, top
+			   3 coordinates= left, top, screen
+			   4 coordinates= left, top, width, height   (primary screen)
+			   5 coordinates= left, top, width, height, screen
+			Random
+				Letters 3 	- Generates 3 random letters
+				Digits  2 	- Generates 2 random numbers from 0-9 each
+				Number	3 6 - Generates a number from 3 to 5
+				Dice	4 6 - Rolls 4 d6 dice and returns the total
+			Repeat
+				Last	Currently does nothing
+			Run			Runs a program
+				Minimize
+				Maximize
+				Normal
+			Size
+				To			
+				Percent		
+				Absolute	
+				Relative	
+				Tall		

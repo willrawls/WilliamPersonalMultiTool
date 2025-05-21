@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MetX.Standard.Strings;
+using NHotPhrase.Keyboard;
+using NHotPhrase.Phrase;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -6,14 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using MetX.Standard.Library;
-using MetX.Standard.Library.Extensions;
-using MetX.Standard.Strings;
-using NHotPhrase.Keyboard;
-using NHotPhrase.Phrase;
 using WilliamPersonalMultiTool.Custom;
 using WilliamPersonalMultiTool.Properties;
-using Win32Interop.Enums;
 
 namespace WilliamPersonalMultiTool
 {
@@ -44,9 +41,15 @@ namespace WilliamPersonalMultiTool
         {
             StaticSequences = new List<CustomKeySequence>()
             {
-                new CustomKeySequence("Reload sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.RShiftKey, PKey.RShiftKey}, OnReloadKeySequences, 0),
-                new CustomKeySequence("Edit sequences", new List<PKey> {PKey.RControlKey, PKey.RControlKey, PKey.Alt, PKey.Alt}, OnEditKeySequences, 0),
-                new CustomKeySequence("Turn off all sequences", new List<PKey> {PKey.RControlKey, PKey.Shift, PKey.Alt, PKey.RControlKey}, OnToggleOnOff, 0),
+                new CustomKeySequence("Reload sequences",
+                    new List<PKey> { PKey.RControlKey, PKey.RControlKey, PKey.RControlKey, PKey.RShiftKey },
+                    OnReloadKeySequences, 0),
+                new CustomKeySequence("Edit sequences",
+                    new List<PKey> { PKey.RControlKey, PKey.RControlKey, PKey.RControlKey, PKey.Alt },
+                    OnEditKeySequences, 0),
+                new CustomKeySequence("Turn off all sequences",
+                    new List<PKey> { PKey.RControlKey, PKey.RControlKey, PKey.RControlKey, PKey.CapsLock },
+                    OnToggleOnOff, 0),
             };
             StaticSequences.ForEach(s =>
             {
@@ -55,7 +58,7 @@ namespace WilliamPersonalMultiTool
             });
         }
 
-        public string Encode(string plainText) 
+        public string Encode(string plainText)
         {
             try
             {
@@ -70,7 +73,7 @@ namespace WilliamPersonalMultiTool
             return "";
         }
 
-        public string Decode(string base64EncodedData) 
+        public string Decode(string base64EncodedData)
         {
             try
             {
@@ -157,10 +160,10 @@ namespace WilliamPersonalMultiTool
         public void SetupHotPhrases()
         {
             var path = WpmtPath();
-            
+
             Manager.Keyboard.KeySequences.Clear();
-            
-            foreach(var staticSequence in StaticSequences)
+
+            foreach (var staticSequence in StaticSequences)
                 Manager.Keyboard.AddOrReplace(staticSequence);
 
             Manager.AddFromFile(path);
@@ -175,7 +178,7 @@ namespace WilliamPersonalMultiTool
             return path;
         }
 
-        public Color[] NonStaticColors = new Color[] { Color.White, Color.Tan, Color.PaleGoldenrod};
+        public Color[] NonStaticColors = new Color[] { Color.White, Color.Tan, Color.PaleGoldenrod };
 
         private void UpdateListView()
         {
@@ -184,7 +187,7 @@ namespace WilliamPersonalMultiTool
 
             foreach (var keySequence in Manager.Keyboard.KeySequences)
             {
-                var customKeySequence = (CustomKeySequence) keySequence;
+                var customKeySequence = (CustomKeySequence)keySequence;
                 var keys = "";
 
                 if (HideStaticSequences && NonStaticColors.All(b => b != customKeySequence.BackColor))
@@ -224,7 +227,7 @@ namespace WilliamPersonalMultiTool
 
                 var listViewItem = new ListViewItem
                 {
-                    Text = keys, 
+                    Text = keys,
                     BackColor = customKeySequence.BackColor,
                     ForeColor = customKeySequence.ForeColor,
                     Tag = customKeySequence
@@ -304,7 +307,7 @@ namespace WilliamPersonalMultiTool
 
         private void KeySequenceList_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) 
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 e.Effect = DragDropEffects.Copy;
         }
 
@@ -316,7 +319,7 @@ namespace WilliamPersonalMultiTool
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 Clipboard.SetText(files.AsStringFromArray());
             }
-            catch 
+            catch
             {
                 // Ignored
             }
@@ -368,7 +371,7 @@ namespace WilliamPersonalMultiTool
             {
                 TopMost = !TopMost;
             }
-            catch 
+            catch
             {
                 // Ignored
             }
@@ -377,7 +380,7 @@ namespace WilliamPersonalMultiTool
         private void KeySequenceList_DoubleClick(object sender, EventArgs e)
         {
             if (KeySequenceList.SelectedItems.Count == 0) return;
-            var customKeySequence = (CustomKeySequence) KeySequenceList.SelectedItems[0].Tag;
+            var customKeySequence = (CustomKeySequence)KeySequenceList.SelectedItems[0].Tag;
             customKeySequence.Act();
         }
     }

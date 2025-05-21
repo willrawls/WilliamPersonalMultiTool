@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Win32Interop.Methods;
+using Windows.Win32;
 
 namespace WilliamPersonalMultiTool.Acting.Actors
 {
@@ -8,7 +8,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
     {
         public static IWin32Window ActiveWindow
         {
-            get { return new Win32Window(User32.GetForegroundWindow()); }
+            get { return new Win32Window(PInvoke.GetForegroundWindow()); }
         }
 
         public Win32Window(IntPtr handle)

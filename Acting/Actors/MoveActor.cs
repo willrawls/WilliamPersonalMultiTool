@@ -1,15 +1,9 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-using MetX.Standard.Library;
-using MetX.Standard.Library.Extensions;
-using MetX.Standard.Strings;
-using Microsoft.VisualBasic.Devices;
+﻿using MetX.Standard.Strings;
+using MetX.Standard.Strings.Tokens;
 using NHotPhrase.Phrase;
-using Win32Interop.Methods;
-using Win32Interop.Structs;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace WilliamPersonalMultiTool.Acting.Actors
 {
@@ -20,11 +14,11 @@ namespace WilliamPersonalMultiTool.Acting.Actors
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public Verb Add { get; set; }        
-        public Verb To { get; set; }        
+        public Verb Add { get; set; }
+        public Verb To { get; set; }
         public Verb Relative { get; set; }
         public Verb Resize { get; set; }
-        public Verb Percent { get; set; }   
+        public Verb Percent { get; set; }
 
         public MoveActor()
         {
@@ -69,7 +63,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
             if (Resize.Mentioned)
             {
-                if(tokens.Count == 2)
+                if (tokens.Count == 2)
                 {
                     Width = tokens[0].AsInteger();
                     Height = tokens[1].AsInteger();
@@ -85,7 +79,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                     throw new Exception("Too many or too few parameters for the mentioned verbs.");
                 }
             }
-            else if(tokens.Count == 4)
+            else if (tokens.Count == 4)
             {
                 Left = tokens[0].AsInteger();
                 Top = tokens[1].AsInteger();
@@ -94,7 +88,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 Right = Left + Width;
                 Bottom = Top + Height;
             }
-            else if(tokens.Count == 5)
+            else if (tokens.Count == 5)
             {
                 Left = tokens[0].AsInteger();
                 Top = tokens[1].AsInteger();
@@ -123,7 +117,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
         {
             if (Errors.IsNotEmpty())
                 return true;
-            
+
             var origin = WindowWorker.GetForegroundWindowPosition();
             if (!origin.HasValue) return false;
 
@@ -135,7 +129,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             return true;
         }
 
-        public RECT CalculateNewPosition(int currentScreen, RECT origin)
+        public Rectangle CalculateNewPosition(int currentScreen, Rectangle origin)
         {
             var targetScreen = TargetScreen < 1
                 ? Screen.AllScreens[currentScreen]
@@ -160,36 +154,28 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             {
                 return CalculateNewSize(origin, targetScreen);
             }
-            
-            RECT newPosition;
-            if(To.Mentioned) // To means not Percent
+
+            Rectangle newPosition;
+            if (To.Mentioned) // To means not Percent
             {
-                if(Relative.Mentioned)
+                if (Relative.Mentioned)
                 {
                     // To + Relative (-Percent)
                     // Additive
-                    newPosition = new RECT
-                    {
-                        left = origin.left + Left,
-                        top = origin.top + Top,
-                        right = origin.right + Width,
-                        bottom = origin.bottom + Height,
-                    };
+                    newPosition = new Rectangle(
+                        origin.Left + Left,
+                        origin.Top + Top,
+                        origin.Right + Width,
+                        origin.Bottom + Height);
                 }
                 else
                 {
                     // To alone (-Percent -Relative)
                     // Absolute
-                    newPosition = new RECT
-                    {
-                        left = Left,
-                        top = Top,
-                        right = Right,
-                        bottom = Bottom,
-                    };
+                    newPosition = new Rectangle(Left, Top, Width, Height);
                 }
             }
-            else if(Relative.Mentioned)
+            else if (Relative.Mentioned)
             {
                 // Relative alone (-Top +Percent)
                 // Percent == true
@@ -198,13 +184,11 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 var onePercentX = screen.WorkingArea.Width / 100;
                 var onePercentY = screen.WorkingArea.Height / 100;
 
-                newPosition = new RECT
-                {
-                    left = origin.left + (Left * onePercentX),
-                    top = origin.top + (Top * onePercentY),
-                    right = origin.right + (Right * onePercentX),
-                    bottom = origin.bottom + (Bottom * onePercentY),
-                };
+                newPosition = new Rectangle(
+                    origin.Left + (Left * onePercentX),
+                    origin.Top + (Top * onePercentY),
+                    origin.Right + (Width * onePercentX),
+                    origin.Bottom + (Height * onePercentY));
             }
             else
             {
@@ -213,62 +197,52 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 var onePercentX = targetScreen.PercentX();
                 var onePercentY = targetScreen.PercentY();
 
-                newPosition = new RECT
-                {
-                    left =  (Left * onePercentX),
-                    top = (Top * onePercentY),
-                    right = (Right * onePercentX),
-                    bottom = (Bottom * onePercentY),
-                };
+                newPosition = new Rectangle(
+                    Left * onePercentX,
+                    Top * onePercentY,
+                    Width * onePercentX,
+                    Height * onePercentY);
             }
 
             return newPosition;
         }
 
-        private RECT CalculateNewSize(RECT origin, Screen targetScreen)
+        private Rectangle CalculateNewSize(Rectangle origin, Screen targetScreen)
         {
-            RECT newPosition;
+            Rectangle newPosition;
 
             if (Percent.Mentioned)
             {
                 var onePercentX = targetScreen.WorkingArea.Width / 100;
                 var onePercentY = targetScreen.WorkingArea.Height / 100;
 
-                newPosition = new RECT
-                {
-                    left =  origin.left + (Left * onePercentX),
-                    top = origin.top + (Top * onePercentY),
-                    right = origin.right + (Right * onePercentX),
-                    bottom = origin.bottom + (Bottom * onePercentY),
-                };
-
+                newPosition = new Rectangle(
+                    Left * onePercentX,
+                    Top * onePercentY,
+                    Width * onePercentX,
+                    Height * onePercentY);
             }
             else
             {
-                newPosition = new RECT
-                {
-                    left = origin.left + Left,
-                    top = origin.top + Top,
-                    right = origin.right + Right,
-                    bottom = origin.bottom + Bottom,
-                };
-            }            
+                newPosition = new Rectangle(origin.Left + Left, origin.Top + Top,
+                    origin.Right + Width,
+                    origin.Bottom + Height);
+            }
+
             return newPosition;
         }
 
-        private RECT CalculateNewRelativePosition(RECT origin, Screen targetScreen)
+        private Rectangle CalculateNewRelativePosition(Rectangle origin, Screen targetScreen)
         {
             if (!Percent.Mentioned)
-                return new RECT
-                {
-                    left = origin.left + Left,
-                    top = origin.top + Top,
-                    right = origin.left + Left + (origin.right - origin.left) + Width,
-                    bottom = origin.top + Top + (origin.bottom - origin.top) + Height,
-                };
+                return new Rectangle(
+                    origin.Left + Left,
+                    origin.Top + Top,
+                    origin.Left + Left + (origin.Right - Left) + Width,
+                    origin.Top + Top + (origin.Bottom - origin.Top) + Height);
 
-            var onePercentX = ((int) (targetScreen.Bounds.Width / 100f));
-            var onePercentY = ((int) (targetScreen.Bounds.Height / 100f));
+            var onePercentX = ((int)(targetScreen.Bounds.Width / 100f));
+            var onePercentY = ((int)(targetScreen.Bounds.Height / 100f));
 
             var relativeLeft = onePercentX * Left;
             var relativeRight = onePercentX * Right;
@@ -277,56 +251,42 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             var relativeWidth = relativeRight - relativeLeft;
             var relativeHeight = relativeBottom - relativeTop;
 
-            return new RECT
-            {
-                left = origin.left + relativeLeft,
-                top = origin.top + relativeTop,
-                right = origin.left + relativeLeft + (origin.right - origin.left) + relativeWidth,
-                bottom = origin.top + relativeTop + (origin.bottom - origin.top) + relativeHeight,
-            };
+            return WindowWorker.NewRectangle(
+                origin.Left + relativeLeft,
+                origin.Top + relativeTop,
+                origin.Left + relativeLeft + (origin.Right - origin.Left) + relativeWidth,
+                origin.Top + relativeTop + (origin.Bottom - origin.Top) + relativeHeight
+            );
         }
 
-        private RECT CalculateNewToPosition(Screen targetScreen)
+        private Rectangle CalculateNewToPosition(Screen targetScreen)
         {
             if (!Percent.Mentioned)
-                return new RECT
-                {
-                    left = Left,
-                    top = Top,
-                    right = Right,
-                    bottom = Bottom,
-                };
-            
-            var onePercentX = ((int) (targetScreen.Bounds.Width / 100f));
-            var onePercentY = ((int) (targetScreen.Bounds.Height / 100f));
+                return WindowWorker.NewRectangle(Left, Top, Right, Bottom);
+
+
+            var onePercentX = ((int)(targetScreen.Bounds.Width / 100f));
+            var onePercentY = ((int)(targetScreen.Bounds.Height / 100f));
 
             var relativeLeft = onePercentX * Left;
             var relativeRight = onePercentX * Right;
             var relativeTop = onePercentY * Top;
             var relativeBottom = onePercentY * Bottom;
 
-            return new RECT
-            {
-                left = relativeLeft,
-                top = relativeTop,
-                right = relativeRight,
-                bottom = relativeBottom,
-            };
+            return WindowWorker.NewRectangle(relativeLeft, relativeTop, relativeRight, relativeBottom);
         }
 
-        private RECT CalculateNewAddPosition(RECT origin, Screen targetScreen)
+        private Rectangle CalculateNewAddPosition(Rectangle origin, Screen targetScreen)
         {
             if (!Percent.Mentioned)
-                return new RECT
-                {
-                    left = origin.left + Left,
-                    top = origin.top + Top,
-                    right = origin.left + Left + (origin.right - origin.left) + Width,
-                    bottom = origin.top + Top + (origin.bottom - origin.top) + Height,
-                };
+                return WindowWorker.NewRectangle(
+                    origin.Left + Left,
+                    origin.Top + Top,
+                    origin.Left + Left + (origin.Right - origin.Left) + Width,
+                    origin.Top + Top + (origin.Bottom - origin.Top) + Height);
 
-            var onePercentX = ((int) (targetScreen.Bounds.Width / 100f));
-            var onePercentY = ((int) (targetScreen.Bounds.Height / 100f));
+            var onePercentX = ((int)(targetScreen.Bounds.Width / 100f));
+            var onePercentY = ((int)(targetScreen.Bounds.Height / 100f));
 
             var relativeLeft = onePercentX * Left;
             var relativeRight = onePercentX * Right;
@@ -335,13 +295,11 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             var relativeWidth = relativeRight - relativeLeft;
             var relativeHeight = relativeBottom - relativeTop;
 
-            return new RECT
-            {
-                left = origin.left + relativeLeft,
-                top = origin.top + relativeTop,
-                right = origin.left + relativeLeft + (origin.right - origin.left) + relativeWidth,
-                bottom = origin.top + relativeTop + (origin.bottom - origin.top) + relativeHeight,
-            };
+            return WindowWorker.NewRectangle(
+                origin.Left + relativeLeft,
+                origin.Top + relativeTop,
+                origin.Left + relativeLeft + (origin.Right - origin.Left) + relativeWidth,
+                origin.Top + relativeTop + (origin.Bottom - origin.Top) + relativeHeight);
         }
     }
 }

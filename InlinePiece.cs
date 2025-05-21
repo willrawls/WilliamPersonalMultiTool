@@ -1,5 +1,5 @@
-﻿using MetX.Standard.Library;
-using MetX.Standard.Strings;
+﻿using MetX.Standard.Strings.Tokens;
+using MetX.Standard.Strings.Tokens.GPT;
 
 namespace WilliamPersonalMultiTool
 {

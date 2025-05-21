@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using MetX.Standard.Library;
-using MetX.Standard.Strings;
-using NHotPhrase.Keyboard;
+﻿using MetX.Standard.Strings.Tokens;
 using WilliamPersonalMultiTool.Acting.Actors;
 using WilliamPersonalMultiTool.Custom;
 
@@ -65,8 +62,8 @@ namespace WilliamPersonalMultiTool.Acting
 
             var actor = actionableItem.Factory(item, previousActor);
             actor.Manager = customPhraseManager;
-            return actor is {ActionableType: ActionableType.Unknown} 
-                ? null 
+            return actor is { ActionableType: ActionableType.Unknown }
+                ? null
                 : actor;
         }
     }

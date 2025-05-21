@@ -1,11 +1,11 @@
-﻿using System.Diagnostics;
+﻿using MetX.Standard.Primary.IO;
+using MetX.Standard.Strings;
+using MetX.Standard.Strings.Tokens;
+using MetX.Standard.Strings.Tokens.GPT;
+using NHotPhrase.Phrase;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
-using MetX.Standard.Primary.IO;
-using MetX.Standard.Strings;
-using NHotPhrase.Phrase;
-using WilliamPersonalMultiTool.Custom;
-using Win32Interop.Methods;
 
 namespace WilliamPersonalMultiTool.Acting.Actors
 {
@@ -47,7 +47,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             var target = TargetExecutable.IsEmpty()
                 ? (Filename.IsNotEmpty() ? Filename : "")
                 : TargetExecutable;
-            if(File.Exists(target))
+            if (File.Exists(target))
             {
                 var arguments = ResolveArguments(KeySequence.Arguments);
                 FileSystem.FireAndForget(target, arguments, WorkingFolder, windowStyle);
@@ -83,7 +83,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 before = arguments.FirstToken("~");
                 after = arguments.TokensAfterFirst("~");
             }
-            if(filename.IsNotEmpty()) dialog.FileName = filename;
+
+            if (filename.IsNotEmpty()) dialog.FileName = filename;
             var result = dialog.ShowDialog(Win32Window.ActiveWindow);
             if (result != DialogResult.OK) return arguments;
 
@@ -102,7 +103,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             if (!base.Initialize(item))
                 return false;
 
-            if(!KeySequence.Name.StartsWith("Run "))
+            if (!KeySequence.Name.StartsWith("Run "))
                 KeySequence.Name = "Run " + KeySequence.Name;
 
             var argumentWorkspace = Arguments;
@@ -141,7 +142,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             else
                 customKeySequence.Arguments = $"\"{Arguments}\"";
 
-            if(!customKeySequence.Name.StartsWith("Run "))
+            if (!customKeySequence.Name.StartsWith("Run "))
                 customKeySequence.Name = "Run " + customKeySequence.Name;
             return true;
         }

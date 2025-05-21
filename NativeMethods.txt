@@ -1,0 +1,7 @@
+RECT
+WINDOWINFO
+SWP
+GetForegroundWindow
+GetWindowInfo
+GetWindowRect
+SetWindowPos

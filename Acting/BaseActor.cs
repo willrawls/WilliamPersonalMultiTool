@@ -1,10 +1,10 @@
-﻿using System;
+﻿using MetX.Standard.Strings.Generics;
+using MetX.Standard.Strings.Tokens;
+using MetX.Standard.Strings.Tokens.GPT;
+using NHotPhrase.Phrase;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using MetX.Standard.Library;
-using MetX.Standard.Strings;
-using MetX.Standard.Strings.Generics;
-using NHotPhrase.Phrase;
 using WilliamPersonalMultiTool.Custom;
 
 namespace WilliamPersonalMultiTool.Acting
@@ -53,7 +53,7 @@ namespace WilliamPersonalMultiTool.Acting
                 Arguments = Arguments.Substring(1);
 
             KeyText = cleanItem.FirstToken(Separator);
-            if (KeyText.ToLower().StartsWith("when ")) 
+            if (KeyText.ToLower().StartsWith("when "))
                 KeyText = KeyText.TokensAfterFirst("when ");
             if (KeyText.ToLower().StartsWith("or "))
                 if (CanContinue)
@@ -94,9 +94,11 @@ namespace WilliamPersonalMultiTool.Acting
                 Arguments = Arguments.TokensAfter(tokensToRemove);
 
             // Check bound conditions here (too many, exclusivity)
-            var exclusivityBreached = ExtractedVerbs.Count > 1 
-                && ExtractedVerbs.Any(v1 => v1.Excludes != null
-                                  && ExtractedVerbs.Any(v2 => v2.Excludes != null && v2.Excludes.Name == v1.Excludes.Name));
+            var exclusivityBreached = ExtractedVerbs.Count > 1
+                                      && ExtractedVerbs.Any(v1 => v1.Excludes != null
+                                                                  && ExtractedVerbs.Any(v2 =>
+                                                                      v2.Excludes != null &&
+                                                                      v2.Excludes.Name == v1.Excludes.Name));
             if (exclusivityBreached) Errors += "GetVerbs: Exclusivity breached";
 
             return true;

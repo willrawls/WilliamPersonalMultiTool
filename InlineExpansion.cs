@@ -1,18 +1,18 @@
-﻿using System;
+﻿using MetX.Standard.Library.Encryption;
+using MetX.Standard.Strings;
+using MetX.Standard.Strings.Tokens;
+using MetX.Standard.Strings.Tokens.GPT;
+using NHotPhrase.Keyboard;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using MetX.Standard.Library;
-using MetX.Standard.Library.Extensions;
-using NHotPhrase.Keyboard;
 using WilliamPersonalMultiTool.Custom;
-using System.Collections.Generic;
-using MetX.Standard.Library.Encryption;
-using MetX.Standard.Strings;
 
 namespace WilliamPersonalMultiTool
 {
-    public class InlineExpansion : System.Collections.Generic.List<InlinePiece> 
+    public class InlineExpansion : System.Collections.Generic.List<InlinePiece>
     {
         public CustomPhraseManager Manager { get; }
 
@@ -28,7 +28,7 @@ namespace WilliamPersonalMultiTool
                 if (isOdd)
                 {
                     isOdd = false;
-                    if(piece != "~~~~~")
+                    if (piece != "~~~~~")
                         Add(new InlinePiece(piece, false));
                 }
                 else
@@ -36,9 +36,10 @@ namespace WilliamPersonalMultiTool
                     var isCommand = piece.Contains(" ") || piece.ToLower().Contains("clipboard");
                     var inlinePiece = new InlinePiece(piece, isCommand);
                     Add(inlinePiece);
-                    if(!isCommand)
+                    if (!isCommand)
                     {
-                        var entry = SendKeyHelper.Entries.FirstOrDefault(x => string.Equals(x.Name, piece, StringComparison.InvariantCultureIgnoreCase));
+                        var entry = SendKeyHelper.Entries.FirstOrDefault(x =>
+                            string.Equals(x.Name, piece, StringComparison.InvariantCultureIgnoreCase));
                         if (entry != null)
                         {
                             inlinePiece.Command = "pkey";
@@ -64,7 +65,7 @@ namespace WilliamPersonalMultiTool
                     {
                         case "pause":
                             var milliseconds = piece.Arguments.AsInteger(0);
-                            if(milliseconds > 0)
+                            if (milliseconds > 0)
                                 Thread.Sleep(milliseconds);
                             break;
 
@@ -92,7 +93,7 @@ namespace WilliamPersonalMultiTool
                         case "pkey":
                             Manager.SendString($"{{{piece.Contents}}}", delay, false);
                             break;
-                            
+
                         case "speed":
                         case "delay":
                             delay = piece.Arguments.AsInteger(5);
@@ -101,13 +102,12 @@ namespace WilliamPersonalMultiTool
                             break;
 
                         case "enter":
-                            var keysToSend = new List<PKey> {PKey.Return};
-                            
+                            var keysToSend = new List<PKey> { PKey.Return };
+
                             Manager.SendKeysAndWait(keysToSend, delay);
                             break;
                     }
                 }
-
             }
         }
     }

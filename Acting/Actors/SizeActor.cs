@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using MetX.Standard.Library;
-using MetX.Standard.Library.Extensions;
-using MetX.Standard.Strings;
+﻿using MetX.Standard.Strings;
+using MetX.Standard.Strings.Tokens;
 using NHotPhrase.Phrase;
+using System;
 
 namespace WilliamPersonalMultiTool.Acting.Actors
 {
@@ -39,7 +37,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             if (!base.Initialize(item))
                 return false;
 
-            var tokens = Arguments.Replace(",", "").AllTokens(compare: StringSplitOptions.RemoveEmptyEntries);
+            var tokens = Arguments.Replace(",", "").AllTokens(" ", StringSplitOptions.RemoveEmptyEntries);
 
             if (tokens.Count == 2)
             {

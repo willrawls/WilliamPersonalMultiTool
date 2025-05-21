@@ -1,9 +1,8 @@
-﻿using MetX.Standard.Library;
-using MetX.Standard.Library.Encryption;
-using MetX.Standard.Library.Extensions;
+﻿using MetX.Standard.Library.Encryption;
 using MetX.Standard.Strings;
+using MetX.Standard.Strings.Tokens;
+using MetX.Standard.Strings.Tokens.GPT;
 using NHotPhrase.Phrase;
-using WilliamPersonalMultiTool.Custom;
 
 namespace WilliamPersonalMultiTool.Acting.Actors
 {
@@ -28,7 +27,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             Digits = AddLegalVerb("digits");
             Number = AddLegalVerb("number");
             Dice = AddLegalVerb("dice");
-            
+
             OnAct = Act;
             DefaultVerb = Number;
             CanContinue = false;
@@ -42,7 +41,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             Count = Arguments.FirstToken().AsInteger(1);
             Sides = Arguments.TokenAt(2).AsInteger(-1);
 
-            if(Arguments.Contains("\""))
+            if (Arguments.Contains("\""))
             {
                 Before = Arguments.TokenAt(2, "\"");
                 After = Arguments.TokenAt(4, "\"");
@@ -78,7 +77,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 return true;
             }
 
-            if(textToSend.IsNotEmpty())
+            if (textToSend.IsNotEmpty())
             {
                 if (Before.IsNotEmpty())
                     textToSend = Before + textToSend;

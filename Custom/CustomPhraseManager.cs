@@ -1,18 +1,14 @@
-﻿using System;
+﻿using MetX.Standard.Strings;
+using MetX.Standard.Strings.Tokens;
+using NHotPhrase.Keyboard;
+using NHotPhrase.Phrase;
+using NHotPhrase.WindowsForms;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using MetX.Standard.Library;
-using MetX.Standard.Library.Extensions;
-using MetX.Standard.Strings;
-using Microsoft.VisualBasic.Devices;
-using NHotPhrase.Keyboard;
-using NHotPhrase.Phrase;
-using NHotPhrase.WindowsForms;
 using WilliamPersonalMultiTool.Acting;
 
 namespace WilliamPersonalMultiTool.Custom
@@ -116,9 +112,8 @@ namespace WilliamPersonalMultiTool.Custom
 
                 if (actor.ActionableType == ActionableType.Or)
                 {
-                    if(previousActor is {CanContinue: true})
+                    if (previousActor is { CanContinue: true })
                     {
-                        
                         if (previousActor.OnContinue(line))
                             actor = null;
                     }
@@ -127,7 +122,7 @@ namespace WilliamPersonalMultiTool.Custom
                         // Error condition
                     }
                 }
-                else if(previousActor == null || actor.ID != previousActor.ID)
+                else if (previousActor == null || actor.ID != previousActor.ID)
                 {
                     var existingActorWithSameKeySequence =
                         Actors.FirstOrDefault(a => a.KeySequence.Sequence.AreEqual(actor.KeySequence.Sequence));
@@ -136,8 +131,8 @@ namespace WilliamPersonalMultiTool.Custom
                     Actors.Add(actor);
                 }
 
-                previousActor = actor?.CanContinue == true 
-                    ? actor 
+                previousActor = actor?.CanContinue == true
+                    ? actor
                     : null;
             }
 
@@ -169,7 +164,6 @@ namespace WilliamPersonalMultiTool.Custom
                     SendKeys.SendWait(c.ToString());
                     Thread.Sleep(5);
                 }
-                
             }
             catch
             {
@@ -193,28 +187,28 @@ namespace WilliamPersonalMultiTool.Custom
 
         public override void SendString(string textToSend, int millisecondsBetweenKeys, bool sendAsIs)
         {
-            if(textToSend.IsEmpty())
+            if (textToSend.IsEmpty())
                 return;
 
             if (sendAsIs && millisecondsBetweenKeys > 0)
             {
                 foreach (var c in textToSend)
                 {
-                    if (c == '{')     SendKeys.SendWait("{{}");
-                    else if(c == '}') SendKeys.SendWait("{}}");
-                    else if(c == '(') SendKeys.SendWait("{(}");
-                    else if(c == ')') SendKeys.SendWait("{)}");
-                    else if(c == '+') SendKeys.SendWait("{+}");
-                    else if(c == '^') SendKeys.SendWait("{^}");
-                    else if(c == '%') SendKeys.SendWait("{%}");
-                    else if(c == '~') SendKeys.SendWait("{~}");
-                    else              SendKeys.SendWait(c.ToString());
+                    if (c == '{') SendKeys.SendWait("{{}");
+                    else if (c == '}') SendKeys.SendWait("{}}");
+                    else if (c == '(') SendKeys.SendWait("{(}");
+                    else if (c == ')') SendKeys.SendWait("{)}");
+                    else if (c == '+') SendKeys.SendWait("{+}");
+                    else if (c == '^') SendKeys.SendWait("{^}");
+                    else if (c == '%') SendKeys.SendWait("{%}");
+                    else if (c == '~') SendKeys.SendWait("{~}");
+                    else SendKeys.SendWait(c.ToString());
                     Thread.Sleep(millisecondsBetweenKeys);
                 }
                 return;
             }
 
-            if(textToSend.Contains("~"))
+            if (textToSend.Contains("~"))
             {
                 var parts = textToSend.AllTokens("~");
                 foreach (var part in parts)
@@ -228,7 +222,8 @@ namespace WilliamPersonalMultiTool.Custom
             {
                 SendKeys.SendWait(textToSend);
             }
-            if(millisecondsBetweenKeys > 0)
+
+            if (millisecondsBetweenKeys > 0)
                 Thread.Sleep(millisecondsBetweenKeys);
         }
     }

@@ -1,13 +1,11 @@
-﻿using System;
+﻿using MetX.Standard.Strings;
+using MetX.Standard.Strings.Tokens;
+using NHotPhrase.Keyboard;
+using NHotPhrase.Phrase;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using MetX.Standard.Library;
-using MetX.Standard.Library.Extensions;
-using MetX.Standard.Strings;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using NHotPhrase.Keyboard;
-using NHotPhrase.Phrase;
 using WilliamPersonalMultiTool.Acting;
 using WilliamPersonalMultiTool.Custom;
 
@@ -26,7 +24,7 @@ namespace WilliamPersonalMultiTool
         public static TActor Act<TActor>(this CustomKeySequence target) where TActor : BaseActor
         {
             if (target.Actor.OnAct(target.BlankPhraseEventArguments()))
-                return (TActor) target.Actor;
+                return (TActor)target.Actor;
             return null;
         }
         public static bool Act(this CustomKeySequence target)
@@ -50,7 +48,7 @@ namespace WilliamPersonalMultiTool
         {
             if (target == null)
                 return 0;
-            
+
             for (var index = 0; index < Screen.AllScreens.Length; index++)
             {
                 var x = Screen.AllScreens[index];
@@ -63,12 +61,12 @@ namespace WilliamPersonalMultiTool
 
         public static int PercentX(this Screen target, int percent = 1)
         {
-            return (int) (target.Bounds.Width / 100.0) * percent;
+            return (int)(target.Bounds.Width / 100.0) * percent;
         }
 
         public static int PercentY(this Screen target, int percent = 1)
         {
-            return (int) (target.Bounds.Height / 100.0) * percent;
+            return (int)(target.Bounds.Height / 100.0) * percent;
         }
 
         public static int WhenContains(this List<Verb> target, Verb verb, int value)
@@ -176,7 +174,7 @@ namespace WilliamPersonalMultiTool
 
             if (singlePKeyText.IsEmpty()) return PKey.None;
 
-            if(singlePKeyText.Length == 1 && char.IsLower(singlePKeyText[0]))
+            if (singlePKeyText.Length == 1 && char.IsLower(singlePKeyText[0]))
                 singlePKeyText = singlePKeyText.ToUpper();
 
             if (singlePKeyText.All(x => x == '#'))
@@ -237,7 +235,7 @@ namespace WilliamPersonalMultiTool
                     if (pKeyObject == null) continue;
 
                     var pKey = (PKey)pKeyObject;
-                    if (pKey.ToString() == key) 
+                    if (pKey.ToString() == key)
                         additionalKeysFound?.Add(pKey);
                     else
                     {

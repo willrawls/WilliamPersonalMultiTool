@@ -1,7 +1,6 @@
-﻿using System.IO;
+﻿using NHotPhrase.Phrase;
+using System.IO;
 using System.Windows.Forms;
-using NHotPhrase.Phrase;
-using WilliamPersonalMultiTool.Custom;
 
 namespace WilliamPersonalMultiTool.Acting.Actors
 {
@@ -27,6 +26,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             // Type everything else, allowing send key translation (The default)
             Expand = AddLegalVerb("expand");
 
+            IntuitivePrompt = AddLegalVerb("intuitive");
+
             // Types any text already on the clipboard
             TypeOutTheClipboard = AddLegalVerb("clipboard");
 
@@ -51,6 +52,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             CanContinue = true;
         }
 
+        public Verb IntuitivePrompt { get; set; }
+
         public bool Continue(string line)
         {
             if (TextToType.Trim().Length == 0)
@@ -65,7 +68,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
         {
             if (!base.Initialize(item))
                 return false;
-            
+
             if (ExtractedVerbs.Contains(TypeContentsOfFile))
                 Filename = Arguments;
 
@@ -79,7 +82,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             TextToType = Arguments;
             return true;
         }
-        
+
         public string ClipboardText()
         {
             var text = "";
@@ -100,11 +103,18 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             {
                 TextToType = File.ReadAllText(Filename);
             }
+            else if (ExtractedVerbs.Contains(IntuitivePrompt))
+            {
+                var model = new IntelligenceIntuitionPrompt();
+                var response = model.GenerateIntuitiveResponse(ClipboardText());
+                Clipboard.SetText(response);
+                TextToType = " ";
+            }
             else if (ExtractedVerbs.Contains(TypeOutTheClipboard))
             {
                 TextToType = ClipboardText();
             }
-            else   // Expand
+            else // Expand
             {
                 TextToType = Arguments;
             }

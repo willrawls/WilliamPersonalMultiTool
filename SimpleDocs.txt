@@ -34,8 +34,17 @@ WPMT
 				Maximize
 				Normal
 			Size
-				To			
-				Percent		
-				Absolute	
-				Relative	
-				Tall		
+				To			[Width] [Height]
+				Percent		[Width] [Height]
+				Absolute	[Width] [Height]
+				Relative	[Width] [Height]
+				Tall		[Height]
+			Type
+				Expand
+				Clipboard
+				File
+				Slow
+				Slower
+				Fast
+				
+				

@@ -20,7 +20,10 @@ namespace WilliamPersonalMultiTool.Acting
         public string Separator { get; set; }
         public string Errors { get; set; } = "";
         public bool CanContinue { get; set; }
+
         public Verb DefaultVerb { get; set; }
+        public Verb Debug { get; set; }
+        public string DebugInput { get; set; }
 
         public ActionableType ActionableType { get; set; }
         public List<Verb> ExtractedVerbs { get; set; } = new List<Verb>();

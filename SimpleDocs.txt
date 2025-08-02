@@ -42,6 +42,8 @@ WPMT
 			Type
 				Expand
 				Clipboard
+				GptToWord
+
 				File
 				Slow
 				Slower

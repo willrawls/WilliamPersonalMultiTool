@@ -1,5 +1,7 @@
-﻿using NHotPhrase.Phrase;
+﻿using MetX.Standard.Strings;
+using NHotPhrase.Phrase;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace WilliamPersonalMultiTool.Acting.Actors
@@ -8,6 +10,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
     {
         public static Verb Expand { get; set; }
         public static Verb TypeOutTheClipboard { get; set; }
+        public static Verb ConvertFromGptToWord { get; set; }
         public static Verb TypeContentsOfFile { get; set; }
         public static Verb TypeFast { get; set; }
         public static Verb TypeSlow { get; set; }
@@ -45,6 +48,8 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
             // Causes quick typing (Fast is the default)
             TypeFast = AddLegalVerb("fast", TypeSlowest);
+
+            ConvertFromGptToWord = AddLegalVerb("gpttoword", TypeOutTheClipboard);
 
             OnAct = Act;
             OnContinue = Continue;
@@ -99,7 +104,11 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
         public bool Act(PhraseEventArguments phraseEventArguments)
         {
-            if (ExtractedVerbs.Contains(TypeContentsOfFile))
+            if (ExtractedVerbs.Contains(Debug) && DebugInput.IsNotEmpty())
+            {
+                TextToType = DebugInput;
+            }
+            else if (ExtractedVerbs.Contains(TypeContentsOfFile))
             {
                 TextToType = File.ReadAllText(Filename);
             }
@@ -110,6 +119,15 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 Clipboard.SetText(response);
                 TextToType = " ";
             }
+            else if (ExtractedVerbs.Contains(ConvertFromGptToWord))
+            {
+                var sb = new StringBuilder();
+                var previousSpeaker = "Human";
+                var speaker = "Mirror";
+                var clipboardText = ClipboardText();
+                GptToWordReformater.Convert(sb, clipboardText, speaker, previousSpeaker);
+                TextToType = sb.ToString();
+            }
             else if (ExtractedVerbs.Contains(TypeOutTheClipboard))
             {
                 TextToType = ClipboardText();
@@ -117,6 +135,11 @@ namespace WilliamPersonalMultiTool.Acting.Actors
             else // Expand
             {
                 TextToType = Arguments;
+            }
+
+            if (ExtractedVerbs.Contains(Debug))
+            {
+                return true;
             }
 
             var customKeySequence = KeySequence;

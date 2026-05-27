@@ -7,6 +7,13 @@
         public string Name;
         public bool Mentioned { get; set; }
 
+        private static Verb _defaultDebug1;
+
+        public static Verb DefaultDebug
+        {
+            get { return _defaultDebug1 ??= Verb.Factory("Debug"); }
+        }
+
         public static Verb Factory(string name, int max = 1, Verb modifies = null)
         {
             return new Verb

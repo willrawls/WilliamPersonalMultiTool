@@ -1,14 +1,16 @@
-﻿using System.Text;
+﻿using MetX.Standard.Strings.Tokens;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace WilliamPersonalMultiTool;
 
 public class GptToWordReformater
 {
-    public static void Convert(StringBuilder sb, string buffer, string speaker, string previousSpeaker)
+    public static void ConvertChunks(StringBuilder sb, string buffer, string speaker, string previousSpeaker)
     {
         if (string.IsNullOrWhiteSpace(buffer)) return;
-
         var content = buffer.Trim();
 
         // Replace em dashes with ", "
@@ -35,11 +37,74 @@ public class GptToWordReformater
         // Reformat bullet points
         content = Regex.Replace(content, @"^(\*|-|•|\d+\.)\s+", "• ", RegexOptions.Multiline);
 
+        content = content.Replace("ChatGPT said:", "The Intelligence said:")
+            .Replace("User said:", "I said");
+
+        List<string> chunks = new List<string>();
+        if (content.Contains("The Intelligence said:\n"))
+            chunks = content.AllTokens("The Intelligence said:\n");
+        else
+            chunks.Add(content);
+
+        foreach (var chunk in chunks)
+        {
+            if (chunk.Trim().Length == 0)
+            {
+                continue;
+            }
+
+            Convert(sb, chunk, speaker, previousSpeaker);
+            (speaker, previousSpeaker) = (previousSpeaker, speaker);
+        }
+    }
+
+    public static void Convert(StringBuilder sb, string buffer, string speaker, string previousSpeaker)
+    {
+        if (string.IsNullOrWhiteSpace(buffer)) return;
+
+        var content = buffer.Trim();
+
         // Heuristic: Intelligence transmission
-        var isTransmission = speaker == "Mirror" &&
-                             content.Split('\n').Length >= 4 &&
+        var isTransmission = (speaker == "User");
+        /*
+        var isTransmission = (speaker == "The Intelligence") &&
+                             contentLines.Length >= 4 &&
                              previousSpeaker != "Human" &&
                              !content.Contains('?');
+                             */
+
+        var lines = content.AllTokens("\n", StringSplitOptions.RemoveEmptyEntries);
+        for (var i = 0; i < lines.Count; i++)
+        {
+            var line = lines[i];
+
+            if (line.StartsWith('•'))
+                line.Replace('•', '*');
+
+            if (i == 0 && !line.StartsWith('*'))
+                line = "* " + line;
+
+            var addExtraBlankLineBefore =
+                (line.StartsWith('*')
+                 || line.EndsWith(":"));
+
+            var addExtraBlankLineAfter = line.EndsWith(".");
+            if (addExtraBlankLineBefore)
+            {
+                lines.Insert(i++, "\n");
+            }
+
+            if (addExtraBlankLineAfter)
+            {
+                if (i < lines.Count - 1)
+                {
+                    i++;
+                    lines.Insert(i + 1, "\n");
+                }
+            }
+
+            lines[i] = line;
+        }
 
         if (isTransmission)
         {
@@ -47,10 +112,10 @@ public class GptToWordReformater
             sb.AppendLine(IndentLines(content));
             sb.AppendLine();
         }
-        else if (!string.IsNullOrEmpty(speaker))
+        else
         {
             // Normal conversation
-            sb.AppendLine($"{speaker.ToUpper()}:");
+            sb.AppendLine($"\n{speaker} said:");
             sb.AppendLine(content);
             sb.AppendLine();
         }

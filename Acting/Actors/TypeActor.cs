@@ -104,7 +104,7 @@ namespace WilliamPersonalMultiTool.Acting.Actors
 
         public bool Act(PhraseEventArguments phraseEventArguments)
         {
-            if (ExtractedVerbs.Contains(Debug) && DebugInput.IsNotEmpty())
+            if (ExtractedVerbs.Contains(Verb.DefaultDebug) && DebugInput.IsNotEmpty())
             {
                 TextToType = DebugInput;
             }
@@ -119,15 +119,6 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 Clipboard.SetText(response);
                 TextToType = " ";
             }
-            else if (ExtractedVerbs.Contains(ConvertFromGptToWord))
-            {
-                var sb = new StringBuilder();
-                var previousSpeaker = "Human";
-                var speaker = "Mirror";
-                var clipboardText = ClipboardText();
-                GptToWordReformater.Convert(sb, clipboardText, speaker, previousSpeaker);
-                TextToType = sb.ToString();
-            }
             else if (ExtractedVerbs.Contains(TypeOutTheClipboard))
             {
                 TextToType = ClipboardText();
@@ -137,7 +128,17 @@ namespace WilliamPersonalMultiTool.Acting.Actors
                 TextToType = Arguments;
             }
 
-            if (ExtractedVerbs.Contains(Debug))
+            if (ExtractedVerbs.Contains(ConvertFromGptToWord))
+            {
+                var sb = new StringBuilder();
+                var previousSpeaker = "User";
+                var speaker = "The Intelligence";
+                var input = TextToType;
+                GptToWordReformater.ConvertChunks(sb, input, speaker, previousSpeaker);
+                TextToType = sb.ToString();
+            }
+
+            if (ExtractedVerbs.Contains(Verb.DefaultDebug))
             {
                 return true;
             }
